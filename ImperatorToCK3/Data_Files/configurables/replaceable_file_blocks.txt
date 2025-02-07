@@ -32,7 +32,7 @@
 	replace = {
 		before = {
 		title:b_salamanca.title_province = { add_special_building_slot = generic_university }
-		}
+		} # end of before
 
 		after = {
 		title:b_salamanca.title_province = {
@@ -43,7 +43,7 @@
 				add_special_building_slot = generic_university
 			}
 		}
-		}
+		} # end of after
 	}
 }
 
@@ -110,6 +110,416 @@
 			}
 		}
 	}
-		}
+		} # end of after
 	}
 }
+
+
+"common/decisions/dlc_decisions/ep3_decisions.txt" = {
+	#########
+	# recreate_byzantine_empire_decision
+	#########
+	# Will likely change the culture references here about requiring greek or a greek-descendent culture to instead just be based off the roman culture once a proper split between Romanized-Greeks and Hellenistic-Greeks is created
+
+	# is_shown block
+	replace = {
+		before = {
+		has_dlc_feature = roads_to_power
+		NOR = {
+			exists = title:e_byzantium.holder
+			exists = title:e_roman_empire.holder
+		}
+		OR = {
+			culture = {
+				OR = {
+					this = culture:greek
+					any_parent_culture_or_above = { this = culture:greek }
+				}
+			}
+			AND = {
+				OR = {
+					ep3_orthodox_faith_trigger = yes
+					faith = faith:hellenic_pagan
+				}
+				primary_title = {
+					empire = title:e_latin_empire
+				}
+			}
+			AND = {
+				OR = {
+					ep3_orthodox_faith_trigger = yes
+					faith = faith:hellenic_pagan
+				}
+				primary_title = {
+					empire = title:e_byzantium
+				}
+			}
+		}
+		} # end of before
+		
+		after = {
+		has_dlc_feature = roads_to_power
+		# IRToCK3: Make sure e_byzantium and e_roman_empire don't have holders or de jure land (because why should this be available if the title in question or the "whole" empire itself already exist/have land?)
+		title:e_byzantium = {
+			AND = {
+				NOT = { exists = holder }
+				any_de_jure_county = {
+					count < 1
+				}
+			}
+		}
+		title:e_roman_empire = {
+			AND = {
+				NOT = { exists = holder }
+				any_de_jure_county = {
+					count < 1
+				}
+			}
+		}
+		# IRToCK3: Make sure e_byzantium has a previous holder to ensure it existed previously (otherwise why would this decision even make sense?)
+		exists = title:e_byzantium.previous_holder
+		OR = {
+			# IRToCK3: Allow Romans to use this decision too
+			culture = {
+				OR = {
+					this = culture:greek
+					this = culture:roman
+					any_parent_culture_or_above = { this = culture:greek }
+					any_parent_culture_or_above = { this = culture:roman }
+				}
+			}
+			AND = {
+				OR = {
+					ep3_orthodox_faith_trigger = yes
+					faith = faith:hellenic_pagan
+				}
+				primary_title = {
+					empire = title:e_latin_empire
+				}
+			}
+			AND = {
+				OR = {
+					ep3_orthodox_faith_trigger = yes
+					faith = faith:hellenic_pagan
+				}
+				primary_title = {
+					empire = title:e_byzantium
+				}
+			}
+		}
+		} # end of after
+	} # end of is_shown block
+
+	# is_valid block
+	replace = {
+		before = {
+		custom_tooltip = {
+			NOT = {
+				exists = title:e_byzantium.holder
+			}
+			text = no_byz_emp_exists_tt
+		}
+		is_independent_ruler = yes
+		OR = {
+			custom_tooltip = {
+				culture = {
+					this = culture:greek
+				}
+				text = is_greek_tt
+			}
+			custom_tooltip = {
+				culture = {
+					any_parent_culture_or_above = { this = culture:greek }
+				}
+				text = is_greek_descendent_tt
+			}
+			ep3_orthodox_faith_trigger = yes
+			faith = faith:hellenic_pagan
+		}
+		highest_held_title_tier >= tier_kingdom
+		
+		realm_size >= 12
+		custom_tooltip = {
+			title:c_byzantion.holder = {
+				exists = this
+				OR = {
+					this = root
+					AND = {
+						is_ai = yes
+						top_liege = root
+					}
+				}
+			}
+			text = pandidakterion_tt
+		}
+		primary_title = {
+			OR = {
+				empire = title:e_latin_empire
+				empire = title:e_byzantium
+			}
+		}
+		trigger_if = {
+			limit = {
+				is_ai = no
+				has_legitimacy = yes
+			}
+			legitimacy_level >= 3
+		}
+		#A liiiiiittle easier for AI
+		trigger_if = {
+			limit = {
+				is_ai = yes
+				has_legitimacy = yes
+			}
+			legitimacy_level >= 1
+		}
+		} # end of before
+		
+		after = {
+		# IRToCK3: Can't have the WRE since they should focus on forming e_roman_empire
+		NOT = { has_title = title:e_western_roman_empire }
+		# IRToCK3: Show that e_byzantium and e_roman_empire can't have holders
+		custom_tooltip = {
+			NOR = {
+				exists = title:e_byzantium.holder
+				exists = title:e_roman_empire.holder
+			}
+			text = no_byz_emp_exists_tt
+		}
+		is_independent_ruler = yes
+		OR = {
+			# IRToCK3: Allow Greeks OR Romans, or their descendent cultures, to take decision
+			custom_tooltip = {
+				culture = {
+					OR = {
+						this = culture:greek
+						this = culture:roman
+					}
+				}
+				text = is_greek_tt
+			}
+			custom_tooltip = {
+				culture = {
+					any_parent_culture_or_above = {
+						OR = {
+							this = culture:greek
+							this = culture:roman
+						}
+					}
+				}
+				text = is_greek_descendent_tt
+			}
+			ep3_orthodox_faith_trigger = yes
+			faith = faith:hellenic_pagan
+		}
+		highest_held_title_tier >= tier_kingdom
+		
+		realm_size >= 80 # IRToCK3: Normally requires a realm_size of 12, but that is based off this being after the Splintered Crusade
+		custom_tooltip = {
+			title:c_byzantion.holder = {
+				exists = this
+				OR = {
+					this = root
+					AND = {
+						is_ai = yes
+						top_liege = root
+					}
+				}
+			}
+			text = pandidakterion_tt
+		}
+		# IRToCK3: This would cause issues given that the Latin Empire is unlikely to form, making this decision pretty much impossible
+		# primary_title = {
+		# 	OR = {
+		# 		empire = title:e_latin_empire
+		# 		empire = title:e_byzantium
+		# 	}
+		# }
+		trigger_if = {
+			limit = {
+				is_ai = no
+				has_legitimacy = yes
+			}
+			legitimacy_level >= 3
+		}
+		#A liiiiiittle easier for AI
+		trigger_if = {
+			limit = {
+				is_ai = yes
+				has_legitimacy = yes
+			}
+			legitimacy_level >= 1
+		}
+		} # end of after
+	} # end of is_valid block
+
+	# cost block
+	replace = {
+		before = {
+				if = {
+					limit = {
+						culture = {
+							NOR = {
+								this = culture:greek
+								any_parent_culture_or_above = { this = culture:greek }
+							}
+						}
+					}
+					add = 500
+				}
+		} # end of before
+
+		after = {
+				if = {
+					limit = {
+						culture = {
+							NOR = {
+								# IRToCK3: Change the cost increase to non-greeks/romans
+								this = culture:greek
+								this = culture:roman
+								any_parent_culture_or_above = { this = culture:greek }
+								any_parent_culture_or_above = { this = culture:roman }
+							}
+						}
+					}
+					add = 500
+				}
+		} # end of after
+	} # end of cost block
+
+	# ai blocks
+	replace = {
+		before = {
+	ai_potential = {
+		NOT = { exists = title:e_byzantium.holder }
+		any_held_title = {
+			tier = tier_kingdom
+			OR = {
+				empire = title:e_latin_empire
+				empire = title:e_byzantium
+			}
+		}
+		OR = {
+			culture = {
+				OR = {
+					this = culture:greek
+					any_parent_culture_or_above = { this = culture:greek }
+				}
+			}
+			ep3_orthodox_faith_trigger = yes
+			primary_title = {
+				empire = title:e_latin_empire
+			}
+		}
+	}
+
+	ai_will_do = {
+		base = 100
+		modifier = {
+			primary_title = {
+				empire = title:e_latin_empire
+			}
+			add = -60
+		}
+		modifier = {
+			NAND = {
+				culture = {
+					OR = {
+						this = culture:greek
+						any_parent_culture_or_above = { this = culture:greek }
+					}
+				}
+				OR = {
+					ep3_orthodox_faith_trigger = yes
+					faith = faith:hellenic_pagan
+				}
+			}
+			add = -30
+		}
+	}
+		} # end of before
+
+		after = {
+	ai_potential = {
+		# IRToCK3: AI shouldn't bother if e_byzantium or e_roman_empire already have holders
+		NOR = {
+			exists = title:e_byzantium.holder
+			exists = title:e_roman_empire.holder
+		}
+		# IRToCK3: AI shouldn't bother if they have the WRE since they should focus on e_roman_empire
+		NOT = { has_title = title:e_western_roman_empire }
+		any_held_title = {
+			tier = tier_kingdom
+			# IRToCK3: Removing this since it was removed previously, to prevent any possible issues since this won't be dependent on the Splintered Crusade
+			# OR = {
+			# 	empire = title:e_latin_empire
+			# 	empire = title:e_byzantium
+			# }
+		}
+		OR = {
+			culture = {
+				OR = {
+					# IRToCK3: Greeks/Romans should try to do this decision
+					this = culture:greek
+					this = culture:roman
+					any_parent_culture_or_above = { this = culture:greek }
+					any_parent_culture_or_above = { this = culture:roman }
+				}
+			}
+			ep3_orthodox_faith_trigger = yes
+			primary_title = {
+				empire = title:e_latin_empire
+			}
+		}
+	}
+
+	ai_will_do = {
+		base = 100
+		modifier = {
+			primary_title = {
+				empire = title:e_latin_empire
+			}
+			add = -60
+		}
+		modifier = {
+			NAND = {
+				culture = {
+					OR = {
+						# IRToCK3: Make it so non-Greeks/Romans are less likely to take decision
+						this = culture:greek
+						this = culture:roman
+						any_parent_culture_or_above = { this = culture:greek }
+						any_parent_culture_or_above = { this = culture:roman }
+					}
+				}
+				OR = {
+					ep3_orthodox_faith_trigger = yes
+					faith = faith:hellenic_pagan
+				}
+			}
+			add = -30
+		}
+	}
+		} # end of after
+	} # end of ai blocks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+}
+
+
+
+

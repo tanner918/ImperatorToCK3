@@ -43,3 +43,7 @@
  assyrian_collective_noun: "Assyrians"
  assyrian_prefix: "Assyro"
 
+ # recreate_byzantine_empire_decision overrides
+ is_greek_tt: "You are $greek$ or $roman$"
+ is_greek_descendent_tt: "Your [culture|E] descends from $greek$ or $roman$"
+ no_byz_emp_exists_tt: "No [ruler|E] holds [GetTitleByKey('e_byzantium').GetNameNoTier] or [GetTitleByKey('e_roman_empire').GetNameNoTier]"
