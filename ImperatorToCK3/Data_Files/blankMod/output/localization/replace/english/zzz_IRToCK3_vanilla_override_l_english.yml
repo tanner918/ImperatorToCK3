@@ -43,6 +43,10 @@
  assyrian_collective_noun: "Assyrians"
  assyrian_prefix: "Assyro"
 
+ greek: "Romaios"
+ greek_collective_noun: "Romaioi"
+ greek_prefix: "Romaio"
+
  # recreate_byzantine_empire_decision overrides
  is_greek_tt: "You are $greek$ or $roman$"
  is_greek_descendent_tt: "Your [culture|E] descends from $greek$ or $roman$"

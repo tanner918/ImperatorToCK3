@@ -119,8 +119,7 @@
 	#########
 	# recreate_byzantine_empire_decision
 	#########
-	# Will likely change the culture references here about requiring greek or a greek-descendent culture to instead just be based off the roman culture once a proper split between Romanized-Greeks and Hellenistic-Greeks is created
-
+	
 	# is_shown block
 	replace = {
 		before = {
