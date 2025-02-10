@@ -502,22 +502,1471 @@
 		} # end of after
 	} # end of ai blocks
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	
+	#########
+	# hold_triumph_decision
+	#########
+
+	replace = {
+		before = {
+	is_shown = {
+		has_ep3_dlc_trigger = yes
+		OR = {
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+		}
+		culture = { has_cultural_parameter = holds_triumphs }
+	}
+
+	is_valid = {
+		is_at_war = no
+		OR = {
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+		}
+		culture = { has_cultural_parameter = holds_triumphs }
+	}		
+		} # end of before
+
+		after = {
+	is_shown = {
+		has_ep3_dlc_trigger = yes
+		OR = {
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+			has_title = title:e_western_roman_empire # IRToCK3: Added WRE as possible title
+		}
+		culture = { has_cultural_parameter = holds_triumphs }
+	}
+
+	is_valid = {
+		is_at_war = no
+		OR = {
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+			has_title = title:e_western_roman_empire # IRToCK3: Added WRE as possible title
+		}
+		culture = { has_cultural_parameter = holds_triumphs }
+	}		
+		} # end of after
+	}
+
+
+	#########
+	# retake_eastern_provinces_decision
+	#########
+
+	replace = {
+		before = {
+	is_shown = {
+		has_ep3_dlc_trigger = yes
+		has_title = title:e_byzantium
+		NOT = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:retake_eastern_provinces_decision
+			}
+		}
+	}
+		} # end of before
+
+		after = {
+	is_shown = {
+		has_ep3_dlc_trigger = yes
+		has_title = title:e_byzantium
+		NOT = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:retake_eastern_provinces_decision
+			}
+		}
+		always = no # IRToCK3: Prevents the decision from being available since it doesn't really make sense given the new history of the world
+	}
+		} # end of after
+	}
+
+
+	#########
+	# evangelize_the_slavs_decision
+	#########
+
+	# is_shown block
+	replace = {
+		before = {
+		has_ep3_dlc_trigger = yes
+		# Byz emperor or governor
+		OR = {
+			has_title = title:e_byzantium
+			liege = { has_title = title:e_byzantium }
+		}
+		faith.religion = religion:christianity_religion
+		# You border with pagans to convert
+		trigger_if = {
+			limit = {
+				has_title = title:e_byzantium
+			}
+			any_neighboring_and_across_water_top_liege_realm_owner = {
+				valid_for_pagan_conversion_trigger = yes
+			}
+		}
+		trigger_else = {
+			any_neighboring_and_across_water_realm_same_rank_owner = {
+				valid_for_pagan_conversion_trigger = yes
+			}
+		}
+		} # end of before
+
+		after = {
+		has_ep3_dlc_trigger = yes
+		# Byz emperor or governor
+		OR = {
+			OR = { # IRToCK3: Extend to other Roman Empire titles
+				has_title = title:e_byzantium
+				has_title = title:e_roman_empire
+				has_title = title:e_western_roman_empire
+			}
+			liege = {
+				OR = { # IRToCK3: Extend to other Roman Empire titles
+					has_title = title:e_byzantium
+					has_title = title:e_roman_empire
+					has_title = title:e_western_roman_empire
+				}
+			}
+		}
+		faith.religion = religion:christianity_religion
+		# You border with pagans to convert
+		trigger_if = {
+			limit = {
+				OR = { # IRToCK3: Extend to other Roman Empire titles
+					has_title = title:e_byzantium
+					has_title = title:e_roman_empire
+					has_title = title:e_western_roman_empire
+				}
+			}
+			any_neighboring_and_across_water_top_liege_realm_owner = {
+				valid_for_pagan_conversion_trigger = yes
+			}
+		}
+		trigger_else = {
+			any_neighboring_and_across_water_realm_same_rank_owner = {
+				valid_for_pagan_conversion_trigger = yes
+			}
+		}
+		} # end of after
+	} # end of is_shown block
+
+	# is_valid block
+	replace = {
+		before = {
+		government_has_flag = government_is_administrative
+		trigger_if = {
+			limit = {
+				has_title = title:e_byzantium
+			}
+			custom_tooltip = {
+				any_neighboring_and_across_water_top_liege_realm_owner = {
+					valid_for_pagan_conversion_trigger = yes
+				}
+				text = valid_neighboring_and_across_water_top_liege
+			}
+		}
+		trigger_else = {
+			custom_tooltip = {
+				any_neighboring_and_across_water_realm_same_rank_owner = {
+					valid_for_pagan_conversion_trigger = yes
+				}
+				text = valid_neighboring_and_across_water_realm_same_rank
+			}
+		}
+		} # end of before
+
+		after = {
+		government_has_flag = government_is_administrative
+		trigger_if = {
+			limit = {
+				OR = { # IRToCK3: Extend to other Roman Empire titles
+					has_title = title:e_byzantium
+					has_title = title:e_roman_empire
+					has_title = title:e_western_roman_empire
+				}
+			}
+			custom_tooltip = {
+				any_neighboring_and_across_water_top_liege_realm_owner = {
+					valid_for_pagan_conversion_trigger = yes
+				}
+				text = valid_neighboring_and_across_water_top_liege
+			}
+		}
+		trigger_else = {
+			custom_tooltip = {
+				any_neighboring_and_across_water_realm_same_rank_owner = {
+					valid_for_pagan_conversion_trigger = yes
+				}
+				text = valid_neighboring_and_across_water_realm_same_rank
+			}
+		}
+		} # end of after
+	} # end of is_valid block
+
+	# ai_potential block
+	replace = {
+		before = {
+	ai_potential = {
+		piety > massive_piety_value
+		has_title = title:e_byzantium
+	}
+		} # end of before
+
+		after = {
+	ai_potential = {
+		piety > massive_piety_value
+		OR = { # IRToCK3: Extend to other Roman Empire titles
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+			has_title = title:e_western_roman_empire
+		}
+	}
+		} # end of after
+	} # end of ai_potential block
+
+
+	#########
+	# establish_silk_production_decision
+	#########
+
+	# is_shown block
+	replace = {
+		before = {
+		has_ep3_dlc_trigger = yes
+		government_allows = administrative
+		OR = {
+			this = house.house_head
+			AND = {
+				is_ai = no
+				house.house_head = top_liege
+			}
+		}
+		domicile ?= {
+			is_domicile_type = estate
+		}
+		top_liege ?= {
+			OR = {
+				primary_title = title:e_byzantium
+				primary_title = title:e_roman_empire
+			}
+		}
+		NOT = {
+			house = {
+				has_house_modifier = ep3_unlocked_silk
+			}
+		}
+		} # end of before
+
+		after = {
+		has_ep3_dlc_trigger = yes
+		government_allows = administrative
+		OR = {
+			this = house.house_head
+			AND = {
+				is_ai = no
+				house.house_head = top_liege
+			}
+		}
+		domicile ?= {
+			is_domicile_type = estate
+		}
+		top_liege ?= {
+			OR = {
+				primary_title = title:e_byzantium
+				primary_title = title:e_roman_empire
+				primary_title = title:e_western_roman_empire # IRToCK3: Add WRE as possible title
+			}
+		}
+		NOT = {
+			house = {
+				has_house_modifier = ep3_unlocked_silk
+			}
+		}
+		} # end of after
+	} # end of is_shown block
+
+	# is_valid block
+	replace = {
+		before = {
+		trigger_if = {
+			limit = { is_independent_ruler = yes }
+			OR = {
+				has_title = title:e_byzantium
+				has_title = title:e_roman_empire
+			}
+			OR = {
+				has_realm_law = imperial_bureaucracy_2
+				has_realm_law = imperial_bureaucracy_3
+			}
+		}
+		trigger_else = {
+			influence_level >= 3
+			OR = {
+				has_weak_hook = top_liege
+				has_strong_usable_hook = top_liege
+				AND = {
+					exists = house
+					top_liege.house ?= house
+				}
+			}
+		}
+		} # end of before
+
+		after = {
+		trigger_if = {
+			limit = { is_independent_ruler = yes }
+			OR = {
+				has_title = title:e_byzantium
+				has_title = title:e_roman_empire
+				has_title = title:e_western_roman_empire # IRToCK3: Add WRE as possible title
+			}
+			OR = {
+				has_realm_law = imperial_bureaucracy_2
+				has_realm_law = imperial_bureaucracy_3
+			}
+		}
+		trigger_else = {
+			influence_level >= 3
+			OR = {
+				has_weak_hook = top_liege
+				has_strong_usable_hook = top_liege
+				AND = {
+					exists = house
+					top_liege.house ?= house
+				}
+			}
+		}
+		} # end of after
+	} # end of is_valid block
+
+
+	#########
+	# reinstitute_grain_dole_decision / reconfirm_grain_dole_decision
+	#########
+
+	# is_shown block (reinstitute_grain_dole_decision)
+	replace = {
+		before = {
+		has_ep3_dlc_trigger = yes
+		has_title = title:e_byzantium
+		NOT = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:reinstitute_grain_dole_decision
+			}
+		}
+		} # end of before
+
+		after = {
+		has_ep3_dlc_trigger = yes
+		OR = { # IRToCK3: Extended decision to be possible for Roman Empire and WRE as well
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+			has_title = title:e_western_roman_empire
+		}
+		NOT = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:reinstitute_grain_dole_decision
+			}
+		}
+		} # end of after
+	} # end of is_shown block (reinstitute_grain_dole_decision)
+
+	# is_shown block (reconfirm_grain_dole_decision)
+	replace = {
+		before = {
+		has_ep3_dlc_trigger = yes
+		has_title = title:e_byzantium
+		is_target_in_global_variable_list = {
+			name = unavailable_unique_decisions
+			target = flag:reinstitute_grain_dole_decision
+		}
+		} # end of before
+
+		after = {
+		has_ep3_dlc_trigger = yes
+		OR = { # IRToCK3: Extended decision to be possible for Roman Empire and WRE as well
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+			has_title = title:e_western_roman_empire
+		}
+		is_target_in_global_variable_list = {
+			name = unavailable_unique_decisions
+			target = flag:reinstitute_grain_dole_decision
+		}
+		} # end of after
+	} # end of is_shown block (reinstitute_grain_dole_decision)
+
+	# is_valid blocks (both)
+	replace = {
+		before = {
+	is_valid = {
+		government_has_flag = government_is_administrative
+		custom_tooltip = {
+			capital_county = title:c_byzantion
+			text = constantinople_is_capital
+		}
+		completely_controls_region = custom_roman_aegyptus
+		custom_tooltip = {
+			text = enough_granaries_in_egypt
+			any_county_in_region = {
+				region = custom_roman_aegyptus
+				count >= 3
+				any_county_province = {
+					has_building_or_higher = cereal_fields_05
+				}
+			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		is_at_war = no
+		NOT = { exists = involved_activity }
+		is_imprisoned = no
+		custom_tooltip = {
+			NOT = {
+				title:c_byzantion = { has_county_modifier = panem_et_circenses_county_modifier }
+			}
+			text = grain_dole_already_active
+		}
+	}
+		} # end of before
+
+		after = {
+	is_valid = {
+		government_has_flag = government_is_administrative
+		trigger_if = { # IRToCK3: Modified to check Roma as capital for WRE or Roman Empire
+			limit = {
+				has_title = title:e_byzantium
+			}
+
+			custom_tooltip = {
+				capital_county = title:c_byzantion
+				text = constantinople_is_capital
+			}
+		} trigger_else_if = {
+			limit = {
+				OR = {
+					has_title = title:e_roman_empire
+					has_title = title:e_western_roman_empire
+				}
+			}
+
+			custom_tooltip = {
+				capital_county = title:c_roma
+				text = roma_is_capital
+			}
+		}
+		completely_controls_region = custom_roman_aegyptus
+		custom_tooltip = {
+			text = enough_granaries_in_egypt
+			any_county_in_region = {
+				region = custom_roman_aegyptus
+				count >= 3
+				any_county_province = {
+					has_building_or_higher = cereal_fields_05
+				}
+			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		is_at_war = no
+		NOT = { exists = involved_activity }
+		is_imprisoned = no
+		custom_tooltip = { # IRToCK3: Modified to check Roma for WRE or Roman Empire
+			trigger_if = {
+				limit = {
+					has_title = title:e_byzantium
+				}
+	
+				NOT = {
+					title:c_byzantion = { has_county_modifier = panem_et_circenses_county_modifier }
+				}
+			} trigger_else_if = {
+				limit = {
+					OR = {
+						has_title = title:e_roman_empire
+						has_title = title:e_western_roman_empire
+					}
+				}
+	
+				NOT = {
+					title:c_roma = { has_county_modifier = panem_et_circenses_county_modifier }
+				}
+			}
+
+			text = grain_dole_already_active
+		}
+	}
+		} # end of after
+	} # end of is_valid blocks (both)
+
+	# ai_potential block (reinstitute_grain_dole_decision)
+	replace = {
+		before = {
+	effect = {
+		add_to_global_variable_list = {
+			name = unavailable_unique_decisions
+			target = flag:reinstitute_grain_dole_decision
+		}
+		trigger_event = ep3_decisions_event.4040
+		reinstitute_grain_dole_decision_effect = yes
+	}
+
+	ai_potential = {
+		has_title = title:e_byzantium
+	}
+		} # end of before
+
+		after = {
+	effect = {
+		add_to_global_variable_list = {
+			name = unavailable_unique_decisions
+			target = flag:reinstitute_grain_dole_decision
+		}
+		trigger_event = ep3_decisions_event.4040
+		reinstitute_grain_dole_decision_effect = yes
+	}
+
+	ai_potential = {
+		OR = { # IRToCK3: Extended decision to be possible for Roman Empire and WRE as well
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+			has_title = title:e_western_roman_empire
+		}
+	}
+		} # end of after
+	} # end of ai_potential block (reinstitute_grain_dole_decision)
+
+	# ai_potential block (reconfirm_grain_dole_decision)
+	replace = {
+		before = {
+	ai_potential = {
+		has_title = title:e_byzantium
+		title:c_byzantion = { has_variable = unlocked_grain_dole }
+	}
+		} # end of before
+
+		after = {
+	ai_potential = {
+		OR = {
+			AND = {
+				has_title = title:e_byzantium
+				title:c_byzantion = { has_variable = unlocked_grain_dole }
+			}
+			AND = {
+				OR = {
+					has_title = title:e_roman_empire
+					has_title = title:e_western_roman_empire
+				}
+				title:c_roma = { has_variable = unlocked_grain_dole }
+			}
+		}
+	}
+		} # end of after
+	} # end of ai_potential block (reconfirm_grain_dole_decision)
+
+
+	#########
+	# split_roman_empire_decision
+	#########
+
+	# is_shown block
+	replace = {
+		before = {
+	is_shown = {
+		has_ep3_dlc_trigger = yes
+		primary_title = title:e_roman_empire
+		NOT = { exists = title:e_byzantium.holder }
+	}
+		} # end of before
+
+		after = {
+	is_shown = {
+		has_ep3_dlc_trigger = yes
+		primary_title = title:e_roman_empire
+		NOR = { # IRToCK3: Made it so both ERE and WRE can't have holders for decision to be taken
+			exists = title:e_byzantium.holder
+			exists = title:e_western_roman_empire.holder
+		}
+	}
+
+	# IRToCK3: Added an is_valid block for any additional conditions that are necessary
+	is_valid = {
+		# IRToCK3: Need to own Constantinople
+		custom_tooltip = {
+			text = owns_constantinople_tt
+			any_sub_realm_county = {
+				this = title:c_byzantion # owns Constantinople
+			}
+		}
+
+		# IRToCK3: Need to have Roma as capital
+		custom_tooltip = {
+			capital_county = title:c_roma
+			text = roma_is_capital
+		}
+
+		# IRToCK3: Need to own all of Thrace since it forcefully takes the title, and the title has no holder, you hold the title, or the holder is your vassal
+		completely_controls = title:d_thrace
+		OR = {
+			NOT = { exists = title:d_thrace.holder }
+			has_title = title:d_thrace
+			title:d_thrace.holder.top_liege = root
+		}
+	}
+		} # end of after
+	} # end of is_shown block
+
 }
+
+
+"common/scripted_effects/00_major_decisions_scripted_effects_3.txt" = {
+	#########
+	# recreate_ere_decision_effect
+	#########
+
+	# For now, modifying it so that any fully controlled kingdom is de jure drifted to be under e_byzantium
+	replace = {
+		before = {
+	if = {
+		limit = {
+			title:e_latin_empire = {
+				any_in_de_jure_hierarchy = {
+					tier < tier_empire
+				}
+			}
+		}
+		title:e_latin_empire = {
+			every_in_de_jure_hierarchy = {
+				limit = {
+					tier = tier_kingdom
+				}
+				set_de_jure_liege_title = title:e_byzantium
+			}
+		}
+		
+	}
+		} # end of before
+
+		after = {
+	if = {
+		limit = {
+			title:e_latin_empire = {
+				any_in_de_jure_hierarchy = {
+					tier < tier_empire
+				}
+			}
+		}
+		title:e_latin_empire = {
+			every_in_de_jure_hierarchy = {
+				limit = {
+					tier = tier_kingdom
+				}
+				set_de_jure_liege_title = title:e_byzantium
+			}
+		}
+		
+	}
+
+	# IRToCK3: For now also adding every completely controlled kingdom to e_byzantium to make sure it gains some de jure land
+	every_sub_realm_county = {
+		limit = {
+			exists = kingdom
+			NOT = { exists = kingdom.holder }
+			holder.top_liege = root
+			kingdom = {
+				save_temporary_scope_as = test_kingdom
+			}
+			holder.top_liege = {
+				completely_controls = scope:test_kingdom
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					kingdom = {
+						is_in_list = additional_de_jure_kingdoms
+					}
+				}
+			}
+			kingdom = {
+				set_de_jure_liege_title = scope:new_title
+				add_to_list = additional_de_jure_kingdoms
+			}
+		}
+	}
+		} # end of after
+	}
+
+
+	#########
+	# reinstitute_grain_dole_decision_effect
+	#########
+
+	replace = {
+		before = {
+	if = {
+		limit = {
+			NOT = { title:c_byzantion = { has_variable = unlocked_grain_dole } }
+		}
+		custom_tooltip = {
+			text = half_price_chariot_race_tooltip
+			add_character_flag = half_price_chariot_race_flag
+		}
+	}
+	every_county_in_region = {
+		region = custom_roman_aegyptus
+		limit = {
+			any_county_province = {
+				has_building_or_higher = cereal_fields_05
+			}
+		}
+		add_county_modifier = {
+			modifier = grain_providers_county_modifier
+			years = 25
+		}
+	}
+	title:c_byzantion = {
+		add_county_modifier = {
+			modifier = panem_et_circenses_county_modifier
+			years = 25
+		}
+	}
+	add_legitimacy = medium_legitimacy_gain
+	if = {
+		limit = {
+			NOT = { title:c_byzantion = { has_variable = unlocked_grain_dole } }
+		}
+		add_prestige = {
+			value = massive_prestige_gain
+			multiply = 3
+		}
+		change_influence = {
+			value = massive_influence_gain
+			multiply = 3
+		}
+	}
+		} # end of before
+
+		after = {
+	if = {
+		limit = {
+			NOT = { capital_county = { has_variable = unlocked_grain_dole } } # IRToCK3: Modified to reference capital county so Roma can also get it, since decision already checks relevant capitals
+		}
+		custom_tooltip = {
+			text = half_price_chariot_race_tooltip
+			add_character_flag = half_price_chariot_race_flag
+		}
+	}
+	every_county_in_region = {
+		region = custom_roman_aegyptus
+		limit = {
+			any_county_province = {
+				has_building_or_higher = cereal_fields_05
+			}
+		}
+		add_county_modifier = {
+			modifier = grain_providers_county_modifier
+			years = 25
+		}
+	}
+	capital_county = { # IRToCK3: Modified to reference capital county so Roma can also get it, since decision already checks relevant capitals
+		add_county_modifier = {
+			modifier = panem_et_circenses_county_modifier
+			years = 25
+		}
+	}
+	add_legitimacy = medium_legitimacy_gain
+	if = {
+		limit = {
+			NOT = { capital_county = { has_variable = unlocked_grain_dole } } # IRToCK3: Modified to reference capital county so Roma can also get it, since decision already checks relevant capitals
+		}
+		add_prestige = {
+			value = massive_prestige_gain
+			multiply = 3
+		}
+		change_influence = {
+			value = massive_influence_gain
+			multiply = 3
+		}
+	}
+		} # end of after
+	}
+
+}
+
+
+"common/decisions/80_major_decisions_roman.txt" = {
+	#########
+	# set_capital_rome_decision
+	#########
+
+	# is_shown block
+	replace = {
+		before = {
+		is_ruler = yes
+		is_playable_character = yes
+		has_title = title:e_roman_empire
+		NOT = { capital_county = { this = title:c_roma } }
+		OR = {
+			title:c_roma.holder = { 	
+				any_liege_or_above = { this = root }
+			}
+			title:c_roma.holder = { this = root }
+		}
+		} # end of before
+
+		after = {
+		is_ruler = yes
+		is_playable_character = yes
+		OR = { # IRToCK3: Also allow the WRE to take this decision
+			has_title = title:e_roman_empire
+			has_title = title:e_western_roman_empire
+		}
+		NOT = { capital_county = { this = title:c_roma } }
+		OR = {
+			title:c_roma.holder = { 	
+				any_liege_or_above = { this = root }
+			}
+			title:c_roma.holder = { this = root }
+		}
+		} # end of after
+	}
+
+	# ai_potential block
+	replace = {
+		before = {
+	ai_potential = {
+		has_title = title:e_roman_empire
+	}
+		} # end of before
+
+		after = {
+	ai_potential = {
+		OR = { # IRToCK3: Also allow the WRE to take this decision
+			has_title = title:e_roman_empire
+			has_title = title:e_western_roman_empire
+		}
+	}
+		} # end of after
+	}
+
+
+	#########
+	# rebuke_roman_revanchism_sicily
+	#########
+
+	replace = {
+		before = {
+		# Standard filter checks.
+		is_playable_character = yes
+		# Sicily is still under the ERE.
+		title:e_byzantium = { is_de_jure_liege_or_above_target = title:k_sicily }
+		# Has land in Sicily.
+		any_held_title = {
+			tier = tier_county
+			title_province = { geographical_region = custom_sicily }
+		}
+		# Outside the ERE.
+		NOR = {
+			has_title = title:e_byzantium
+			any_liege_or_above = { has_title = title:e_byzantium }
+		}
+		# Aaaaaaand it's already happened in 1178.
+		NOT = { game_start_date >= 1178.10.1 }
+		# Not repeatable.
+		NOT = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_rebuked_roman_claim_to_sicily
+			}
+		}
+		} # end of before
+
+		after = {
+		# Standard filter checks.
+		is_playable_character = yes
+		# Sicily is still under the ERE.
+		title:e_byzantium = { is_de_jure_liege_or_above_target = title:k_sicily }
+		# Has land in Sicily.
+		any_held_title = {
+			tier = tier_county
+			title_province = { geographical_region = custom_sicily }
+		}
+		# Outside the ERE.
+		NOR = {
+			has_title = title:e_byzantium
+			any_liege_or_above = { has_title = title:e_byzantium }
+		}
+		# Aaaaaaand it's already happened in 1178.
+		NOT = { game_start_date >= 1178.10.1 }
+		# Not repeatable.
+		NOT = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_rebuked_roman_claim_to_sicily
+			}
+		}
+		always = no # IRToCK3: Makes decision impossible, since it doesn't really make sense given de jure map and history changes
+		} # end of after
+	}
+
+
+	#########
+	# dismantle_byz_pretender_decision
+	#########
+
+	replace = {
+		before = {
+		exists = title:e_byzantium.holder #Must exist in the first place...
+		NOT = {
+			root = title:e_byzantium.holder #That'd be awkward...
+		}
+		OR = {
+			culture = { has_cultural_pillar = heritage_frankish }
+			culture = { has_cultural_pillar = heritage_central_germanic }
+			culture = { has_cultural_pillar = heritage_latin }
+		}
+		is_ruler = yes
+		is_playable_character = yes
+		OR = {
+			has_title = title:e_roman_empire
+			has_title = title:e_hre
+		}
+		NOR = { #Once an Emperor throws the challenge, he has only one chance to dismantle the Empire.
+			has_character_flag = flag_emperor_challenging_byz #Applied below.
+			has_character_flag = flag_emperor_challenged_byz #Applied in war.
+		}
+		} # end of before
+
+		after = {
+		exists = title:e_byzantium.holder #Must exist in the first place...
+		NOT = {
+			root = title:e_byzantium.holder #That'd be awkward...
+		}
+		OR = { # IRToCK3: Removed heritage_latin since limiting this to HRE
+			culture = { has_cultural_pillar = heritage_frankish }
+			culture = { has_cultural_pillar = heritage_central_germanic }
+		}
+		is_ruler = yes
+		is_playable_character = yes
+		has_title = title:e_hre # IRToCK3: Limiting this decision so only the HRE can take it
+		NOR = { #Once an Emperor throws the challenge, he has only one chance to dismantle the Empire.
+			has_character_flag = flag_emperor_challenging_byz #Applied below.
+			has_character_flag = flag_emperor_challenged_byz #Applied in war.
+		}
+		} # end of after
+	}
+
+
+	#########
+	# dismantle_holy_pretender_decision
+	#########
+
+	replace = {
+		before = {
+		exists = title:e_hre.holder #Must exist in the first place...
+		NOT = {
+			root = title:e_hre.holder #That'd be awkward...
+		}
+		OR = {
+			culture = { has_cultural_pillar = heritage_byzantine }
+			culture = { has_cultural_pillar = heritage_latin }
+		}
+		is_ruler = yes
+		is_playable_character = yes
+		OR = {
+			has_title = title:e_roman_empire
+			has_title = title:e_byzantium
+		}
+		NOR = { #Once an Emperor throws the challenge, he has only one chance to dismantle the Empire.
+			has_character_flag = flag_emperor_challenging_hre #Applied below.
+			has_character_flag = flag_emperor_challenged_hre #Applied in war.
+		}
+		} # end of before
+
+		after = {
+		exists = title:e_hre.holder #Must exist in the first place...
+		NOT = {
+			root = title:e_hre.holder #That'd be awkward...
+		}
+		OR = {
+			culture = { has_cultural_pillar = heritage_byzantine }
+			culture = { has_cultural_pillar = heritage_latin }
+		}
+		is_ruler = yes
+		is_playable_character = yes
+		OR = {
+			has_title = title:e_roman_empire
+			has_title = title:e_byzantium
+			has_title = title:e_western_roman_empire # IRToCK3: Added WRE as possible title
+		}
+		NOR = { #Once an Emperor throws the challenge, he has only one chance to dismantle the Empire.
+			has_character_flag = flag_emperor_challenging_hre #Applied below.
+			has_character_flag = flag_emperor_challenged_hre #Applied in war.
+		}
+		} # end of after
+	}
+	
+
+	#########
+	# restore_roman_empire_holy_decision
+	#########
+
+	replace = {
+		before = {
+		is_ruler = yes
+		is_playable_character = yes
+		has_title = title:e_hre
+		OR = {
+			NOT = { has_title = title:e_byzantium } # Prioritize Byzaboos
+			primary_title = title:e_hre
+		}
+		NOT = { primary_title = title:e_italy }
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_roman_empire
+			}
+		}
+		OR = {
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_republic
+			government_has_flag = government_is_clan
+			government_has_flag = government_is_administrative
+		}
+		} # end of before
+
+		after = {
+		is_ruler = yes
+		is_playable_character = yes
+		has_title = title:e_hre
+		OR = {
+			NOT = { has_title = title:e_byzantium } # Prioritize Byzaboos
+			primary_title = title:e_hre
+		}
+		NOT = { primary_title = title:e_italy }
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_roman_empire
+			}
+		}
+		OR = {
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_republic
+			government_has_flag = government_is_clan
+			government_has_flag = government_is_administrative
+		}
+		always = no # IRToCK3: Prevents decision from being available, given it doesn't make as much sense with new history, and giving priority to WRE and ERE forming Rome
+		} # end of after
+	}
+
+
+	#########
+	# restore_roman_empire_italian_decision
+	#########
+
+	replace = {
+		before = {
+		is_ruler = yes
+		is_playable_character = yes
+		has_title = title:e_italy
+		OR = {
+			NAND = {
+				has_title = title:e_byzantium #Prioritize Byzaboos
+				has_title = title:e_hre #And the Germans
+			}
+			primary_title = title:e_italy
+		}
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_roman_empire
+			}
+		}
+		culture = { has_cultural_pillar = heritage_latin }
+		is_target_in_global_variable_list = { #Only available after unifying Italy.
+			name = unavailable_unique_decisions
+			target = flag:flag_unified_italian_empire
+		}
+		OR = {
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_republic
+			government_has_flag = government_is_clan
+			government_has_flag = government_is_administrative
+		}
+		} # end of before
+
+		after = {
+		is_ruler = yes
+		is_playable_character = yes
+		has_title = title:e_italy
+		OR = {
+			NAND = {
+				has_title = title:e_byzantium #Prioritize Byzaboos
+				has_title = title:e_hre #And the Germans
+			}
+			primary_title = title:e_italy
+		}
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_roman_empire
+			}
+		}
+		culture = { has_cultural_pillar = heritage_latin }
+		is_target_in_global_variable_list = { #Only available after unifying Italy.
+			name = unavailable_unique_decisions
+			target = flag:flag_unified_italian_empire
+		}
+		OR = {
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_republic
+			government_has_flag = government_is_clan
+			government_has_flag = government_is_administrative
+		}
+		always = no # IRToCK3: Prevents decision from being available, given it doesn't make as much sense with new history, and giving priority to WRE and ERE forming Rome
+		} # end of after
+	}
+
+
+	#########
+	# restore_roman_empire_decision
+	#########
+
+	replace = {
+		before = {
+		is_ruler = yes
+		is_playable_character = yes
+		has_title = title:e_byzantium
+		NOT = { primary_title = title:e_hre }
+		NOT = { primary_title = title:e_italy }
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_roman_empire
+			}
+		}
+		OR = {
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_republic
+			government_has_flag = government_is_clan
+			government_allows = administrative
+		}
+		} # end of before
+
+		after = {
+		is_ruler = yes
+		is_playable_character = yes
+		OR = {
+			has_title = title:e_byzantium
+			has_title = title:e_western_roman_empire # IRToCK3: Added WRE as possible title
+		}
+		NOT = { primary_title = title:e_hre }
+		NOT = { primary_title = title:e_italy }
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_roman_empire
+			}
+		}
+		OR = {
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_republic
+			government_has_flag = government_is_clan
+			government_allows = administrative
+		}
+		} # end of after
+	}
+
+
+	#########
+	# form_rum_sultanate_decision
+	#########
+
+	replace = {
+		before = {
+		NOR = {
+			exists = title:k_rum.holder
+			top_liege = { has_title = title:e_byzantium }
+			top_liege = { has_title = title:e_roman_empire }
+		}
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_formed_rum_sultanate
+			}
+		}
+		} # end of before
+
+		after = {
+		NOR = {
+			exists = title:k_rum.holder
+			top_liege = { has_title = title:e_byzantium }
+			top_liege = { has_title = title:e_roman_empire }
+			top_liege = { has_title = title:e_western_roman_empire } # IRToCK3: Added WRE to list of invalid titles
+		}
+		NOT = {  #Can only do it once.
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_formed_rum_sultanate
+			}
+		}
+		} # end of after
+	}
+
+
+	#########
+	# restore_pope_in_rome_decision
+	#########
+
+	replace = {
+		before = {
+		faith = faith:catholic
+		NOR = {
+			has_title = title:k_papal_state
+			has_title = title:e_roman_empire #Priorities
+		}
+		NOT = { title:c_roma.holder = { has_title = title:k_papal_state } }
+		} # end of before
+
+		after = {
+		faith = faith:catholic
+		NOR = {
+			has_title = title:k_papal_state
+			has_title = title:e_roman_empire #Priorities
+			has_title = title:e_western_roman_empire # IRToCK3: Preventing decision for WRE
+		}
+		NOT = { title:c_roma.holder = { has_title = title:k_papal_state } }
+		} # end of after
+	}
+
+
+
+
+}
+
+
+"common/decisions/dlc_decisions/ep_3/06_ep3_admin_decisions.txt" = {
+	#########
+	# convert_to_administrative_decision
+	#########
+
+	replace = {
+		before = {
+		base = 0
+		modifier = {
+			OR = {
+				primary_title = title:e_byzantium
+				primary_title = title:e_roman_empire
+			}
+			add = 100
+		}
+		} # end of before
+
+		after = {
+		base = 0
+		modifier = {
+			OR = {
+				primary_title = title:e_byzantium
+				primary_title = title:e_roman_empire
+				primary_title = title:e_western_roman_empire # IRToCK3: Made it so the WRE is more likely to take decision too
+			}
+			add = 100
+		}
+		} # end of after
+	}
+
+
+
+
+
+
+
+
+
+
+}
+
+
+"common/decisions/80_major_decisions_middle_europe.txt" = {
+	#########
+	# restore_holy_roman_empire_decision
+	#########
+	
+	# For now, just making the decision not possible for the WRE title. It will likely be modified further once it is decided how the decision, and all HRE content, should be handled. (i.e. should it be remade to act as if its mimicking Rome, competing with Rome, act as the "successor" like it did historically but also take WRE into consideration, etc.)
+
+	replace = {
+		before = {
+		NOR = {	#Title existence cnditions.
+			exists = title:e_hre.holder	#Well, that'd be redundant.
+			#highest_held_title_tier = tier_empire	#Existing emperors likewise should not be giving up their empire.
+		}
+		NOR = { #It doesn't make sense for these competing empires.
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+			has_title = title:e_mongol_empire
+		}
+		AND = {	#Faith conditions.
+			NOT = { this = faith.religious_head }	#Nice try, Mr. Pope.
+			faith = {
+				religion_tag = christianity_religion
+				has_doctrine_parameter = spiritual_head_of_faith	#Gotta be invested with the authority by someone other than yourself.
+			}
+			NAND = {	#No need for a competing empire if your faith controls the ERE.
+				exists = title:e_byzantium.holder
+				faith = title:e_byzantium.holder.faith
+			}
+		}
+		} # end of before
+
+		after = {
+		NOR = {	#Title existence cnditions.
+			exists = title:e_hre.holder	#Well, that'd be redundant.
+			#highest_held_title_tier = tier_empire	#Existing emperors likewise should not be giving up their empire.
+		}
+		NOR = { #It doesn't make sense for these competing empires.
+			has_title = title:e_byzantium
+			has_title = title:e_roman_empire
+			has_title = title:e_mongol_empire
+			has_title = title:e_western_roman_empire # IRToCK3: Added WRE to list of invalid titles
+		}
+		AND = {	#Faith conditions.
+			NOT = { this = faith.religious_head }	#Nice try, Mr. Pope.
+			faith = {
+				religion_tag = christianity_religion
+				has_doctrine_parameter = spiritual_head_of_faith	#Gotta be invested with the authority by someone other than yourself.
+			}
+			NAND = {	#No need for a competing empire if your faith controls the ERE.
+				exists = title:e_byzantium.holder
+				faith = title:e_byzantium.holder.faith
+			}
+		}
+		} # end of after
+	}
+}
+
+
+"common/scripted_effects/00_major_decisions_scripted_effects.txt" = {
+	#########
+	# create_eastern_roman_empire_scripted_effect
+	#########
+
+	# Commenting out the de jure drift of held empire titles
+	replace = {
+		before = {
+		every_held_title = { #Should shift all dejure of all Empires owned at the time.
+			limit = {
+				tier = tier_empire
+			}
+			every_in_de_jure_hierarchy = {
+				limit = {
+					tier = tier_kingdom
+					save_temporary_scope_as = kingdom_to_check
+					any_county_in_region = {
+						region = custom_ep3_restore_rome_eastern_empire
+						any_this_title_or_de_jure_above = {
+							this = scope:kingdom_to_check
+						}
+					}
+				}
+				add_to_list = target_titles
+			}
+		}
+		} # end of before
+
+		after = {
+		# IRToCK3: Commenting this out to prevent the weird de jure drifting that happens because of this, making it so only fully controlled kingdoms drift
+		# every_held_title = { #Should shift all dejure of all Empires owned at the time.
+		# 	limit = {
+		# 		tier = tier_empire
+		# 	}
+		# 	every_in_de_jure_hierarchy = {
+		# 		limit = {
+		# 			tier = tier_kingdom
+		# 			save_temporary_scope_as = kingdom_to_check
+		# 			any_county_in_region = {
+		# 				region = custom_ep3_restore_rome_eastern_empire
+		# 				any_this_title_or_de_jure_above = {
+		# 					this = scope:kingdom_to_check
+		# 				}
+		# 			}
+		# 		}
+		# 		add_to_list = target_titles
+		# 	}
+		# }
+		} # end of after
+	}
+
+	# Change it so that any fully controlled kingdom is drifted, regardless of whether you hold the title or not
+	replace = {
+		before = {
+		every_held_title = { #Completely Controlled Kingdoms as well.
+			limit = {
+				root = { completely_controls = prev }
+				tier = tier_kingdom
+				save_temporary_scope_as = kingdom_to_check
+				any_county_in_region = {
+					region = custom_ep3_restore_rome_eastern_empire
+					any_this_title_or_de_jure_above = {
+						this = scope:kingdom_to_check
+					}
+				}
+			}
+			add_to_list = target_titles
+		}
+		} # end of before
+
+		after = {
+		# IRToCK3: Modified the code so that only the kingdoms that are completely controlled get de jure drifted, without requiring you to hold that specific title like normal decision requires
+		every_sub_realm_county = {
+			limit = {
+				exists = kingdom
+				title_province = { geographical_region = custom_ep3_restore_rome_eastern_empire } # IRToCK3: Checks if the county is in the correct region
+				OR = { # IRToCK3: Will de jure drift a kingdom only if the kingdom has no holder, the holder is the Roman Emperor, or the holder is a vassal of the Roman Emperor
+					NOT = { exists = kingdom.holder }
+					kingdom.holder = root
+					kingdom.holder.top_liege = root
+				}
+				holder.top_liege = root
+				kingdom = {
+					save_temporary_scope_as = test_kingdom
+				}
+				holder.top_liege = {
+					completely_controls = scope:test_kingdom
+				}
+			}
+			if = {
+				limit = {
+					NOT = {
+						kingdom = {
+							is_in_list = additional_de_jure_kingdoms
+						}
+					}
+				}
+				kingdom = {
+					add_to_list = target_titles
+					add_to_list = additional_de_jure_kingdoms
+				}
+			}
+		}
+		} # end of after
+	}
+
+
+
+}
+
+
 
 
 
