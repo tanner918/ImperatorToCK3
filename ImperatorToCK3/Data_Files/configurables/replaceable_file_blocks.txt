@@ -1931,7 +1931,13 @@
 		every_sub_realm_county = {
 			limit = {
 				exists = kingdom
-				title_province = { geographical_region = custom_ep3_restore_rome_eastern_empire } # IRToCK3: Checks if the county is in the correct region
+				NOT = { kingdom = { is_in_list = target_titles } }
+				kingdom = {
+					any_de_jure_county = { # IRToCK3: Checks if at least half of the counties are in the correct region, to ensure a kingdom is drifted for having only a couple counties in the region
+						percent >= 0.5
+						title_province = { geographical_region = custom_ep3_restore_rome_eastern_empire }
+					}
+				}
 				OR = { # IRToCK3: Will de jure drift a kingdom only if the kingdom has no holder, the holder is the Roman Emperor, or the holder is a vassal of the Roman Emperor
 					NOT = { exists = kingdom.holder }
 					kingdom.holder = root
@@ -1945,23 +1951,179 @@
 					completely_controls = scope:test_kingdom
 				}
 			}
-			if = {
+			
+			kingdom = { add_to_list = target_titles }
+		}
+
+		# IRToCK3: Also drift over all kingdoms that are de jure under e_roman_empire where at least half of their de jure counties are in the corresponding ERE region to prevent weird gaps
+		title:e_roman_empire = {
+			every_in_de_jure_hierarchy = {
 				limit = {
-					NOT = {
-						kingdom = {
-							is_in_list = additional_de_jure_kingdoms
-						}
+					tier = tier_kingdom
+					NOT = { is_in_list = target_titles }
+					any_de_jure_county = { # IRToCK3: Checks if at least half of the counties are in the correct region, to ensure a kingdom is drifted for having only a couple counties in the region
+						percent >= 0.5
+						title_province = { geographical_region = custom_ep3_restore_rome_eastern_empire }
 					}
 				}
-				kingdom = {
-					add_to_list = target_titles
-					add_to_list = additional_de_jure_kingdoms
-				}
+
+				add_to_list = target_titles
 			}
 		}
 		} # end of after
 	}
 
+	# Change it so that only titles that are currently de facto under e_roman_empire are actually given to e_byzantium
+	replace = {
+		before = {
+			every_in_de_jure_hierarchy = {
+				if = {
+					limit = {
+						holder ?= root
+						tier >= tier_county
+					}
+					change_title_holder = {
+						holder = scope:new_holder
+						change = scope:change
+					}
+				}
+				else = {
+					holder ?= {
+						change_liege = {
+							liege = scope:new_holder
+							change = scope:change
+						}
+					}
+				}
+			}
+		} # End of before
+
+		after = {
+			every_in_de_jure_hierarchy = {
+				if = {
+					limit = {
+						holder ?= root
+						tier >= tier_county
+					}
+					change_title_holder = {
+						holder = scope:new_holder
+						change = scope:change
+					}
+				}
+				else_if = {
+					limit = {
+						exists = holder
+						liege ?= root
+					}
+
+					holder ?= {
+						change_liege = {
+							liege = scope:new_holder
+							change = scope:change
+						}
+					}
+				}
+			}
+			
+			title:e_roman_empire = {
+				holder = {
+					every_held_title = {
+						if = {
+							limit = {
+								OR = {
+									AND = {
+										tier = tier_county
+										title_province = { geographical_region = custom_ep3_restore_rome_eastern_empire }
+									}
+									AND = {
+										tier = tier_duchy
+										any_de_jure_county = {
+											title_province = { geographical_region = custom_ep3_restore_rome_eastern_empire }
+										}
+									}
+									AND = {
+										tier = tier_kingdom
+										NOT = { empire ?= title:e_roman_empire }
+										any_de_jure_county = {
+											percent >= 0.5
+											title_province = { geographical_region = custom_ep3_restore_rome_eastern_empire }
+										}
+									}
+								}
+							}
+	
+							change_title_holder = {
+								holder = scope:new_holder
+								change = scope:change
+							}
+						}
+					}
+
+					every_vassal = {
+						if = {
+							limit = {
+								OR = {
+									primary_title.empire ?= title:e_byzantium
+									AND = {
+										NOT = { primary_title.empire ?= title:e_roman_empire }
+										any_sub_realm_county = {
+											percent >= 0.5
+											title_province = { geographical_region = custom_ep3_restore_rome_eastern_empire }
+										}
+									}
+								}
+								
+							}
+
+							change_liege = {
+								liege = scope:new_holder
+								change = scope:change
+							}
+						}
+					}
+				}
+			}
+		} # End of after
+	}
+
+	# Change Roman Empire title and de jure hierarchy to the WRE title to represent full Empire split
+	replace = {
+		before = {
+		resolve_title_and_vassal_change = scope:change
+		hidden_effect = { set_primary_title_to = title:e_byzantium }
+		} # end of before
+
+		after = {
+		hidden_effect = { set_primary_title_to = title:e_byzantium }
+
+		# IRToCK3: Swap e_roman_empire title with WRE title
+		title:e_roman_empire = {
+			every_in_de_jure_hierarchy = {
+				limit = {
+					tier = tier_kingdom
+				}
+				set_de_jure_liege_title = title:e_western_roman_empire
+			}
+		}
+
+		title:e_western_roman_empire = {
+			change_title_holder = {
+				holder = title:e_roman_empire.holder
+				change = scope:change
+			}
+		}
+
+		root = {
+			set_primary_title_to = title:e_western_roman_empire
+		}
+
+		resolve_title_and_vassal_change = scope:change
+
+		root = {
+			destroy_title = title:e_roman_empire
+		}
+		} # end of after
+	}
 
 
 }
