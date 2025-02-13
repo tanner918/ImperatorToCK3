@@ -158,25 +158,30 @@
 		
 		after = {
 		has_dlc_feature = roads_to_power
-		# IRToCK3: Make sure e_byzantium and e_roman_empire don't have holders or de jure land (because why should this be available if the title in question or the "whole" empire itself already exist/have land?)
-		title:e_byzantium = {
+		exists = title:e_byzantium.previous_holder # IRToCK3: Make sure e_byzantium has a previous holder to ensure it existed previously (otherwise why would this decision even make sense?)
+		NOR = {
+			exists = title:e_byzantium.holder
+			exists = title:e_roman_empire.holder
+		}
+		# IRToCK3: Will always make sure the titles don't have holders, but if the Latin Empire doesn't have a holder (implying either the Splintered Crusade hasn't launched yet, or it has been finished and e_latin_empire was destroyed) then it should also make sure that the titles don't have any de jure land. If ERE has land, it could be formed the normal way, and if Rome has land, that should be the title formed, not the ERE
+		trigger_if = {
+			limit = {
+				NOT = { exists = title:e_latin_empire.holder } # IRToCK3: Only need to check if it has a holder because once the title is broken/destroyed, all land is given back to e_byzantium
+			}
+
 			AND = {
-				NOT = { exists = holder }
-				any_de_jure_county = {
-					count < 1
+				title:e_byzantium = {
+					any_de_jure_county = {
+						count < 1
+					}
+				}
+				title:e_roman_empire = {
+					any_de_jure_county = {
+						count < 1
+					}
 				}
 			}
 		}
-		title:e_roman_empire = {
-			AND = {
-				NOT = { exists = holder }
-				any_de_jure_county = {
-					count < 1
-				}
-			}
-		}
-		# IRToCK3: Make sure e_byzantium has a previous holder to ensure it existed previously (otherwise why would this decision even make sense?)
-		exists = title:e_byzantium.previous_holder
 		OR = {
 			# IRToCK3: Allow Romans to use this decision too
 			culture = {
@@ -313,7 +318,18 @@
 		}
 		highest_held_title_tier >= tier_kingdom
 		
-		realm_size >= 80 # IRToCK3: Normally requires a realm_size of 12, but that is based off this being after the Splintered Crusade
+		# IRToCK3: Modified so that it only requires the normal 12 realm size if the Latin Empire exists so it uses those intended mechanics/conditions. Otherwise, if it doesn't exist, then that means it is just a normal Roman/Romaioi (greek) character trying to restore the empire, so making it a bit more on par with other empire restoration/creation decisions
+		trigger_if = {
+			limit = {
+				exists = title:e_latin_empire.holder
+			}
+
+			realm_size >= 12
+		}
+		trigger_else = {
+			realm_size >= 80
+		}
+
 		custom_tooltip = {
 			title:c_byzantion.holder = {
 				exists = this
@@ -327,13 +343,19 @@
 			}
 			text = pandidakterion_tt
 		}
-		# IRToCK3: This would cause issues given that the Latin Empire is unlikely to form, making this decision pretty much impossible
-		# primary_title = {
-		# 	OR = {
-		# 		empire = title:e_latin_empire
-		# 		empire = title:e_byzantium
-		# 	}
-		# }
+		# IRToCK3: Modified so that this condition is only checked if the Latin Empire exists (since that indicates the Splintered Crusade happened, so it should use those intended mechanics/conditions)
+		trigger_if = {
+			limit = {
+				exists = title:e_latin_empire.holder
+			}
+
+			primary_title = {
+				OR = {
+					empire = title:e_latin_empire
+					empire = title:e_byzantium
+				}
+			}
+		}
 		trigger_if = {
 			limit = {
 				is_ai = no
@@ -449,11 +471,17 @@
 		NOT = { has_title = title:e_western_roman_empire }
 		any_held_title = {
 			tier = tier_kingdom
-			# IRToCK3: Removing this since it was removed previously, to prevent any possible issues since this won't be dependent on the Splintered Crusade
-			# OR = {
-			# 	empire = title:e_latin_empire
-			# 	empire = title:e_byzantium
-			# }
+			# IRToCK3: Modified so that the de jure empire the kingdom belongs to is only checked if the Latin Empire exists, so that it is only relevant during the Splintered Crusade
+			trigger_if = {
+				limit = {
+					exists = title:e_latin_empire.holder
+				}
+
+				OR = {
+					empire = title:e_latin_empire
+					empire = title:e_byzantium
+				}
+			}
 		}
 		OR = {
 			culture = {
@@ -572,6 +600,7 @@
 
 		after = {
 	is_shown = {
+		always = no # IRToCK3: Prevents the decision from being available since it doesn't really make sense given the new history of the world
 		has_ep3_dlc_trigger = yes
 		has_title = title:e_byzantium
 		NOT = {
@@ -580,7 +609,6 @@
 				target = flag:retake_eastern_provinces_decision
 			}
 		}
-		always = no # IRToCK3: Prevents the decision from being available since it doesn't really make sense given the new history of the world
 	}
 		} # end of after
 	}
@@ -865,14 +893,14 @@
 		after = {
 		has_ep3_dlc_trigger = yes
 		OR = { # IRToCK3: Extended decision to be possible for Roman Empire and WRE as well
-			has_title = title:e_byzantium
-			has_title = title:e_roman_empire
-			has_title = title:e_western_roman_empire
+			primary_title = title:e_byzantium
+			primary_title = title:e_roman_empire
+			primary_title = title:e_western_roman_empire
 		}
 		NOT = {
 			is_target_in_global_variable_list = {
-				name = unavailable_unique_decisions
-				target = flag:reinstitute_grain_dole_decision
+				name = reinstitute_grain_dole_decision
+				target = primary_title
 			}
 		}
 		} # end of after
@@ -892,13 +920,13 @@
 		after = {
 		has_ep3_dlc_trigger = yes
 		OR = { # IRToCK3: Extended decision to be possible for Roman Empire and WRE as well
-			has_title = title:e_byzantium
-			has_title = title:e_roman_empire
-			has_title = title:e_western_roman_empire
+			primary_title = title:e_byzantium
+			primary_title = title:e_roman_empire
+			primary_title = title:e_western_roman_empire
 		}
 		is_target_in_global_variable_list = {
-			name = unavailable_unique_decisions
-			target = flag:reinstitute_grain_dole_decision
+			name = reinstitute_grain_dole_decision
+			target = primary_title
 		}
 		} # end of after
 	} # end of is_shown block (reinstitute_grain_dole_decision)
@@ -943,7 +971,7 @@
 		government_has_flag = government_is_administrative
 		trigger_if = { # IRToCK3: Modified to check Roma as capital for WRE or Roman Empire
 			limit = {
-				has_title = title:e_byzantium
+				primary_title = title:e_byzantium
 			}
 
 			custom_tooltip = {
@@ -953,8 +981,8 @@
 		} trigger_else_if = {
 			limit = {
 				OR = {
-					has_title = title:e_roman_empire
-					has_title = title:e_western_roman_empire
+					primary_title = title:e_roman_empire
+					primary_title = title:e_western_roman_empire
 				}
 			}
 
@@ -1028,8 +1056,8 @@
 		after = {
 	effect = {
 		add_to_global_variable_list = {
-			name = unavailable_unique_decisions
-			target = flag:reinstitute_grain_dole_decision
+			name = reinstitute_grain_dole_decision
+			target = primary_title
 		}
 		trigger_event = ep3_decisions_event.4040
 		reinstitute_grain_dole_decision_effect = yes
@@ -1037,9 +1065,9 @@
 
 	ai_potential = {
 		OR = { # IRToCK3: Extended decision to be possible for Roman Empire and WRE as well
-			has_title = title:e_byzantium
-			has_title = title:e_roman_empire
-			has_title = title:e_western_roman_empire
+			primary_title = title:e_byzantium
+			primary_title = title:e_roman_empire
+			primary_title = title:e_western_roman_empire
 		}
 	}
 		} # end of after
@@ -1058,13 +1086,13 @@
 	ai_potential = {
 		OR = {
 			AND = {
-				has_title = title:e_byzantium
+				primary_title = title:e_byzantium
 				title:c_byzantion = { has_variable = unlocked_grain_dole }
 			}
 			AND = {
 				OR = {
-					has_title = title:e_roman_empire
-					has_title = title:e_western_roman_empire
+					primary_title = title:e_roman_empire
+					primary_title = title:e_western_roman_empire
 				}
 				title:c_roma = { has_variable = unlocked_grain_dole }
 			}
@@ -1392,6 +1420,7 @@
 		} # end of before
 
 		after = {
+		always = no # IRToCK3: Makes decision impossible, since it doesn't really make sense given de jure map and history changes
 		# Standard filter checks.
 		is_playable_character = yes
 		# Sicily is still under the ERE.
@@ -1415,7 +1444,6 @@
 				target = flag:flag_rebuked_roman_claim_to_sicily
 			}
 		}
-		always = no # IRToCK3: Makes decision impossible, since it doesn't really make sense given de jure map and history changes
 		} # end of after
 	}
 
@@ -1546,6 +1574,7 @@
 		} # end of before
 
 		after = {
+		always = no # IRToCK3: Prevents decision from being available, given it doesn't make as much sense with new history, and giving priority to WRE and ERE forming Rome
 		is_ruler = yes
 		is_playable_character = yes
 		has_title = title:e_hre
@@ -1566,7 +1595,6 @@
 			government_has_flag = government_is_clan
 			government_has_flag = government_is_administrative
 		}
-		always = no # IRToCK3: Prevents decision from being available, given it doesn't make as much sense with new history, and giving priority to WRE and ERE forming Rome
 		} # end of after
 	}
 
@@ -1607,6 +1635,7 @@
 		} # end of before
 
 		after = {
+		always = no # IRToCK3: Prevents decision from being available, given it doesn't make as much sense with new history, and giving priority to WRE and ERE forming Rome
 		is_ruler = yes
 		is_playable_character = yes
 		has_title = title:e_italy
@@ -1634,7 +1663,6 @@
 			government_has_flag = government_is_clan
 			government_has_flag = government_is_administrative
 		}
-		always = no # IRToCK3: Prevents decision from being available, given it doesn't make as much sense with new history, and giving priority to WRE and ERE forming Rome
 		} # end of after
 	}
 
@@ -1750,9 +1778,6 @@
 		} # end of after
 	}
 
-
-
-
 }
 
 
@@ -1785,15 +1810,6 @@
 		}
 		} # end of after
 	}
-
-
-
-
-
-
-
-
-
 
 }
 
@@ -2124,7 +2140,6 @@
 		}
 		} # end of after
 	}
-
 
 }
 
