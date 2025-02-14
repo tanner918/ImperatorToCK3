@@ -1197,6 +1197,10 @@
 			every_in_de_jure_hierarchy = {
 				limit = {
 					tier = tier_kingdom
+					any_de_jure_county = { # IRToCK3: Added this condition since it is a little weird how someone holding as little as 12 counties recreating the ERE can somehow magically make every single de jure kingdom under the Latin Empire now become de jure part of the ERE
+						percent >= 0.7
+						holder.top_liege = root
+					}
 				}
 				set_de_jure_liege_title = title:e_byzantium
 			}
@@ -1208,13 +1212,25 @@
 	every_sub_realm_county = {
 		limit = {
 			exists = kingdom
-			NOT = { exists = kingdom.holder }
+			OR = {
+				NOT = { exists = kingdom.holder }
+				kingdom.holder.top_liege ?= root # IRToCK3: This should be valid if the character themselves holds the kingdom, or they are an emperor and the holder is their vassal
+			}
 			holder.top_liege = root
 			kingdom = {
 				save_temporary_scope_as = test_kingdom
 			}
-			holder.top_liege = {
-				completely_controls = scope:test_kingdom
+			OR = { # IRToCK3: Modified it so that either the character must completely control the kingdom, or control half of it and hold its title
+				holder.top_liege = { completely_controls = scope:test_kingdom }
+				kingdom = {
+					AND = {
+						holder.top_liege ?= root
+						any_de_jure_county = {
+							percent >= 0.5
+							holder.top_liege = root
+						}
+					}
+				}
 			}
 		}
 		if = {
@@ -1226,7 +1242,7 @@
 				}
 			}
 			kingdom = {
-				set_de_jure_liege_title = scope:new_title
+				set_de_jure_liege_title = title:e_byzantium
 				add_to_list = additional_de_jure_kingdoms
 			}
 		}
