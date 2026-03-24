@@ -357,6 +357,12 @@ link = { ck3 = ban_phi ir = satsana_phi_religion } # ROA/AEP
 link = { ck3 = satsana_phi ir = satsana_phi_religion } # Base Game
 
 ## Yungism
+link = { ck3 = kuy_animism ir = funan_religion ck3Culture = kuy } # RICE
+link = { ck3 = khmu_pagan ir = funan_religion ck3Culture = khmu } # RICE
+link = { ck3 = bahnar_pagan ir = funan_religion ck3Culture = bahnar } # RICE
+link = { ck3 = samre_pagan ir = funan_religion ck3Culture = chong } # RICE
+link = { ck3 = viet_pagan ir = funan_religion ck3Culture = viet ck3Culture = muong } # RICE
+link = { ck3 = bahnar_pagan ir = funan_religion } # RICE (seems like it might be a better fallback when using RICE)
 link = { ck3 = kuy_animism ir = funan_religion } # ROA/AEP
 link = { ck3 = burmic ir = funan_religion } # Base Game; Description mentions it's similarity to Natic, so mapping to that *for now*, until a custom faith is made
 

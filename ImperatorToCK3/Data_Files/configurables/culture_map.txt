@@ -839,6 +839,7 @@ link = { # vanilla CK3
 
 # Volga-Finnic
 link = { ck3 = merya ir = volgaic }
+link = { ck3 = moksha ir = mordvin irRegion = sarmatia_eschate_area irRegion = sarmatia_oarus_area irRegion = gorodets_area } # RICE
 link = { ck3 = mordvin ir = mordvin }
 
 # Balto-Finnic
@@ -984,6 +985,7 @@ link = { ck3 = aceh ir = minangkabau historicalTag = A23 } # AEP/ROA; Lamuri was
 link = { ck3 = acehnese ir = minangkabau historicalTag = A23 } # Base Game; Lamuri was early Aceh kingdom, and they use Minangkabau in Terra-Indomita
 link = { ck3 = batak ir = minangkabau historicalTag = A21 } # ROA/AEP; This tag represents a group of people described under the "Batak" grouping
 link = { ck3 = batak ir = minangkabau irProvince = 11046 irProvince = 11051 } # ROA/AEP; These provinces represent areas where Batak peoples lived
+link = { ck3 = seletar ir = minangkabau ck3Region = c_riau ck3Region = c_SUM_meranti ck3Region = c_SUM_lingga ck3Region = c_SUM_bangka-belitung } # RICE
 link = { ck3 = mentawai ir = minangkabau irProvince = 11043 } # ROA/AEP
 link = { ck3 = nias ir = minangkabau irProvince = 11044 } # ROA/AEP
 link = { ck3 = nakkavaram ir = minangkabau irProvince = 11043 irProvince = 11044 } # Base Game uses this to represent peoples living across Andaman, Nicobar, Nias, and Mentawai
