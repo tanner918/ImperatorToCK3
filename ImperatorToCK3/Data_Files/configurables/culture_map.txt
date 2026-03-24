@@ -278,13 +278,17 @@ link = { ck3 = brythonic @ir_south_east_briton_cultures }
 # TFE
 link = { ck3 = arran ir = albanian }
 link = { ck3 = circassian ir = sindi }
+link = { ck3 = ce_svan ir = colchian historicalTag = SUA } # Cultures Expanded
+link = { ck3 = svan ir = colchian historicalTag = SUA }
 link = { ck3 = colchian ir = colchian }
 link = { ck3 = abkhaz ir = abasgoi } # RAJAS
 link = { ck3 = abasgian ir = abasgoi }
 link = { ck3 = svan ir = suani }
 link = { ck3 = laz ir = lazi }
+link = { ck3 = lazi ir = lazi } # Cultures Expanded
 link = { ck3 = caspian ir = caspian }
 link = { ck3 = ciscaucasian ir = maeotian ir = legian }
+link = { ck3 = udi ir = albanian ck3Region = d_shirvan } # Cultures Expanded
 link = { ck3 = kartvelian ir = albanian ir = ibero @ir_georgian_cultures }
 # Vanilla CK3
 link = { ck3 = persian ir = caspian } # TODO: create a separate culture for Caspians
@@ -419,6 +423,8 @@ link = { ck3 = jute @ir_ingvaeonic_cultures ck3Province = 82 ck3Province = 221 c
 link = { ck3 = old_saxon @ir_old_saxon_cultures }
 link = { ck3 = angle @ir_angle_cultures }
 link = { ck3 = frisian @ir_frisian_cultures }
+link = { ck3 = dane @ir_ingvaeonic_cultures irRegion = scandia_insula_area } # Cultures Expanded
+link = { ck3 = angle @ir_ingvaeonic_cultures irRegion = cimbrica_inferioris_area } # Cultures Expanded
 link = { ck3 = old_saxon @ir_ingvaeonic_cultures } # fallback for Ingvaeonic cultures
 # Istvaeonic mappings
 link = { ck3 = salian @ir_frankish_cultures ck3Region = dlc_fp1_region_western_adventure_targets_frisia } # TFE
@@ -431,6 +437,7 @@ link = { ck3 = bavarian ir = bavarian }
 link = { ck3 = langobard @ir_irminonic_cultures @culture_splitting_region_I @culture_splitting_region_P @culture_splitting_region_Q }
 link = { ck3 = langobard @ir_irminonic_cultures historicalTag=LGB }
 link = { ck3 = marcomannic @ir_irminonic_cultures historicalTag=MCM } # TFE
+link = { ck3 = thuringian @ir_irminonic_cultures ck3Region = d_thuringia } # Cultures Expanded
 link = { ck3 = old_suebi @ir_suebian_cultures } # TFE
 link = { ck3 = alamannic @ir_irminonic_cultures irRegion = germania_superior_region } # TFE
 link = { ck3 = old_suebi @ir_irminonic_cultures } # TFE fallback for Irminonic cultures
@@ -443,6 +450,10 @@ link = { ck3 = suebi @ir_irminonic_cultures } # fallback for Irminonic cultures
 link = { ck3 = norwegian ir = norwegian } # https://steamcommunity.com/sharedfiles/filedetails/?id=3098496649
 link = { ck3 = swedish ir = swedish } # https://steamcommunity.com/sharedfiles/filedetails/?id=3098496649
 link = { ck3 = danish ir = danish } # https://steamcommunity.com/sharedfiles/filedetails/?id=3098496649
+link = { ck3 = dane @ir_norse_cultures ck3Region = d_skane } # Cultures Expanded
+link = { ck3 = got @ir_norse_cultures irProvince = 6010 } # Cultures Expanded
+link = { ck3 = svear @ir_norse_cultures irRegion = sithonia_area irRegion = suionia_area } # Cultures Expanded
+link = { ck3 = geat @ir_norse_cultures irRegion = west_gothia_area irRegion = east_gothia_area irRegion = herulia_area } # Cultures Expanded
 link = { ck3 = norse @ir_norse_cultures }
 
 # Saxon
