@@ -930,7 +930,7 @@ link = { ck3 = nicobarese ir = holchu } # AEP
 link = { ck3 = nicobar ir = holchu } # ROA
 link = { ck3 = nakkavaram ir = andaman ir = holchu } # Base Game uses this to represent peoples living across Andaman, Nicobar, Nias, and Mentawai
 link = { ck3 = old_viet ir = lacviet } # ROA
-link = { ck3 = muong ir = lacviet } # AEP; The Muong can arguably be considered the Unsinicized Vietic peoples, and this is the best culture AEP has to represent that
+#link = { ck3 = muong ir = lacviet } # AEP; The Muong can arguably be considered the Unsinicized Vietic peoples, and this is the best culture AEP has to represent that !! DISABLED FOR NOW UNTIL WE CAN FIGURE OUT HOW TO BETTER DISTINGUISH THE VIETIC PEOPLES
 link = { ck3 = viet ir = lacviet } # Base Game
 link = { ck3 = munda ir = munda } # ROA/AEP
 link = { ck3 = khasi ir = jaintia ir = munda } # Base Game

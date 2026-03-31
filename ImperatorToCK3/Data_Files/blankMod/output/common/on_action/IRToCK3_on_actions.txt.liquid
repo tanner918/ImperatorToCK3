@@ -136,6 +136,27 @@ IRToCK3_game_start_onaction_effects = {
 		}
 		{% endif %}
 
+		## Sets a global variable that indicates what the main mod used in Imperator was. This includes:
+		# flag:terra_indomita
+		# flag:invictus
+		# flag:vanilla_imperator
+		{% if terra_indomita %}
+		set_global_variable = {
+			name = irtock3_main_imperator_mod
+			value = flag:terra_indomita
+		}
+		{% elsif invictus or invictus_1_7 %}
+		set_global_variable = {
+			name = irtock3_main_imperator_mod
+			value = flag:invictus
+		}
+		{% else %}
+		set_global_variable = {
+			name = irtock3_main_imperator_mod
+			value = flag:vanilla_imperator
+		}
+		{% endif %}
+
 		## Some things are setup to not trigger at the game's start date, which isn't setup by the converter. This variable will be used to handle that instead, as it will disappear after a single day, indicating you are no longer on the start date.
 		set_global_variable = {
 			name = irtock3_date_is_start_date
