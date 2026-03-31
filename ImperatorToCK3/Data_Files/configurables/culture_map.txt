@@ -887,7 +887,7 @@ link = { ck3=sami ir=sapmi } # Sapmi is the traditional homeland of the Sami peo
 link = { ck3=mogyer ir=gorokhov } # The Gorokhovs were a Hungarian tribe that lived in the Carpathian Mountains.
 link = { ck3 = solqumyt ir = itkul } # Not sure what sort of cultures would best map, I figured given its location and Uralic culture group, maybe Samoyedic cultures, might change if a better choice is determined
 link = { ck3 = kott ir = bolsherechye } # Not sure what sort of cultures would best map, I figured given its location and Uralic culture group, maybe Samoyedic cultures, might change if a better choice is determined
-link = { ck3=urslavic ir=slavian } # Both represent early Slavic cultures
+link = { ck3=bactrian ir=slavian } # Not sure exactly what this represents, and it doesn't seem to be used, but it's in the Bactrian culture group
 link = { ck3=georgian ir=sasperires } # Sasperires were an ancient tribe in the region of modern Georgia
 link = { ck3=udmurt ir=argippaei } # Argippaei were described by Herodotus as living north of Scythia, possibly related to Sarmatians or Alans (But the converter already has quite a few cultures mapped to those, and doing research/asking chatgpt doesn't give a single answer as they may not have been an atual culture, just a mis-identified one. So for now, will map it to something different for more variety. ChatGPT recommneded cultures like Komi, but since another culture is mapped to that, for now I will just map it to Udmurt ~~tanner918)
 link = { ck3=samoyed ir=arimphaei } # Arimphaei were described as living in the far north, possibly related to Finno-Ugric peoples
