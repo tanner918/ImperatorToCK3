@@ -1181,6 +1181,7 @@ link = { ck3 = pecheneg ir = pecheneg }
 #- Lelang
 #- Woju
 #- Yilyu
+link = { ck3 = baekje ir = dongwei ir = fuyu ir = goguryeo ir = joseon ir = lelang ir = woju ir = yilyu irRegion = mahan_area irRegion = mahan_south_area irRegion = jinhan_area irRegion = byeonhan_area } # The Baekje language is believed to have been created/greatly influenced by Goguryeo/Buyeo settlers moving into the region. So, for now, just making any Huimo culture in Southern Korea Baekje to give it a better chance of appearing. (It also aligns better with how the base game has Goguryeo and Baekje with a different Heritage than Silla)
 link = { ck3 = goguryeo ir = dongwei ir = fuyu ir = goguryeo ir = joseon ir = lelang ir = woju ir = yilyu }
 
 
@@ -1191,9 +1192,8 @@ link = { ck3 = goguryeo ir = dongwei ir = fuyu ir = goguryeo ir = joseon ir = le
 link = { ck3 = jeju ir = byeonhan ir = jinhan ir = mahan irProvince = 9285 } # RoA
 link = { ck3 = tamna ir = byeonhan ir = jinhan ir = mahan irProvince = 9285 } # AEP
 link = { ck3 = samhan ir = byeonhan ir = jinhan ir = mahan } # RoA
-link = { ck3 = saro ir = jinhan ir = byeonhan } # AEP
-link = { ck3 = silla ir = jinhan ir = byeonhan } # Base Game
-link = { ck3 = baekje ir = mahan } # Base Game/AEP
+link = { ck3 = saro ir = jinhan ir = byeonhan ir = mahan } # AEP
+link = { ck3 = silla ir = jinhan ir = byeonhan ir = mahan } # Base Game (The Mahan language seems like it may have been related to the early Japonic languages, so it might get it's own custom culture later)
 
 
 ## Tungusic Culture Group [Terra-Indomita]
