@@ -2093,20 +2093,22 @@ vandal = { # https://en.wikipedia.org/wiki/Vandals
 # Proto-Slavic
 urslavic = {
     INVALIDATED_BY = {
-		tfe = { urslavic }
+		tfe = { slavic }
+		wtwsms = { old_slavic }
 		vanilla_ck3 = { urslavic }
 	}
 
 	color = { 0.2 0.1 0.4 }
-	heritage = heritage_east_slavic
-	language = language_east_slavic
+	heritage = heritage_slavic
+	language = language_slavic
 	martial_custom = martial_custom_male_only
 	head_determination = head_determination_domain
 	house_coa_frame = house_frame_02
 	house_coa_mask_offset = { 0.0 0.055 }
 	house_coa_mask_scale = { 0.9 0.9 }
 	traditions = {
-		tradition_druzhina
+		#tradition_druzhina # From what I could find, the Druzhina, specifically, were more related to the East Slavs (and maybe early Polish). The Pre-Kieven Rus tribes may have had something similar, but probably not this early ~tanner918
+		tradition_hard_working
 		tradition_forest_folk
 	}
 
@@ -2117,6 +2119,126 @@ urslavic = {
 	clothing_gfx = { northern_clothing_gfx }
 	unit_gfx = { eastern_unit_gfx }
 	ethos = ethos_communal
+	ethnicities = {
+		60 = slavic_northern_blond
+		5 = slavic_northern_ginger
+		25 = slavic_northern_brown_hair
+		10 = slavic_northern_dark_hair
+	}
+}
+
+wendish = {
+    INVALIDATED_BY = {
+		tfe = { wendish }
+		wtwsms = { wendish }
+		vanilla_ck3 = { wendish }
+	}
+
+	color = { 64 89 128 }
+	parents = { urslavic }
+	created = 450.1.1
+	heritage = heritage_west_slavic
+	language = language_slavic # Having it keep "proto-slavic" language to represent that the language split has started, but likely wasn't really apparent yet
+	martial_custom = martial_custom_male_only
+	head_determination = head_determination_domain
+	house_coa_frame = house_frame_21
+	house_coa_mask_offset = { 0.0 0.055 }
+	house_coa_mask_scale = { 1.0 1.0 }
+	traditions = {
+		tradition_hussar
+		tradition_hard_working
+	}
+	dlc_tradition = {
+		trait = tradition_staunch_traditionalists
+		requires_dlc_flag = hybridize_culture
+	}
+
+	name_list = name_list_urslavic
+	name_list = name_list_polish # For a little variety from Sclavenian/Antean
+
+	coa_gfx = { west_slavic_group_coa_gfx western_coa_gfx }
+	building_gfx = { western_building_gfx }
+	clothing_gfx = { west_slavic_clothing_gfx western_clothing_gfx }
+	unit_gfx = { eastern_unit_gfx }
+	ethos = ethos_bellicose
+	ethnicities = {
+		60 = slavic_northern_blond
+		5 = slavic_northern_ginger
+		25 = slavic_northern_brown_hair
+		10 = slavic_northern_dark_hair
+	}
+}
+
+antean = {
+    INVALIDATED_BY = {
+		tfe = { antean }
+		wtwsms = { antean }
+		vanilla_ck3 = { antean }
+	}
+
+	color = { 51 76 51 }
+	parents = { urslavic }
+	created = 450.1.1
+	heritage = heritage_east_slavic
+	language = language_slavic # Having it keep "proto-slavic" language to represent that the language split has started, but likely wasn't really apparent yet
+	martial_custom = martial_custom_male_only
+	head_determination = head_determination_domain
+	house_coa_frame = house_frame_02
+	house_coa_mask_offset = { 0.0 0.055 }
+	house_coa_mask_scale = { 0.9 0.9 }
+	traditions = {
+		tradition_druzhina # Might be a little early, but gives them something special compared to Wendish/Sclavenian's "Konni Raids" ~tanner918
+		tradition_forest_folk
+		tradition_swords_for_hire
+	}
+
+	name_list = name_list_urslavic
+	name_list = name_list_russian # For a little variety from Wendish/Sclavenian
+
+	coa_gfx = { east_slavic_group_coa_gfx western_coa_gfx }
+	building_gfx = { east_slavic_building_gfx western_building_gfx }
+	clothing_gfx = { east_slavic_clothing_gfx northern_clothing_gfx }
+	unit_gfx = { eastern_unit_gfx }
+	ethos = ethos_bellicose
+	ethnicities = {
+		60 = slavic_northern_blond
+		5 = slavic_northern_ginger
+		25 = slavic_northern_brown_hair
+		10 = slavic_northern_dark_hair
+	}
+}
+
+sclavenian = {
+    INVALIDATED_BY = {
+		tfe = { sclavenian }
+		wtwsms = { sclavenian }
+		vanilla_ck3 = { sclavenian }
+	}
+
+	color = { 115 76 115 }
+	parents = { urslavic }
+	created = 450.1.1
+	heritage = heritage_south_slavic
+	language = language_slavic # Having it keep "proto-slavic" language to represent that the language split has started, but likely wasn't really apparent yet
+	martial_custom = martial_custom_male_only
+	head_determination = head_determination_domain
+	house_coa_frame = house_frame_02
+	house_coa_mask_offset = { 0.0 0.055 }
+	house_coa_mask_scale = { 0.9 0.9 }
+	traditions = {
+		tradition_hussar
+		tradition_swords_for_hire
+		tradition_esteemed_hospitality
+	}
+
+	name_list = name_list_urslavic
+	name_list = name_list_croatian # For a little variety from Wendish/Antean
+
+	coa_gfx = { south_slavic_group_coa_gfx western_coa_gfx }
+	building_gfx = { mediterranean_building_gfx }
+	clothing_gfx = { western_clothing_gfx }
+	unit_gfx = { eastern_unit_gfx }
+	ethos = ethos_bellicose
 	ethnicities = {
 		60 = slavic_northern_blond
 		5 = slavic_northern_ginger

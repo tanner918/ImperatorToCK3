@@ -1,0 +1,37 @@
+﻿# Since conversion mods, like TFE, are more likely to modify some of the scripted rules, we don't want to overwrite those changes using replaceable_file_blocks, so the rules that need to be overwritten will be done to make it as compatible as possible
+
+# Is this character allowed to hybridize their culture with the target culture?
+# root: Character
+# scope:culture: The culture they want to hybridize with
+can_hybridize_culture = {
+	trigger_if = {
+		limit = { var:force_culture_hybridization ?= scope:culture } # IRTOCK3: Added this so that we can ensure two cultures get hybridized even when the character doesn't meet the normal conditions (i.e. cultural acceptance, cooldowns, having a county of that culture in your realm, etc.)
+		always = yes
+	}
+	trigger_else = {
+		can_hybridize_culture_trigger = {
+			CULTURE = scope:culture
+			CHARACTER = root
+		}
+	}
+}
+
+# Is this character allowed to diverge their culture?
+# root: Character
+can_diverge_culture = {
+	trigger_if = {
+		limit = {
+			NOT = { has_character_flag = allow_forced_divergence } # IRTOCK3: Added this in case some event/decision needs to allow a culture to be diverged even before it's cooldown expires
+		}
+		culture = { culture_age >= culture_divergence_cooldown }
+	}
+	trigger_if = {
+		limit = {
+			NOT = { has_character_flag = allow_landless_divergence } # IRTOCK3: Added this in case some event/decision needs to make sure a culture is diverged even when there are no valid landed characters to do so
+		}
+		custom_description = {
+			text = culture_present_in_realm_for_divergence
+			any_sub_realm_county = { culture = root.culture }
+		}
+	}
+}

@@ -3124,3 +3124,65 @@ language_yi = { # Will worry about CCU parameters once relevant mods are updated
 
 	color = { 0.9 0.9 0.9 }
 }
+
+language_slavic = { # Proto-Slavic
+    REPLACED_BY = {
+		tfe = { language_proto_slavic }
+		wtwsms = { language_common_slavic }
+		roa = { language_slavic }
+		vanilla_ck3 = { language_slavic }
+	}
+
+	type = language
+
+	is_shown = {
+		language_is_shown_trigger = {
+			LANGUAGE = language_slavic
+		}
+	}
+
+	MOD_DEPENDENT = {
+		IF roa = {
+			parameters = {
+				language_group_slavic = yes
+				language_branch_balto_slavic = yes
+				language_family_indo_european = yes
+			}
+		}
+	}
+
+	MOD_DEPENDENT = {
+		IF roa = {
+			ai_will_do = {
+				value = 10
+				if = {
+					limit = { has_cultural_pillar = language_slavic }
+					multiply = same_language_choice_factor
+				}
+				else_if = {
+					limit = { has_cultural_parameter = language_group_slavic }
+					multiply = same_language_group_choice_factor
+				}
+				else_if = {
+					limit = { has_cultural_parameter = language_branch_balto_slavic }
+					multiply = same_language_branch_choice_factor
+				}
+				else_if = {
+					limit = { has_cultural_parameter = language_family_indo_european }
+					multiply = same_language_family_choice_factor
+				}
+			}
+		}
+		ELSE = {
+			ai_will_do = {
+				value = 10
+				if = {
+					limit = { has_cultural_pillar = language_slavic }
+					multiply = 10
+				}
+			}
+		}
+	}
+
+	color = { 0.2 0.1 0.4 }
+}

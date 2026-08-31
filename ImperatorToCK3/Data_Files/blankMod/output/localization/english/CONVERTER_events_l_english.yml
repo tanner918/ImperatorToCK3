@@ -138,3 +138,30 @@
  irtock3_roman_events.2.b.tooltip: "@alert_icon! #alert_trial [title.GetName|V] won't have it's name changed. This event won't appear again for this title, until someone from a different house gets it #!"
  irtock3_roman_events.2.c: "This will forever be Roman land!"
  irtock3_roman_events.2.c.tooltip: "@alert_icon! #alert_trial [title.GetName|V] won't have it's name changed. This event won't appear again for this title, unless a Roman ruler formally re-establishes [title.GetNameNoTier|V] as a praetorian prefecture again #!"
+
+
+
+# Culture Events
+ # General Events
+ ## Player Notification Event
+ irtock3_culture_events.001.t: "The Fate of the [parent_culture.GetNameNoTooltip] People"
+ irtock3_culture_events.001.desc.intro.culture_didnt_split: "Time changes all people, though for the [parent_culture.GetName], a little less so.\n\n"
+ irtock3_culture_events.001.desc.intro.culture_did_split: "Time changes all people, a fact all too true even for the [parent_culture.GetName].\n\n"
+ irtock3_culture_events.001.desc.body.opening_involved_character: "Our [parent_culture.GetNameNoTooltip] ancestors, though similar in culture and tradition, started as separate tribes - separate peoples - "
+ irtock3_culture_events.001.desc.body.opening_uninvolved_character: "Their [parent_culture.GetNameNoTooltip] ancestors, though similar in culture and tradition, were nothing more than disparate tribes, "
+ irtock3_culture_events.001.desc.body.part1_main_culture_ruler: "something that has changed under my rule.\n\n"
+ irtock3_culture_events.001.desc.body.part1_culture_didnt_split: "something that has changed under the rule of [main_culture_ruler.GetName].\n\n"
+ irtock3_culture_events.001.desc.body.part1_culture_did_split: "something that hasn't changed, even to this day.\n\n"
+ irtock3_culture_events.001.desc.body.ending_main_culture_ruler: "Under my rule, I will lead our people to a brighter future, so that none shall forget our place in history!"
+ irtock3_culture_events.001.desc.body.ending_culture_didnt_split_parent_culture: "Under [main_culture_ruler.GetHerHis] leadership, our people will surely never be forgotten!"
+ irtock3_culture_events.001.desc.body.ending_culture_didnt_split_different_culture: "Though we may not identify ourselves the same way [main_culture_ruler.GetSheHe] may, perhaps we can still create a better future for our people, together."
+ irtock3_culture_events.001.desc.body.ending_culture_didnt_split_uninvolved: "Though [main_culture_ruler.GetFirstNameNoTooltip] claim's to be capable of leading [main_culture_ruler.GetHerHis] people, is [main_culture_ruler.GetSheHe] truly capable of doing so? Only time will tell..."
+ irtock3_culture_events.001.desc.body.ending_culture_did_split_involved: "Though we may no longer identify with our other [parent_culture.GetNameNoTooltip] brethren, we are still the same people at heart, are we not?"
+ irtock3_culture_events.001.desc.body.ending_culture_did_split_uninvolved: "Will these still disparate tribes ever unify under a single banner? Only time will tell..."
+ irtock3_culture_event_culture_changed_tt: "Your [culture|E] was changed to [new_character_culture.GetName]\n"
+ irtock3_culture_event_new_cultures_list_effect: "The following cultures are either new, or had their [heritage|E]/[language|E] changed:"
+ irtock3_culture_event_list_culture_name_tt: "[temp_culture_scope.GetName] (New)"
+ irtock3_culture_event_list_culture_name_tt2: "[temp_culture_scope.GetName] (Changed)"
+ irtock3_culture_events.001.a.parent_culture: "To the [parent_culture.GetCollectiveNounNoTooltip]!"
+ irtock3_culture_events.001.a.different_culture: "To all [parent_culture.GetNameNoTooltip] peoples!"
+ irtock3_culture_events.001.a.uninvolved: "Hopefully they don't cause too many problems..."

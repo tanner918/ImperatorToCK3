@@ -239,6 +239,12 @@ link = {
     ir=sporic ir=neuric
     ir=illyrian # note on illyrian: NOT an error! illyrian comes from https://steamcommunity.com/sharedfiles/filedetails/?id=3098496649 and is actually South Slavic
 }
+# WtWSMS
+link = {
+    ck3=old_slavic
+    ir=sporic ir=chernolian ir=melanchlaenian ir=budinian ir=neuric
+    ir=illyrian # note on illyrian: NOT an error! illyrian comes from https://steamcommunity.com/sharedfiles/filedetails/?id=3098496649 and is actually South Slavic
+}
 # Vanilla CK3
 link = {
     ck3=urslavic

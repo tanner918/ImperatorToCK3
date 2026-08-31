@@ -3,3 +3,9 @@
 	first = irtock3_create_ritsuryo_ruling_regent_title_effect
 	third = irtock3_create_ritsuryo_ruling_regent_title_effect
 }
+
+irtock3_culture_event_new_cultures_list_effect = {
+	global = irtock3_culture_event_new_cultures_list_effect_tt
+	first = irtock3_culture_event_new_cultures_list_effect_tt
+	third = irtock3_culture_event_new_cultures_list_effect_tt
+}

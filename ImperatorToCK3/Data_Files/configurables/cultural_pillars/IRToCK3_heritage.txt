@@ -751,3 +751,30 @@ heritage_alasiyan = { # Will worry about CCU parameters once relevant mods are u
 	}
 	audio_parameter = mena
 }
+
+heritage_slavic = { # To be used for Proto-Slavic, or if Slavic doesn't split
+    REPLACED_BY = {
+		tfe = { heritage_slavic }
+		wtwsms = { heritage_common_slavic }
+		roa = { heritage_slavic }
+		vanilla_ck3 = { heritage_slavic }
+	}
+
+	MOD_DEPENDENT = {
+		IF roa = {
+			parameters = { # For now, using what ROA has for East Slavic, since they overlap
+				heritage_group_eastern_european = yes
+				heritage_group_central_european = yes
+				heritage_family_eurasian = yes
+				heritage_family_european = yes
+			}
+		}
+	}
+	type = heritage
+	is_shown = {
+		heritage_is_shown_trigger = {
+			HERITAGE = heritage_slavic
+		}
+	}
+	audio_parameter = european
+}

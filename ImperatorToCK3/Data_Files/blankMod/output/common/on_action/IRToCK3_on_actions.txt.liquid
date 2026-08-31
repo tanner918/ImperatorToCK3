@@ -93,6 +93,7 @@ on_vassal_change = {
 yearly_global_pulse = {
 	on_actions = {
 		IRToCK3_roman_empire_decline_effect
+		IRToCK3_yearly_culture_effect
 	}
 }
 
@@ -178,6 +179,43 @@ IRToCK3_game_start_onaction_effects = {
 				target = flag:irtock3_elevate_roman_empire_decision
 			}
 		}
+
+		# The various events/decisions used for diverging/emerging cultures need to know what pre-defined cultures to use, but that can change depending on the mods being used, so those variable should be setup here ahead of time
+		## Proto-Slavic
+		{% if tfe %}
+		### Using TFE's cultures
+		set_global_variable = {
+			name = proto_slavic_culture
+			value = culture:slavic
+		}
+		{% elsif wtwsms %}
+		### Using WTWSMS' culture
+		set_global_variable = {
+			name = proto_slavic_culture
+			value = culture:old_slavic
+		}
+		{% else %}
+		### Using the converter's fallback culture
+		set_global_variable = {
+			name = proto_slavic_culture
+			value = culture:urslavic
+		}
+		{% endif %}
+
+		## West/East/South Slavic
+		set_global_variable = {
+			name = proto_west_slavic_culture
+			value = culture:wendish
+		}
+		set_global_variable = {
+			name = proto_east_slavic_culture
+			value = culture:antean
+		}
+		set_global_variable = {
+			name = proto_south_slavic_culture
+			value = culture:sclavenian
+		}
+
 
 		####################################
 		### Roman Praetorian Prefectures ###
@@ -474,6 +512,21 @@ IRToCK3_game_start_onaction_effects = {
 				}
 			}
 		}
+
+		#####################
+		### Culture Setup ###
+		#####################
+		# Depending on the game's start date, some cultures should automatically be split/setup depending on their historical evolution
+		
+		# Proto-Slavic
+		{% if bookmark_date >= '0450-01-01' %}
+		## The game starts after 450, so Slavic should be split into Wendish/Antean/Sclaveni on game start (unless there is an empire/hegemony to keep them unified enough to justify keeping everything "Slavic")
+		trigger_event = irtock3_culture_events.100
+		{% else %}
+		## Game starts before 450, so Slavic should be left to split on it's own in-game
+		add_to_global_variable_list = { name = irtock3_culture_events_list target = flag:proto_slavic }
+		{% endif %}
+		
 
 		##################
 		### Neo-Minoan ###
@@ -1486,6 +1539,50 @@ IRToCK3_rome_vassal_naming_flavor = {
 		}
 		else = {
 			remove_variable = use_roman_vassal_naming_flag
+		}
+	}
+}
+
+# This on_action is to help make sure the relevant culture events are triggered for things like culture divergences/emergences
+IRToCK3_yearly_culture_effect = {
+	trigger = {
+		# This entire effect shouldn't be run once all of the relevant cultures have gone through there associated events
+		any_in_global_list = { variable = irtock3_culture_events_list }
+	}
+	effect = {
+		# Proto-Slavic culture splits into Proto-West/East/South Slavic (Wendish/Antean/Sclaveni)
+		## This culture split can be prevented if there is a Slavic empire/hegemony to keep the culture unified
+		if = {
+			limit = {
+				any_in_global_list = { variable = irtock3_culture_events_list this = flag:proto_slavic }
+				current_date >= 400.1.1 # The Sclaveni, Antes, and Venedi/Wendish seem to be referenced as separate groups around/after 500, so they should split by then (Using TFE as a reference, which has the split happen between 400-450)
+			}
+
+			# Randomly choose a year to try split
+			random = {
+				chance = 5
+				modifier = {
+					add = 15 # 20% chance
+					current_date >= 415.1.1
+				}
+				modifier = {
+					add = 20 # 40% chance
+					current_date >= 430.1.1
+				}
+				modifier = {
+					add = 20 # 60% chance
+					current_date >= 445.1.1
+				}
+				modifier = {
+					add = 40 # 100% chance
+					current_date >= 460.1.1
+				}
+				
+				trigger_event = {
+					id = irtock3_culture_events.100
+					days = { 60 300 }
+				}
+			}
 		}
 	}
 }

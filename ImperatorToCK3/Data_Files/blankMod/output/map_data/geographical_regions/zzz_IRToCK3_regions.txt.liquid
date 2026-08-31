@@ -508,3 +508,134 @@ irtock3_rome_empire_division_serica_deserti = {
 	}
 }
 {% endunless %}
+
+############
+## Culture Event Regions
+############
+# These regions are to be used with the events/decisions added by the converter for cultures to evolve throughout the game
+
+irtock3_west_slavic_region = {
+	regions = {
+		world_europe_west
+		world_europe_south_italy
+		ghw_region_poland_bohemia_bavaria
+		world_africa_north_west
+		world_africa_sahara
+		ghw_region_the_sahel
+		ghw_region_subsahelian_africa
+	}
+	duchies = {
+		#Sweden
+		d_ostergotland d_gotland d_vastergotland d_svealand d_norrland d_smaland d_bergslagen
+
+		#Norway
+		d_viken d_agder d_vestlandi d_trandalog d_dalir d_halogaland d_northern_isles d_jamtland
+		{% unless tfe %} # TFE doesn't have Iceland in scope
+		d_iceland
+		{% endunless %}
+		
+		#Denmark
+		d_skane d_sjaelland d_jylland d_slesvig
+
+		#Sapmi
+		d_aarjetje d_duortnoseatnu d_vuovdisamieana
+
+		#Hungary
+		d_bacs d_gyor d_somogy d_visegrad d_nyitra
+
+		#Prussia
+		d_prussia d_masuria
+
+		#Tripoli
+		d_tripolitania d_syrte
+
+		#k_hausaland
+		d_kano d_katsina d_kebbi d_gobir
+
+		#k_kanem
+		d_kanem d_bornu d_kagha
+
+		#k_sao
+		d_baguirmi d_salamat d_wandala
+		
+		#k_darfur
+		d_wadai
+	}
+}
+
+irtock3_east_slavic_region = {
+	regions = {
+		ghw_region_finland_&_estonia
+		ghw_region_northern_russia
+		ghw_region_southern_russia
+		world_siberia
+		ghw_region_transoxiana
+		world_steppe
+		
+		{% unless wtwsms %} # WTWSMS doesn't have East Asia in scope
+		world_asia_north_east
+		world_asia_japan
+		world_asia_korea
+		world_asia_sakhalin_hokkaido
+		irtock3_de_jure_region_e_yongliang
+		irtock3_de_jure_region_e_zhongyuan
+		{% endunless %}
+	}
+	duchies = {
+		#Lithuania
+		d_courland d_latgalians d_samogitia d_lithuanians
+
+		#Hungary
+		d_ungvar d_transcarpathia d_transylvania d_bihar d_temes
+		
+		#Wallachia
+		d_oltenia d_muntenia d_transylvanian_alps d_moldova d_bugeac d_bukovina
+	}
+}
+
+irtock3_south_slavic_region = {
+	regions = {
+		ghw_region_balkans
+		world_asia_minor
+		world_middle_east_jerusalem
+		world_middle_east_arabia
+		world_india
+		world_tibet
+		world_burma
+		custom_greater_armenia
+		world_persia
+		world_daylam
+		world_khorasan
+		world_makran
+		world_kabulistan
+		ghw_region_mainland_greece
+		ghw_region_egypt
+		world_africa_east
+
+		{% unless wtwsms %} # WTWSMS doesn't have East Asia in scope
+		irtock3_de_jure_region_e_jingyang
+		irtock3_de_jure_region_e_liangyi
+		irtock3_de_jure_region_e_lingnan
+		world_asia_southeast
+		{% endunless %}
+	}
+	duchies = {
+		#k_darfur
+		d_darfur d_west_darfur d_kordofan
+
+		#Balkans
+		d_syrmia
+
+		#Greek Islands
+		d_cyprus d_krete
+	}
+}
+
+
+
+
+
+
+############
+## XYZ
+############

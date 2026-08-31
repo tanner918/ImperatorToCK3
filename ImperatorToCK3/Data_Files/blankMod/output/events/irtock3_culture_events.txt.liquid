@@ -1,0 +1,1315 @@
+﻿# Last updated: CK3 1.19.0.6
+namespace = irtock3_culture_events
+
+###########################
+## Events
+###########################
+## 001-099: General Culture Events
+## 100-199: Slavic Culture Events
+## 200-299: Germanic Culture Events
+## 300-399: Italic/Romance Culture Events
+## 400-499: Celtic Culture Events
+## 500-599: ABC
+## 600-699: ABC
+## 700-799: ABC
+## 800-899: ABC
+## 900-999: ABC
+
+
+###########################
+## General Culture Events
+###########################
+
+#### Notification Events
+### Event notifying players of outcome of a culture split
+## This event will likely mainly be used for "Proto-" cultures, that are meant to completely split to give way to more modern cultures (i.e. Proto-Slavic splitting into Wendish/Antean/Sclavenian)
+
+## This event uses the following scopes, which should be set BEFORE the event gets triggered:
+# scope:parent_culture (required) - The parent culture that was being split (i.e. When Slavic splits into Wendish/Antean/Sclavenian, Slavic would be the parent_culture)
+# scope:main_culture_ruler (conditional) - If the parent_culture is not being forced to completely split, this scope saves whichever ruler of that culture had met the requirements to hold the culture together (i.e. The Slavic split into Wendish/Antean/Sclavenian can be prevented if there exists a Slavic Emperor/Hegemon that controls more than half of the Slavic counties. If they do exist, they'd be saved in this scope)
+
+# new_cultures [list] (conditional) - If the parent_culture ended up getting split, in any way, into new cultures (whether scripted or dynamic), this list should have those new cultures saved in it so they can be shown in the event's localization so players actually know what cultures appeared
+# changed_cultures [list] (conditional) - If there were any existing cultures that were changed as a result of the splitting event, they should be saved in this list (i.e. If a culture diverges/hybridizes off Slavic before it officially splits, it may have it's heritage/language changed to match the West/East/South Slavic split)
+
+# From this, a character can be considered "involved/related" to the parent culture and it's split if their culture is either:
+## the parent culture;
+## in the "new_cultures" list;
+## or, in the "changed_cultures" list.
+
+irtock3_culture_events.001 = {
+	type = character_event
+	title = irtock3_culture_events.001.t
+	theme = culture_change
+
+	left_portrait = {
+		trigger = {
+			exists = scope:main_culture_ruler
+			scope:main_culture_ruler != scope:player_character
+		}
+		character = scope:main_culture_ruler
+		animation = personality_honorable
+	}
+	right_portrait = {
+		character = scope:player_character
+		triggered_animation = {
+			trigger = {
+				exists = scope:main_culture_ruler
+				scope:main_culture_ruler = scope:player_character
+			}
+			animation = personality_honorable
+		}
+		triggered_animation = {
+			trigger = { exists = scope:involved_character }
+			animation = thinking
+		}
+		triggered_animation = {
+			trigger = { always = yes }
+			animation = dismissal
+		}
+	}
+
+	desc = {
+		# Intro
+		first_valid = {
+			# Culture DIDN'T split
+			triggered_desc = {
+				trigger = { exists = scope:main_culture_ruler }
+				desc = irtock3_culture_events.001.desc.intro.culture_didnt_split
+			}
+			
+			# Culture DID split
+			desc = irtock3_culture_events.001.desc.intro.culture_did_split
+		}
+
+		# Main Body
+		## Opening
+		first_valid = {
+			# Your culture is related to the parent culture in some way
+			triggered_desc = {
+				trigger = { exists = scope:involved_character }
+				desc = irtock3_culture_events.001.desc.body.opening_involved_character
+			}
+
+			# You have nothing to do with the cultures involved in the split
+			desc = irtock3_culture_events.001.desc.body.opening_uninvolved_character
+		}
+
+		## Part 1
+		first_valid = {
+			# Culture DIDN'T split, you are the "main_culture_ruler"
+			triggered_desc = {
+				trigger = {
+					exists = scope:main_culture_ruler
+					this = scope:main_culture_ruler
+				}
+				desc = irtock3_culture_events.001.desc.body.part1_main_culture_ruler
+			}
+
+			# Culture DIDN'T split, you aren't the "main_culture_ruler"
+			triggered_desc = {
+				trigger = { exists = scope:main_culture_ruler }
+				desc = irtock3_culture_events.001.desc.body.part1_culture_didnt_split
+			}
+			
+			# Culture DID split
+			desc = irtock3_culture_events.001.desc.body.part1_culture_did_split 
+		}
+
+		## Ending
+		first_valid = {
+			# Culture DIDN'T split, you are the "main_culture_ruler"
+			triggered_desc = {
+				trigger = {
+					exists = scope:main_culture_ruler
+					this = scope:main_culture_ruler
+				}
+				desc = irtock3_culture_events.001.desc.body.ending_main_culture_ruler
+			}
+
+			# Culture DIDN'T split, you are still the parent culture
+			triggered_desc = {
+				trigger = {
+					exists = scope:main_culture_ruler
+					culture = scope:parent_culture
+				}
+				desc = irtock3_culture_events.001.desc.body.ending_culture_didnt_split_parent_culture
+			}
+
+			# Culture DIDN'T split, you are a different but related culture
+			triggered_desc = {
+				trigger = {
+					exists = scope:main_culture_ruler
+					exists = scope:involved_character
+				}
+				desc = irtock3_culture_events.001.desc.body.ending_culture_didnt_split_different_culture
+			}
+
+			# Culture DIDN'T split, you are an uninvolved culture
+			triggered_desc = {
+				trigger = { exists = scope:main_culture_ruler }
+				desc = irtock3_culture_events.001.desc.body.ending_culture_didnt_split_uninvolved
+			}
+
+			# Culture DID split, you are an involved culture
+			triggered_desc = {
+				trigger = { exists = scope:involved_character }
+				desc = irtock3_culture_events.001.desc.body.ending_culture_did_split_involved
+			}
+
+			# Culture DID split, you are an uninvolved culture
+			desc = irtock3_culture_events.001.desc.body.ending_culture_did_split_uninvolved
+		}
+	}
+
+	immediate = {
+		save_scope_as = player_character
+
+		# Determine if the character is involved/related to the culture split
+		if = {
+			limit = {
+				culture = {
+					OR = {
+						# You are the parent culture
+						this = scope:parent_culture
+
+						# Your culture was newly created from this split
+						trigger_if = {
+							limit = {
+								any_in_list = { list = new_cultures }
+							}
+							is_in_list = new_cultures
+						}
+						trigger_else = { always = no }
+
+						# You have an existing culture that was changed because of this split
+						trigger_if = {
+							limit = {
+								any_in_list = { list = changed_cultures }
+							}
+							is_in_list = changed_cultures
+						}
+						trigger_else = { always = no }
+					}
+				}
+			}
+			save_scope_value_as = {
+				name = involved_character
+				value = yes
+			}
+		}
+
+		# Display a list of the new/changed cultures from this culture split
+		if = {
+			limit = {
+				OR = {
+					any_in_list = { list = new_cultures }
+					any_in_list = { list = changed_cultures }
+				}
+			}
+
+			if = {
+				limit = {
+					culture = { is_in_list = new_cultures }
+				}
+				culture = { save_scope_as = new_character_culture }
+				custom_tooltip = irtock3_culture_event_culture_changed_tt
+			}
+
+			custom_description_no_bullet = { text = irtock3_culture_event_new_cultures_list_effect }
+			
+			# Display a list of the new cultures created through this split
+			if = {
+				limit = {
+					any_in_list = { list = new_cultures }
+				}
+				every_in_list = {
+					list = new_cultures
+					save_scope_as = temp_culture_scope
+					custom_label = irtock3_culture_event_list_culture_name_tt
+					clear_saved_scope = temp_culture_scope
+				}
+			}
+
+			# Display a list of the existing cultures that were changed through this split
+			if = {
+				limit = {
+					any_in_list = { list = changed_cultures }
+				}
+				every_in_list = {
+					list = changed_cultures
+					save_scope_as = temp_culture_scope
+					custom_label = irtock3_culture_event_list_culture_name_tt2
+					clear_saved_scope = temp_culture_scope
+				}
+			}
+		}
+	}
+
+	option = {
+		name = {
+			trigger = { culture = scope:parent_culture }
+			text = irtock3_culture_events.001.a.parent_culture
+		}
+		name = {
+			trigger = {
+				exists = scope:involved_character
+				culture != scope:parent_culture
+			}
+			text = irtock3_culture_events.001.a.different_culture
+		}
+		name = {
+			trigger = {
+				NOT = { exists = scope:involved_character }
+			}
+			text = irtock3_culture_events.001.a.uninvolved
+		}
+	}
+}
+
+
+###########################
+## Slavic Culture Events
+###########################
+
+## Slavic Divergence Events
+# Determine if there is an empire/hegemony realm with enough of the Slavic counties that they can retain the Slavic culture
+irtock3_culture_events.100 = {
+	scope = none
+	hidden = yes
+	
+	trigger = {
+		OR = {
+			current_date_is_start_date_trigger = yes # If game starts after 450, Slavic can be split from the start
+			any_in_global_list = { variable = irtock3_culture_events_list this = flag:proto_slavic }
+		}
+	}
+
+	immediate = {
+		# The specific culture being used as Proto-Slavic (since that can change based on mods) is stored in global_var:proto_slavic_culture
+
+		# If the flag 'proto_slavic' isn't set in the global variable list 'irtock3_culture_events_list', that means this event was triggered at game start, so notification events probably shouldn't trigger
+
+		# Get a list of all Slavic culture counties/characters. These lists record which counties/characters still need to have their final culture determined. Once it's determined if they'll stay Slavic or get a new culture, they are removed after being converted.
+		global_var:proto_slavic_culture = {
+			every_culture_county = {
+				add_to_list = slavic_culture_counties
+
+				# Start getting together a list of all players close enough to get the notification event
+				holder ?= {
+					every_player = {
+						limit = {
+							NOT = { is_in_list = relevant_players }
+							in_diplomatic_range = prev
+						}
+						add_to_list = relevant_players
+					}
+				}
+			}
+		}
+		every_living_character = {
+			limit = { culture = global_var:proto_slavic_culture }
+			add_to_list = slavic_culture_characters
+
+			if = {
+				limit = { is_landed = yes }
+				every_player = {
+					limit = {
+						NOT = { is_in_list = relevant_players }
+						in_diplomatic_range = prev
+					}
+					add_to_list = relevant_players
+				}
+			}
+		}
+
+		# Check if an Emperor/Hegemon exists with Slavic culture, and that they control enough Slavic counties
+		if = {
+			limit = {
+				any_in_list = {
+					list = slavic_culture_characters
+
+					is_landed = yes
+					highest_held_title_tier >= tier_empire
+					save_temporary_scope_as = temp_slavic_emperor
+					any_in_list = {
+						list = slavic_culture_counties
+						percent > 0.5
+
+						holder = {
+							OR = {
+								this = scope:temp_slavic_emperor
+								any_liege_or_above = { this = scope:temp_slavic_emperor }
+							}
+						}
+					}
+				}
+			}
+			# If there is a valid Emperor/Hegemon, Slavic counties/characters in their realm should remain Slavic, while Slavic realms outside their realm may get diverged into a new culture
+
+			# Save the relevant Slavic Emperor/Hegemon scope. If there happens to be multiple, prioritize the one with the most Slavic counties
+			ordered_in_list = {
+				list = slavic_culture_characters
+				limit = {
+					is_landed = yes
+					highest_held_title_tier >= tier_empire
+				}
+				order_by = {
+					value = 0
+					add = {
+						value = 0
+						save_temporary_scope_as = temp_slavic_emperor
+						every_in_list = {
+							list = slavic_culture_counties
+							limit = {
+								holder = {
+									OR = {
+										this = scope:temp_slavic_emperor
+										any_liege_or_above = { this = scope:temp_slavic_emperor }
+									}
+								}
+							}
+							add = 1
+						}
+					}
+				}
+				max = 1
+				save_scope_as = slavic_emperor
+			}
+			global_var:proto_slavic_culture = {
+				set_variable = {
+					name = culture_founder
+					value = scope:slavic_emperor
+				}
+			}
+
+			# Remove the Slavic Emperor, their vassals and courtiers, and their counties from the previously saved lists, since they will remain Slavic
+			every_in_list = {
+				list = slavic_culture_characters
+				
+				if = {
+					limit = {
+						OR = {
+							this = scope:slavic_emperor
+							is_close_or_extended_family_of = scope:slavic_emperor # If any family members of the Slavic Emperor happened to marry off, they should have same culture as Emperor
+							trigger_if = {
+								limit = { exists = liege }
+								any_liege_or_above = { this = scope:slavic_emperor }
+							}
+							trigger_if = {
+								limit = { exists = employer }
+								employer = {
+									OR = {
+										this = scope:slavic_emperor
+										any_liege_or_above = { this = scope:slavic_emperor }
+									}
+								}
+							}
+						}
+					}
+					remove_from_list = slavic_culture_characters
+				}
+			}
+			every_in_list = {
+				list = slavic_culture_counties
+				
+				if = {
+					limit = {
+						holder = {
+							OR = {
+								this = scope:slavic_emperor
+								any_liege_or_above = { this = scope:slavic_emperor }
+							}
+						}
+					}
+					remove_from_list = slavic_culture_counties
+				}
+			}
+
+			# Go through all Slavic Counties connected to the Slavic Empire/Hegemony, and give them a variable indicating they may be forced to remain Slavic
+			scope:slavic_emperor = {
+				every_character_to_title_neighboring_county = {
+					limit = { is_in_list = slavic_culture_counties }
+					add_to_variable_list = {
+						name = possible_slavic_cultures
+						target = global_var:proto_slavic_culture
+					}
+				}
+			}
+			if = {
+				limit = {
+					any_in_list = {
+						list = slavic_culture_counties
+						has_variable_list = possible_slavic_cultures
+					}
+				}
+				while = {
+					limit = {
+						any_in_list = {
+							list = slavic_culture_counties
+							has_variable_list = possible_slavic_cultures
+							any_neighboring_county = {
+								is_in_list = slavic_culture_counties
+								NOT = { has_variable_list = possible_slavic_cultures }
+							}
+						}
+					}
+					every_in_list = {
+						list = slavic_culture_counties
+						limit = { has_variable_list = possible_slavic_cultures }
+						every_neighboring_county = {
+							limit = {
+								is_in_list = slavic_culture_counties
+								NOT = { has_variable_list = possible_slavic_cultures }
+							}
+							add_to_variable_list = {
+								name = possible_slavic_cultures
+								target = global_var:proto_slavic_culture
+							}
+						}
+					}
+				}
+			}
+
+			# Get a list of all the other Slavic realms outside of the chosen Emperor/Hegemon's realm
+			every_in_list = {
+				list = slavic_culture_characters
+				limit = {
+					is_landed = yes
+					this != scope:slavic_emperor
+					any_sub_realm_county = { culture = global_var:proto_slavic_culture } # This is a requirement ingame for a character to diverge their culture
+					OR = {
+						# Need to be independent, or at least the top-most Slavic ruler in their de facto hierarchy
+						is_independent_ruler = yes
+						NOT = {
+							any_liege_or_above = { culture = global_var:proto_slavic_culture }
+						}
+					}
+				}
+				add_to_list = other_slavic_realm_rulers # Every ruler in this list will be getting their own dynamic divergent slavic culture for their realm/subrealm
+			}
+
+			# Setup new divergent slavic cultures
+			every_in_list = {
+				list = other_slavic_realm_rulers
+
+				# Create new slavic culture
+				create_divergent_culture_with_side_effects_excluding_cost = yes
+				culture = {
+					save_scope_as = new_slavic_culture
+					add_to_list = new_cultures
+					set_variable = {
+						name = culture_founder
+						value = prev
+					}
+				}
+
+				# Convert all Slavic counties in their realm to the new culture
+				every_sub_realm_county = {
+					limit = { is_in_list = slavic_culture_counties }
+					set_county_culture = scope:new_slavic_culture
+					remove_from_list = slavic_culture_counties
+					if = {
+						limit = { has_variable_list = possible_slavic_cultures }
+						clear_variable_list = possible_slavic_cultures
+					}
+				}
+
+				# Convert all relevant characters to the new culture
+				every_close_or_extended_family_member = {
+					if = {
+						limit = { is_in_list = slavic_culture_characters }
+						set_culture = scope:new_slavic_culture
+						remove_from_list = slavic_culture_characters
+					}
+				}
+				every_courtier = {
+					if = {
+						limit = { is_in_list = slavic_culture_characters }
+						set_culture = scope:new_slavic_culture
+						remove_from_list = slavic_culture_characters
+					}
+					every_close_or_extended_family_member = {
+						if = {
+							limit = { is_in_list = slavic_culture_characters }
+							set_culture = scope:new_slavic_culture
+							remove_from_list = slavic_culture_characters
+						}
+					}
+				}
+				every_vassal_or_below = {
+					if = {
+						limit = { is_in_list = slavic_culture_characters }
+						set_culture = scope:new_slavic_culture
+						remove_from_list = slavic_culture_characters
+					}
+					every_close_or_extended_family_member = {
+						if = {
+							limit = { is_in_list = slavic_culture_characters }
+							set_culture = scope:new_slavic_culture
+							remove_from_list = slavic_culture_characters
+						}
+					}
+					every_courtier = {
+						if = {
+							limit = { is_in_list = slavic_culture_characters }
+							set_culture = scope:new_slavic_culture
+							remove_from_list = slavic_culture_characters
+						}
+						every_close_or_extended_family_member = {
+							if = {
+								limit = { is_in_list = slavic_culture_characters }
+								set_culture = scope:new_slavic_culture
+								remove_from_list = slavic_culture_characters
+							}
+						}
+					}
+				}
+
+				# Check if the new culture's counties border any other Slavic counties that couldn potentially be given this later
+				if = {
+					limit = {
+						scope:new_slavic_culture = {
+							any_culture_county = {
+								any_neighboring_county = { is_in_list = slavic_culture_counties }
+							}
+						}
+					}
+
+					scope:new_slavic_culture = {
+						every_culture_county = {
+							every_neighboring_county = {
+								limit = { is_in_list = slavic_culture_counties }
+								add_to_variable_list = {
+									name = possible_slavic_cultures
+									target = scope:new_slavic_culture
+								}
+							}
+						}
+					}
+					if = {
+						limit = {
+							any_in_list = {
+								list = slavic_culture_counties
+								trigger_if = {
+									limit = { has_variable_list = possible_slavic_cultures }
+									is_target_in_variable_list = {
+										name = possible_slavic_cultures
+										target = scope:new_slavic_culture
+									}
+								}
+								trigger_else = { always = no }
+							}
+						}
+						while = {
+							limit = {
+								any_in_list = {
+									list = slavic_culture_counties
+									trigger_if = {
+										limit = { has_variable_list = possible_slavic_cultures }
+										is_target_in_variable_list = {
+											name = possible_slavic_cultures
+											target = scope:new_slavic_culture
+										}
+										any_neighboring_county = {
+											is_in_list = slavic_culture_counties
+											trigger_if = {
+												limit = { has_variable_list = possible_slavic_cultures }
+												NOT = {
+													is_target_in_variable_list = {
+														name = possible_slavic_cultures
+														target = scope:new_slavic_culture
+													}
+												}
+											}
+										}
+									}
+									trigger_else = { always = no }
+								}
+							}
+							every_in_list = {
+								list = slavic_culture_counties
+								limit = {
+									trigger_if = {
+										limit = { has_variable_list = possible_slavic_cultures }
+										is_target_in_variable_list = {
+											name = possible_slavic_cultures
+											target = scope:new_slavic_culture
+										}
+										any_neighboring_county = {
+											is_in_list = slavic_culture_counties
+											trigger_if = {
+												limit = { has_variable_list = possible_slavic_cultures }
+												NOT = {
+													is_target_in_variable_list = {
+														name = possible_slavic_cultures
+														target = scope:new_slavic_culture
+													}
+												}
+											}
+										}
+									}
+									trigger_else = { always = no }
+								}
+								every_neighboring_county = {
+									if = {
+										limit = {
+											is_in_list = slavic_culture_counties
+											trigger_if = {
+												limit = { has_variable_list = possible_slavic_cultures }
+												NOT = {
+													is_target_in_variable_list = {
+														name = possible_slavic_cultures
+														target = scope:new_slavic_culture
+													}
+												}
+											}
+										}
+										add_to_variable_list = {
+											name = possible_slavic_cultures
+											target = scope:new_slavic_culture
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				# Cleanup
+				clear_saved_scope = new_slavic_culture
+				remove_from_list = other_slavic_realm_rulers
+				remove_from_list = slavic_culture_characters
+			}
+
+			# At this point, the only Characters and Counties that are left to check are those that aren't part of any Slavic realm. So, depending on where they are, and what cultures/realms they border, they may have their culture changed, be given a new culture, or remain Slavic
+
+			## Go through the remaining Counties that have possible slavic cultures noted for them (Counties with no possible cultures listed will be handled separately since they are likely exclaves that will get their own culture)
+			every_in_list = {
+				list = slavic_culture_counties
+				limit = { has_variable_list = possible_slavic_cultures }
+
+				save_scope_as = county_scope
+
+				# If they only have one possible culture listed, they will get that culture
+				if = {
+					limit = {
+						variable_list_size = {
+							name = possible_slavic_cultures
+							value = 1
+						}
+					}
+
+					random_in_list = {
+						variable = possible_slavic_cultures
+						save_scope_as = new_county_culture
+					}
+				}
+				# Otherwise, they have multiple cultures listed, so the culture they get depends on which realm they are closest to
+				else = {
+					every_in_list = {
+						variable = possible_slavic_cultures
+						limit = { has_variable = culture_founder }
+
+						save_scope_as = culture_temp
+
+						var:culture_founder = {
+							every_sub_realm_county = {
+								add_to_list = temp_county_list
+								set_variable = {
+									name = associated_culture
+									value = scope:culture_temp
+								}
+							}
+						}
+
+						clear_saved_scope = culture_temp
+					}
+
+					ordered_in_list = {
+						list = temp_county_list
+						order_by = {
+							value = "squared_distance(scope:county_scope)"
+							multiply = -1
+						}
+						max = 1
+						save_scope_as = closest_county
+					}
+					
+					scope:closest_county.var:associated_culture = { save_scope_as = new_county_culture }
+
+					clear_saved_scope = closest_county
+					every_in_list = {
+						list = temp_county_list
+						remove_variable = associated_culture
+						remove_from_list = temp_county_list
+					}
+				}
+
+				# Convert the County (and any wandering/Adventurer Slavic characters to the chosen culture)
+				if = {
+					limit = {
+						NOT = { culture = scope:new_county_culture }
+					}
+					set_county_culture = scope:new_county_culture
+				}
+				every_county_province = {
+					every_character_in_location = {
+						limit = {
+							is_in_list = slavic_culture_characters
+							OR = {
+								AND = {
+									is_ruler = no
+									NOT = { exists = employer }
+								}
+								has_government = landless_adventurer_government
+							}
+						}
+
+						if = {
+							limit = {
+								NOT = { culture = scope:new_county_culture }
+							}
+							set_culture = scope:new_county_culture
+						}
+						remove_from_list = slavic_culture_characters
+
+						# Convert all relevant characters to the new culture
+						every_close_or_extended_family_member = {
+							if = {
+								limit = { is_in_list = slavic_culture_characters }
+								if = {
+									limit = {
+										NOT = { culture = scope:new_county_culture }
+									}
+									set_culture = scope:new_county_culture
+								}
+								remove_from_list = slavic_culture_characters
+							}
+						}
+						every_courtier = {
+							if = {
+								limit = { is_in_list = slavic_culture_characters }
+								if = {
+									limit = {
+										NOT = { culture = scope:new_county_culture }
+									}
+									set_culture = scope:new_county_culture
+								}
+								remove_from_list = slavic_culture_characters
+							}
+							every_close_or_extended_family_member = {
+								if = {
+									limit = { is_in_list = slavic_culture_characters }
+									if = {
+										limit = {
+											NOT = { culture = scope:new_county_culture }
+										}
+										set_culture = scope:new_county_culture
+									}
+									remove_from_list = slavic_culture_characters
+								}
+							}
+						}
+					}
+				}
+
+				# Cleanup
+				remove_from_list = slavic_culture_counties
+				clear_variable_list = possible_slavic_cultures
+				clear_saved_scope = new_county_culture
+				clear_saved_scope = county_scope
+			}
+			
+			# Cleanup
+			global_var:proto_slavic_culture = { remove_variable = culture_founder }
+			if = {
+				limit = {
+					any_in_list = { list = new_cultures }
+				}
+				every_in_list = {
+					list = new_cultures
+					remove_variable = culture_founder
+				}
+			}
+		}
+		# Otherwise, this means that there is not a Slavic Empire/Hegemony (or it doesn't control enough Slavic land), so Slavic should be split into Wendish/Antean/Sclavenian
+		else = {
+			# If there is no valid Emperor/Hegemon, Slavic should split into Wendish/Antean/Sclavenian based on the following regions
+			# irtock3_west_slavic_region
+			# irtock3_east_slavic_region
+			# irtock3_south_slavic_region
+
+			# Setup global variables to indicate West/East/South Slavic should split later
+			add_to_global_variable_list = { name = irtock3_culture_events_list target = flag:west_slavic }
+			add_to_global_variable_list = { name = irtock3_culture_events_list target = flag:east_slavic }
+			add_to_global_variable_list = { name = irtock3_culture_events_list target = flag:south_slavic }
+
+			# Make sure Wendish/Antean/Sclavenian are properly setup first
+			## Wendish - West Slavic
+			if = {
+				limit = {
+					NOT = { exists = global_var:proto_west_slavic_culture }
+				}
+				# If a culture wasn't saved beforehand to use for Wendish, create the culture
+				random_county_in_region = {
+					region = irtock3_west_slavic_region
+					title_province = { save_scope_as = starting_province }
+				}
+
+				create_character = {
+					template = generic_peasant_character
+					location = scope:starting_province
+					culture = global_var:proto_slavic_culture
+					faith = faith:slavic_pagan
+					save_scope_as = west_slavic_founder
+				}
+
+				scope:west_slavic_founder = {
+					add_character_flag = allow_landless_divergence
+					create_divergent_culture_with_side_effects_excluding_cost = yes
+					culture = {
+						set_culture_name = {
+							noun = wendish_name
+							collective_noun = wendish_collective_noun
+							prefix = wendish_prefix
+						}
+						set_culture_pillar = heritage_west_slavic
+					}
+					set_global_variable = {
+						name = proto_west_slavic_culture
+						value = culture
+					}
+					remove_character_flag = allow_landless_divergence
+					silent_disappearance_effect = yes
+				}
+
+				clear_saved_scope = starting_province
+				clear_saved_scope = west_slavic_founder
+			}
+			else = {
+				global_var:proto_west_slavic_culture = { reset_culture_creation_date = yes }
+			}
+			global_var:proto_west_slavic_culture = { add_to_list = new_cultures }
+
+			## Antean - East Slavic
+			if = {
+				limit = {
+					NOT = { exists = global_var:proto_east_slavic_culture }
+				}
+				# If a culture wasn't saved beforehand to use for Antean, create the culture
+				random_county_in_region = {
+					region = irtock3_east_slavic_region
+					title_province = { save_scope_as = starting_province }
+				}
+
+				create_character = {
+					template = generic_peasant_character
+					location = scope:starting_province
+					culture = global_var:proto_slavic_culture
+					faith = faith:slavic_pagan
+					save_scope_as = east_slavic_founder
+				}
+
+				scope:east_slavic_founder = {
+					add_character_flag = allow_landless_divergence
+					create_divergent_culture_with_side_effects_excluding_cost = yes
+					culture = {
+						set_culture_name = {
+							noun = antean_name
+							collective_noun = antean_collective_noun
+							prefix = antean_prefix
+						}
+						set_culture_pillar = heritage_east_slavic
+					}
+					set_global_variable = {
+						name = proto_east_slavic_culture
+						value = culture
+					}
+					remove_character_flag = allow_landless_divergence
+					silent_disappearance_effect = yes
+				}
+
+				clear_saved_scope = starting_province
+				clear_saved_scope = east_slavic_founder
+			}
+			else = {
+				global_var:proto_east_slavic_culture = { reset_culture_creation_date = yes }
+			}
+			global_var:proto_east_slavic_culture = { add_to_list = new_cultures }
+
+			## Sclavenian - South Slavic
+			if = {
+				limit = {
+					NOT = { exists = global_var:proto_south_slavic_culture }
+				}
+				# If a culture wasn't saved beforehand to use for Sclavenian, create the culture
+				random_county_in_region = {
+					region = irtock3_south_slavic_region
+					title_province = { save_scope_as = starting_province }
+				}
+
+				create_character = {
+					template = generic_peasant_character
+					location = scope:starting_province
+					culture = global_var:proto_slavic_culture
+					faith = faith:slavic_pagan
+					save_scope_as = south_slavic_founder
+				}
+
+				scope:south_slavic_founder = {
+					add_character_flag = allow_landless_divergence
+					create_divergent_culture_with_side_effects_excluding_cost = yes
+					culture = {
+						set_culture_name = {
+							noun = sclavenian_name
+							collective_noun = sclavenian_collective_noun
+							prefix = sclavenian_prefix
+						}
+						set_culture_pillar = heritage_south_slavic
+					}
+					set_global_variable = {
+						name = proto_south_slavic_culture
+						value = culture
+					}
+					remove_character_flag = allow_landless_divergence
+					silent_disappearance_effect = yes
+				}
+
+				clear_saved_scope = starting_province
+				clear_saved_scope = south_slavic_founder
+			}
+			else = {
+				global_var:proto_south_slavic_culture = { reset_culture_creation_date = yes }
+			}
+			global_var:proto_south_slavic_culture = { add_to_list = new_cultures }
+
+
+			# Go through all of the Slavic Counties/Characters, and change them to their new culture based on their location
+			## Counties
+			every_in_list = {
+				list = slavic_culture_counties
+
+				if = {
+					limit = {
+						title_province = { geographical_region = irtock3_west_slavic_region }
+					}
+					set_county_culture = global_var:proto_west_slavic_culture
+				}
+				else_if = {
+					limit = {
+						title_province = { geographical_region = irtock3_east_slavic_region }
+					}
+					set_county_culture = global_var:proto_east_slavic_culture
+				}
+				else = { set_county_culture = global_var:proto_south_slavic_culture }
+
+				remove_from_list = slavic_culture_counties
+			}
+
+			## Characters
+			### Check Rulers first so their courts can properly be converted
+			every_in_list = {
+				list = slavic_culture_characters
+				limit = { is_ruler = yes }
+
+				# Get their relevant province
+				if = {
+					limit = { exists = capital_province }
+					capital_province = { save_scope_as = province_check }
+				}
+				else = {
+					location = { save_scope_as = province_check }
+				}
+
+				# Use the province to determine which slavic culture they should become
+				if = {
+					limit = {
+						scope:province_check = { geographical_region = irtock3_west_slavic_region }
+					}
+					global_var:proto_west_slavic_culture = { save_scope_as = new_slavic_culture }
+				}
+				else_if = {
+					limit = {
+						scope:province_check = { geographical_region = irtock3_east_slavic_region }
+					}
+					global_var:proto_east_slavic_culture = { save_scope_as = new_slavic_culture }
+				}
+				else = {
+					global_var:proto_south_slavic_culture = { save_scope_as = new_slavic_culture }
+				}
+
+				# Convert them and any other relevant character to the new culture
+				set_culture = scope:new_slavic_culture
+				remove_from_list = slavic_culture_characters
+				every_close_or_extended_family_member = {
+					if = {
+						limit = { is_in_list = slavic_culture_characters }
+						set_culture = scope:new_slavic_culture
+						remove_from_list = slavic_culture_characters
+					}
+				}
+				every_courtier = {
+					if = {
+						limit = { is_in_list = slavic_culture_characters }
+						set_culture = scope:new_slavic_culture
+						remove_from_list = slavic_culture_characters
+					}
+					every_close_or_extended_family_member = {
+						if = {
+							limit = { is_in_list = slavic_culture_characters }
+							set_culture = scope:new_slavic_culture
+							remove_from_list = slavic_culture_characters
+						}
+					}
+				}
+				# Their vassals will be converted separately since they may not be in the same region
+
+				clear_saved_scope = province_check
+				clear_saved_scope = new_slavic_culture
+			}
+			### Then convert everyone else
+			every_in_list = {
+				list = slavic_culture_characters
+
+				# Get their relevant province
+				if = {
+					limit = { exists = capital_province }
+					capital_province = { save_scope_as = province_check }
+				}
+				else = {
+					location = { save_scope_as = province_check }
+				}
+
+				# Use the province to determine which slavic culture they should become
+				if = {
+					limit = {
+						scope:province_check = { geographical_region = irtock3_west_slavic_region }
+					}
+					global_var:proto_west_slavic_culture = { save_scope_as = new_slavic_culture }
+				}
+				else_if = {
+					limit = {
+						scope:province_check = { geographical_region = irtock3_east_slavic_region }
+					}
+					global_var:proto_east_slavic_culture = { save_scope_as = new_slavic_culture }
+				}
+				else = {
+					global_var:proto_south_slavic_culture = { save_scope_as = new_slavic_culture }
+				}
+
+				# Convert them and any other relevant character to the new culture
+				set_culture = scope:new_slavic_culture
+				remove_from_list = slavic_culture_characters
+				every_close_or_extended_family_member = {
+					if = {
+						limit = { is_in_list = slavic_culture_characters }
+						set_culture = scope:new_slavic_culture
+						remove_from_list = slavic_culture_characters
+					}
+				}
+
+				clear_saved_scope = province_check
+				clear_saved_scope = new_slavic_culture
+			}
+
+			# Go through any other cultures that may have diverged from Slavic before now and make sure they are properly changed to be West/East/South Slavic based on which region they are mainly in
+			geographical_region:irtock3_west_slavic_region = { add_to_list = region_list }
+			geographical_region:irtock3_east_slavic_region = { add_to_list = region_list }
+			geographical_region:irtock3_south_slavic_region = { add_to_list = region_list }
+			every_culture_global = {
+				limit = {
+					# Shouldn't change anything about the Proto-Slavic or Wendish/Antean/Sclavenian cultures
+					this != global_var:proto_slavic_culture
+					this != global_var:proto_west_slavic_culture
+					this != global_var:proto_east_slavic_culture
+					this != global_var:proto_south_slavic_culture
+
+					# Need to make sure there is a pillar they have worth changing
+					OR = {
+						has_same_culture_heritage = global_var:proto_slavic_culture
+						has_same_culture_language = global_var:proto_slavic_culture
+					}
+
+					# Don't have any counties/characters to use as reference for dead cultures, so they can't be changed
+					save_temporary_scope_as = culture_temp
+					OR = {
+						any_living_character = { culture = scope:culture_temp }
+						any_culture_county = {}
+					}
+				}
+
+				save_scope_as = culture_scope
+				add_to_list = changed_cultures
+
+				# Figure out which region they are primarily in
+				## If there are counties of this culture, base it off counties
+				if = {
+					limit = { any_culture_county = {} }
+
+					ordered_in_list = {
+						list = region_list
+						order_by = {
+							value = 0
+							save_temporary_scope_as = region_scope_temp
+							scope:culture_scope = {
+								every_culture_county = {
+									if = {
+										limit = {
+											title_province = { geographical_region = scope:region_scope_temp }
+										}
+										add = 1
+									}
+								}
+							}
+						}
+						max = 1
+						save_scope_as = chosen_region
+					}
+				}
+				## Otherwise, try to base it off where most of it's characters are located
+				else = {
+					every_living_character = {
+						limit = { culture = scope:culture_scope }
+						add_to_list = culture_characters_list
+					}
+
+					ordered_in_list = {
+						list = region_list
+						order_by = {
+							value = 0
+							save_temporary_scope_as = region_scope_temp
+							every_in_list = {
+								list = culture_characters_list
+
+								if = {
+									limit = {
+										trigger_if = {
+											limit = { exists = capital_province }
+											capital_province = { geographical_region = scope:region_scope_temp }
+										}
+										trigger_else = {
+											location = { geographical_region = scope:region_scope_temp }
+										}
+									}
+									add = 1
+								}
+							}
+						}
+						max = 1
+						save_scope_as = chosen_region
+					}
+
+					every_in_list = {
+						list = culture_characters_list
+						remove_from_list = culture_characters_list
+					}
+				}
+
+				# Change the culture's heritage and/or language based off the chosen region
+				switch = {
+					trigger = scope:chosen_region
+					geographical_region:irtock3_west_slavic_region = {
+						if = {
+							limit = { has_same_culture_heritage = global_var:proto_slavic_culture }
+							set_culture_pillar = heritage_west_slavic
+						}
+						if = {
+							limit = { has_same_culture_language = global_var:proto_slavic_culture }
+							set_culture_pillar = language_lechitic # Fallback for now, will probably need to figure out how best to determine when to use Lechitic, and when to use Czech-Slovak
+						}
+					}
+					geographical_region:irtock3_east_slavic_region = {
+						if = {
+							limit = { has_same_culture_heritage = global_var:proto_slavic_culture }
+							set_culture_pillar = heritage_east_slavic
+						}
+						if = {
+							limit = { has_same_culture_language = global_var:proto_slavic_culture }
+							set_culture_pillar = language_east_slavic
+						}
+					}
+					geographical_region:irtock3_south_slavic_region = {
+						if = {
+							limit = { has_same_culture_heritage = global_var:proto_slavic_culture }
+							set_culture_pillar = heritage_south_slavic
+						}
+						if = {
+							limit = { has_same_culture_language = global_var:proto_slavic_culture }
+							set_culture_pillar = language_south_slavic
+						}
+					}
+				}
+
+				clear_saved_scope = culture_scope
+				clear_saved_scope = chosen_region
+
+				# Add nearby players to the relevant players list
+				if = {
+					limit = {
+						# Don't bother checking this if every player's already been added
+						any_player = {
+							NOT = { is_in_list = relevant_players }
+						}
+					}
+					every_culture_county = {
+						holder ?= {
+							every_player = {
+								limit = {
+									NOT = { is_in_list = relevant_players }
+									in_diplomatic_range = prev
+								}
+								add_to_list = relevant_players
+							}
+						}
+					}
+					every_living_character = {
+						limit = {
+							culture = prev
+							is_landed = yes
+						}
+						every_player = {
+							limit = {
+								NOT = { is_in_list = relevant_players }
+								in_diplomatic_range = prev
+							}
+							add_to_list = relevant_players
+						}
+					}
+				}
+			}
+		}
+
+		# If the 'proto_slavic' flag is in the culture event list, that means this event was triggered during the game, so players should get notifications
+		if = {
+			limit = {
+				any_in_global_list = {
+					variable = irtock3_culture_events_list
+					this = flag:proto_slavic
+				}
+			}
+			remove_list_global_variable = {
+				name = irtock3_culture_events_list
+				target = flag:proto_slavic
+			}
+
+			# Get scopes ready for notification event
+			global_var:proto_slavic_culture = { save_scope_as = parent_culture }
+			if = {
+				limit = { exists = scope:slavic_emperor }
+				scope:slavic_emperor = { save_scope_as = main_culture_ruler }
+			}
+
+			every_player = {
+				limit = {
+					OR = {
+						is_in_list = relevant_players
+						culture = global_var:proto_slavic_culture
+						culture = { is_in_list = new_cultures }
+						culture = { is_in_list = changed_cultures }
+					}
+				}
+				trigger_event = irtock3_culture_events.001
+			}
+		}
+	}
+}
