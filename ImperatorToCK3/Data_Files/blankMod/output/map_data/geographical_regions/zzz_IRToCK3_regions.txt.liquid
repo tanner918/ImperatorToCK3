@@ -514,6 +514,7 @@ irtock3_rome_empire_division_serica_deserti = {
 ############
 # These regions are to be used with the events/decisions added by the converter for cultures to evolve throughout the game
 
+## Slavic -> Wendish/Antean/Sclavenian Split
 irtock3_west_slavic_region = {
 	regions = {
 		world_europe_west
@@ -631,10 +632,332 @@ irtock3_south_slavic_region = {
 	}
 }
 
+## Wendish Culture Split
+irtock3_culture_region_polabian = {
+	duchies = {
+		d_nordmark d_ostmark
+	}
+}
 
+irtock3_culture_region_pomeranian = {
+	duchies = {
+		d_pommerania d_pomerelia
+	}
+}
 
+irtock3_culture_region_silesian = {
+	duchies = {
+		d_lower_silesia d_upper_silesia
+	}
+}
 
+irtock3_culture_region_mazovian = {
+	duchies = {
+		d_mazovia
+	}
+}
 
+irtock3_culture_region_czech = {
+	duchies = {
+		d_bohemia
+	}
+}
+
+irtock3_culture_region_polan = {
+	duchies = {
+		d_wielkopolska d_kuyavia
+	}
+}
+
+irtock3_culture_region_vistulan = {
+	duchies = {
+		d_lesser_poland
+	}
+}
+
+irtock3_culture_region_lendian = {
+	duchies = {
+		d_cherven_cities
+	}
+}
+
+irtock3_culture_region_slovak = {
+	duchies = {
+		d_nyitra
+	}
+}
+
+irtock3_culture_region_moravian = {
+	duchies = {
+		d_moravia
+	}
+}
+
+irtock3_culture_region_sorbian = {
+	duchies = {
+		d_laustiz d_meissen d_anhalt d_thuringia
+	}
+}
+
+## Antean Culture Split
+### East Slavic
+irtock3_culture_region_ilmenian = {
+	duchies = {
+		d_novgorod d_vepsia d_luki
+	}
+}
+
+irtock3_culture_region_pomor = {
+	duchies = {
+		d_biarmia d_ustyug d_chudia d_vologda
+	}
+}
+
+irtock3_culture_region_tverian = {
+	counties = {
+		c_tver
+	}
+}
+
+irtock3_culture_region_zalessian = {
+	duchies = {
+		d_opolye
+	}
+}
+
+irtock3_culture_region_ryazanian = {
+	duchies = {
+		d_ryazan
+	}
+}
+
+irtock3_culture_region_kozelian = {
+	duchies = {
+		d_novosil
+	}
+}
+
+irtock3_culture_region_vyatichian = {
+	duchies = {
+		d_karachev
+	}
+	counties = {
+		c_smolensk c_roslavl
+	}
+}
+
+irtock3_culture_region_krivichian = {
+	counties = {
+		c_toropets c_gnezdovo c_mozhaysk
+	}
+}
+
+irtock3_culture_region_polochian = {
+	duchies = {
+		d_polotsk
+	}
+}
+
+irtock3_culture_region_dregovichian = {
+	duchies = {
+		d_grodno d_minsk
+	}
+	counties = {
+		c_kletsk c_slutsk c_babruysk
+	}
+}
+
+irtock3_culture_region_drevlian = {
+	duchies = {
+		d_turov
+	}
+	counties = {
+		c_pinsk c_berestye c_dorohychyn
+	}
+}
+
+irtock3_culture_region_severian = {
+	duchies = {
+		d_chernigov d_pereyaslavl
+	}
+}
+
+irtock3_culture_region_polyan = {
+	duchies = {
+		d_kiev
+	}
+}
+
+irtock3_culture_region_volhynian = {
+	duchies = {
+		d_halych d_cherven_cities
+	}
+	counties = {
+		c_peresopnytsia c_volodymyr
+	}
+}
+
+irtock3_culture_region_ulichian = {
+	duchies = {
+		d_yedisan d_kizilyedisan
+	}
+}
+
+irtock3_culture_region_tervistian = {
+	duchies = {
+		d_bugeac d_moldova d_bukovina
+	}
+}
+
+### Eastern South Slavic (The Anteans are considered the ancestors of some tribes considered South Slavic, including the later Bulgarians)
+irtock3_culture_region_ezerite = {
+	counties = {
+		c_laconia c_korinthos c_attica c_euboea
+	}
+}
+
+irtock3_culture_region_melingoi = {
+	counties = {
+		c_messenia c_achaia c_aetolia c_cephalonia
+	}
+}
+
+irtock3_culture_region_bainuite = {
+	counties = {
+		c_nicopolis c_epeiros c_buthrotum c_avlonas c_antipatreia c_dyrrachion
+	}
+}
+
+irtock3_culture_region_bersite = {
+	counties = {
+		c_arbanon c_debar c_ohrid c_metzovo
+	}
+}
+
+irtock3_culture_region_belegezite = {
+	duchies = {
+		d_thessaly
+	}
+	counties = {
+		c_boeotia
+	}
+}
+
+irtock3_culture_region_draguvite = {
+	counties = {
+		c_veria
+	}
+}
+
+irtock3_culture_region_sagudate = {
+	counties = {
+		c_thessalonika
+	}
+}
+
+irtock3_culture_region_rynchine = {
+	counties = {
+		c_chalkidike
+	}
+}
+
+irtock3_culture_region_strymonite = {
+	duchies = {
+		d_strymon
+	}
+}
+
+irtock3_culture_region_marvaci = {
+	counties = {
+		c_rhodopes
+	}
+}
+
+irtock3_culture_region_smolyani = {
+	counties = {
+		c_zherkovo
+	}
+}
+
+## Sclavenian Culture Split
+irtock3_culture_region_carantanian = {
+	duchies = {
+		d_friuli d_krain d_carinthia d_steyermark
+	}
+}
+
+irtock3_culture_region_blatnoslav = {
+	duchies = {
+		d_gyor d_visegrad d_somogy
+	}
+}
+
+irtock3_culture_region_guduscani = {
+	counties = {
+		c_lika
+	}
+}
+
+irtock3_culture_region_naretine = {
+	counties = {
+		c_pagania
+	}
+}
+
+irtock3_culture_region_travunian = {
+	counties = {
+		c_travunia c_ragusa
+	}
+}
+
+irtock3_culture_region_konavlian = {
+	counties = {
+		c_pomorje
+	}
+}
+
+irtock3_culture_region_doclean = {
+	duchies = {
+		d_duklja
+	}
+}
+
+irtock3_culture_region_zachlumian = {
+	duchies = {
+		d_usora
+	}
+}
+
+irtock3_culture_region_branichian = {
+	counties = {
+		c_branicevo
+	}
+}
+
+irtock3_culture_region_timocani = {
+	counties = {
+		c_vidin
+	}
+}
+
+irtock3_culture_region_bosnian = { # Being defined as a fallback. It seems like it'd make more sense to have Bosnian emerge due to a "Bosnian" political entity/realm emerging, but if it seems like that never happens, this region can be used to "encourage" them to appear.
+	duchies = {
+		d_bosna d_lower_bosna
+	}
+}
+
+irtock3_culture_region_serbian = {
+	duchies = {
+		d_rashka d_macva d_syrmia
+	}
+}
+
+irtock3_culture_region_croatian = {
+	duchies = {
+		d_dalmatia d_istria d_croatia d_slavonia
+		d_bosna d_lower_bosna # These are mainly just in case the Bosnian region isn't used when splitting Sclavenian, to make sure it gets a relevant culture
+	}
+}
 
 ############
 ## XYZ
