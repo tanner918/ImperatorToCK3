@@ -1584,5 +1584,158 @@ IRToCK3_yearly_culture_effect = {
 				}
 			}
 		}
+
+		# Wendish splits into West Slavic cultures
+		if = {
+			limit = {
+				any_in_global_list = { variable = irtock3_culture_events_list this = flag:west_slavic }
+				current_date >= 650.1.1
+			}
+
+			# Randomly choose a year to try split
+			random = {
+				chance = 5
+				modifier = {
+					add = 5 # 10% chance
+					current_date >= 680.1.1
+				}
+				modifier = {
+					add = 10 # 20% chance
+					current_date >= 700.1.1
+				}
+				modifier = {
+					add = 10 # 30% chance
+					current_date >= 720.1.1
+				}
+				modifier = {
+					add = 20 # 50% chance
+					current_date >= 740.1.1
+				}
+				modifier = {
+					add = 20 # 70% chance
+					current_date >= 760.1.1
+				}
+				modifier = {
+					add = 30 # 100% chance
+					current_date >= 780.1.1
+				}
+				# If Antean and/or Sclavenian already split, increase chances
+				modifier = {
+					add = 10
+					NOT = { any_in_global_list = { variable = irtock3_culture_events_list this = flag:east_slavic } }
+				}
+				modifier = {
+					add = 10
+					NOT = { any_in_global_list = { variable = irtock3_culture_events_list this = flag:south_slavic } }
+				}
+				
+				trigger_event = {
+					id = irtock3_culture_events.101
+					days = { 60 300 }
+				}
+			}
+		}
+
+		# Antean splits into East Slavic cultures
+		if = {
+			limit = {
+				any_in_global_list = { variable = irtock3_culture_events_list this = flag:east_slavic }
+				current_date >= 650.1.1
+			}
+
+			# Randomly choose a year to try split
+			random = {
+				chance = 5
+				modifier = {
+					add = 5 # 10% chance
+					current_date >= 680.1.1
+				}
+				modifier = {
+					add = 10 # 20% chance
+					current_date >= 700.1.1
+				}
+				modifier = {
+					add = 10 # 30% chance
+					current_date >= 720.1.1
+				}
+				modifier = {
+					add = 20 # 50% chance
+					current_date >= 740.1.1
+				}
+				modifier = {
+					add = 20 # 70% chance
+					current_date >= 760.1.1
+				}
+				modifier = {
+					add = 30 # 100% chance
+					current_date >= 780.1.1
+				}
+				# If Wendish and/or Sclavenian already split, increase chances
+				modifier = {
+					add = 10
+					NOT = { any_in_global_list = { variable = irtock3_culture_events_list this = flag:west_slavic } }
+				}
+				modifier = {
+					add = 10
+					NOT = { any_in_global_list = { variable = irtock3_culture_events_list this = flag:south_slavic } }
+				}
+				
+				trigger_event = {
+					id = irtock3_culture_events.102
+					days = { 60 300 }
+				}
+			}
+		}
+
+		# Sclavenian splits into South Slavic cultures
+		if = {
+			limit = {
+				any_in_global_list = { variable = irtock3_culture_events_list this = flag:south_slavic }
+				current_date >= 650.1.1
+			}
+
+			# Randomly choose a year to try split
+			random = {
+				chance = 5
+				modifier = {
+					add = 5 # 10% chance
+					current_date >= 680.1.1
+				}
+				modifier = {
+					add = 10 # 20% chance
+					current_date >= 700.1.1
+				}
+				modifier = {
+					add = 10 # 30% chance
+					current_date >= 720.1.1
+				}
+				modifier = {
+					add = 20 # 50% chance
+					current_date >= 740.1.1
+				}
+				modifier = {
+					add = 20 # 70% chance
+					current_date >= 760.1.1
+				}
+				modifier = {
+					add = 30 # 100% chance
+					current_date >= 780.1.1
+				}
+				# If Wendish and/or Antean already split, increase chances
+				modifier = {
+					add = 10
+					NOT = { any_in_global_list = { variable = irtock3_culture_events_list this = flag:west_slavic } }
+				}
+				modifier = {
+					add = 10
+					NOT = { any_in_global_list = { variable = irtock3_culture_events_list this = flag:east_slavic } }
+				}
+				
+				trigger_event = {
+					id = irtock3_culture_events.103
+					days = { 60 300 }
+				}
+			}
+		}
 	}
 }
