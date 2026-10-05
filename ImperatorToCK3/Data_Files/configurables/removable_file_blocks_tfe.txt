@@ -13106,6 +13106,117 @@ press_the_ostrogoths_decision = {
 	}
 }
 	}
+
+	# Anachronistic
+	{
+rebuild_third_temple = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_destiny_goal.dds"
+	}
+	decision_group_type = religious
+
+	ai_check_interval = 24
+
+	desc = rebuild_third_temple_desc
+	selection_tooltip = rebuild_third_temple_tooltip
+
+	is_shown = {
+		NOT = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:rebuild_third_temple
+			}
+		}
+		completely_controls = title:c_jerusalem
+		NOT = {
+			AND = {
+				exists = faith
+				OR = {
+					faith.religion = religion:islam_religion
+					faith.religion = religion:christianity_religion
+				}
+			}
+		}
+	}
+
+	is_valid = {
+		OR = {
+			has_trait = scholar
+			has_trait = theologian
+			faith.religion = faith:rabbinism.religion
+		}
+		completely_controls = title:c_jerusalem
+		completely_controls = title:c_jaffa
+		completely_controls = title:c_ghazza
+		gold >= 1500
+	}
+
+	effect = {
+		set_global_variable = {
+			name = julian
+			value = root
+		}
+		add_to_global_variable_list = {
+			name = unavailable_unique_decisions
+			target = flag:rebuild_third_temple
+		}
+		trigger_event = western_roman.0031
+		custom_tooltip = rebuild_third_temple_custom_desc
+		show_as_tooltip = {
+			custom_tooltip = faith_third_temple
+			root = {
+				add_prestige = 2500
+				dynasty = {
+					add_dynasty_prestige = 500
+				}
+				add_character_modifier = rebuilt_third_temple
+				custom_tooltip = {
+				text = third_temple_reward_opinion
+					every_vassal_or_below = {
+						if = {
+							limit = {
+								faith.religion = faith:nicene.religion
+								has_trait = zealous
+							}
+							random_list = {
+								33 = {}
+								67 = {
+									set_character_faith_with_conversion = scope:julian.faith
+								}
+							}
+						}
+					}
+					every_vassal_or_below = {
+						if = {
+							limit = {
+								faith.religion = faith:rabbinism.religion
+							}
+							add_opinion = {
+								modifier = respect_opinion
+								target = scope:julian
+								opinion = 100
+							}
+						}
+					}
+				}
+			}
+			custom_tooltip = jewish_convert_third_temple
+		}
+	}
+
+	cost = {
+	}
+
+	ai_potential = {
+		always = yes
+	}
+
+	ai_will_do = {
+		base = 100
+	}
+
+}
+	}
 }
 
 
@@ -28346,5 +28457,281 @@ feudal_government_or_dynastic_realm = {
 	# The Armaz faith references a non-existant religious head title
 	{
 			religious_head = d_armaz
+	}
+}
+
+
+"common/decisions/TFE_major_celtic_decisions.txt" = {
+	# Anachronistic
+	{
+#Proclaim the Gallic Roman Empire
+restore_the_gallic_roman_empire = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/fp1_decision_raise_runestone.dds"
+	}
+	decision_group_type = roman
+
+	desc = restore_the_gallic_roman_empire_desc
+	selection_tooltip = restore_the_gallic_roman_empire_tooltip
+	ai_goal = yes
+
+	is_shown = {
+		is_landed = yes
+		exists = dynasty
+		NOT = { is_roman_emperor_trigger = yes }
+		OR = {
+			culture = { has_cultural_pillar = heritage_latin }
+			culture = { has_cultural_pillar = heritage_byzantine }
+			culture = { has_cultural_pillar = heritage_hellenistic }
+		}
+		# Only when the three western dioceses have collapsed — the Italian
+		# core is inaccessible, so the Gallic sphere is the only remaining
+		# Roman restoration path.
+		title:k_gallia = { OR = { is_title_created = no NOT = { exists = holder } } }
+		title:k_septem_provinciae = { OR = { is_title_created = no NOT = { exists = holder } } }
+		title:k_britannia = { OR = { is_title_created = no NOT = { exists = holder } } }
+		NOT = { has_character_flag = flag_restorer_of_gaul }
+	}
+
+	is_valid = {
+		is_independent_ruler = yes
+		prestige_level >= high_prestige_level
+		OR = {
+			government_has_flag = government_is_romanesque
+			government_has_flag = government_is_roman
+			government_has_flag = government_is_roman_imperial
+		}
+		# A3 named-duchy core spanning all three Gallic dioceses.
+		completely_controls = title:d_upper_lorraine
+		completely_controls = title:d_champagne
+		completely_controls = title:d_aquitaine
+		completely_controls = title:d_languedoc
+		completely_controls = title:d_provence
+		completely_controls = title:d_dauphine
+		completely_controls = title:d_upper_burgundy
+		completely_controls = title:d_toulouse
+		completely_controls = title:d_gascogne
+		completely_controls = title:d_burgundy
+		completely_controls = title:d_bourbon
+		completely_controls = title:d_bar
+		completely_controls = title:d_valois
+		completely_controls = title:d_berry
+		completely_controls = title:d_orleans
+		completely_controls = title:d_poitou
+		completely_controls = title:d_anjou
+		completely_controls = title:d_brabant
+		completely_controls = title:d_luxembourg
+		completely_controls = title:d_julich
+		completely_controls = title:d_lower_lorraine
+		completely_controls = title:d_savoie
+		completely_controls = title:d_transjurania
+	}
+
+	is_valid_showing_failures_only = {
+		is_capable_adult = yes
+		is_imprisoned = no
+		is_independent_ruler = yes
+		is_at_war = no
+	}
+
+	effect = {
+		save_scope_as = founder
+		show_as_tooltip = { restore_the_gallic_roman_empire_effect = yes }
+		trigger_event = { id = gallic_empire.0001 }
+	}
+
+	cost = { gold = { value = 1000 if = { limit = { is_ai = yes } multiply = 0 } } prestige = { value = 500 if = { limit = { is_ai = yes } multiply = 0 } } piety = { value = 500 if = { limit = { is_ai = yes } multiply = 0 } } }
+
+	ai_potential = {
+		always = yes
+	}
+
+	ai_will_do = {
+		base = 100
+		modifier = {
+			add = 500
+			culture = { has_cultural_pillar = heritage_latin }
+		}
+		modifier = {
+			add = 500
+			culture = { has_cultural_pillar = heritage_byzantine }
+		}
+		modifier = {
+			add = 500
+			culture = { has_cultural_pillar = heritage_hellenistic }
+		}
+	}
+}
+	}
+}
+
+
+"common/decisions/TFE_misc_decisions.txt" = {
+	# Anachronistic
+	{
+find_aurelian_helmet = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_roman_officers.dds"
+	}
+	decision_group_type = religious
+
+	desc = find_aurelian_helmet_desc
+	selection_tooltip = find_aurelian_helmet_tooltip
+	ai_check_interval = 36
+	cooldown = { days = 100 }
+
+	is_shown = {
+		is_ruler = yes
+		is_landed = yes
+		has_religion = religion:hellenism_religion
+		NOT = { has_global_variable = aurelianhelmet_found }
+	}
+
+	is_valid = {
+		prestige_level >= 3
+		is_imprisoned = no
+		employs_court_position = antiquarian_court_position
+	}
+
+	effect = {
+		trigger_event = province_events.0038
+	}
+
+	ai_potential = {
+		always = yes
+	}
+
+	ai_will_do = {
+		base = 25
+	}
+	cost = { prestige = { value = 200 } gold = { value = 10 } }
+}
+	}
+}
+
+
+"common/decisions/TFE_major_decisions_east_asia.txt" = {
+	# Anachronistic
+	{
+TFE_claim_descent_from_li_ling = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/decision_steppe_feast.dds"
+	}
+	decision_group_type = cultural
+
+	desc = TFE_claim_descent_from_li_ling_desc
+
+	ai_check_interval = 48
+
+	is_shown = {
+		is_landed_or_landless_administrative = yes
+		is_dynast = yes
+		culture = {
+			OR = {
+				has_cultural_pillar = heritage_turkic
+				has_cultural_pillar = heritage_mongolic
+				has_cultural_pillar = heritage_yeniseian
+			}
+		}
+		NOT = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:TFE_li_ling_descent_claimed_already
+			}
+		}
+	}
+
+	is_valid = {
+		custom_description = {
+			text = TFE_li_ling_already_done_requirement
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = unavailable_unique_decisions
+					target = flag:TFE_li_ling_descent_claimed_already
+				}
+			}
+		}
+		culture = {
+			OR = {
+				has_cultural_pillar = heritage_turkic
+				has_cultural_pillar = heritage_mongolic
+				has_cultural_pillar = heritage_yeniseian
+			}
+		}
+		highest_held_title_tier >= tier_kingdom
+		prestige_level >= 4
+		custom_description = {
+			text = TFE_li_ling_steppe_requirement
+			capital_province = {
+				OR = {
+					geographical_region = world_steppe_east
+					geographical_region = world_steppe_tarim
+				}
+			}
+		}
+	}
+
+	is_valid_showing_failures_only = {
+		is_adult = yes
+		is_available = yes
+	}
+
+	cost = {
+		gold = {
+			value = major_gold_value
+		}
+		prestige = {
+			value = massive_prestige_value
+		}
+	}
+
+	effect = {
+	
+		#Can only happen once
+		add_to_global_variable_list = {
+			name = unavailable_unique_decisions
+			target = flag:TFE_li_ling_descent_claimed_already
+		}
+
+		save_scope_as = li_ling_claimant
+
+		claim_li_ling_descent_effect = yes
+
+		every_ruler = {
+			# Notify others
+			limit = {
+				is_ai = no
+				culture = {
+					OR = {
+						has_cultural_pillar = heritage_turkic
+						has_cultural_pillar = heritage_mongolic
+						has_cultural_pillar = heritage_yeniseian
+						has_cultural_pillar = heritage_chinese
+					}
+				}
+				any_held_title = {
+					tier = tier_county
+					any_county_province = {
+						OR = {
+							geographical_region = world_steppe_east
+							geographical_region = world_steppe_tarim
+						}		
+					}
+				}
+			}
+			trigger_event = steppe.0001
+		}
+
+		add_to_list = notification_sent
+	}
+
+	ai_will_do = {
+		base = 50
+		modifier = {
+			add = 10
+			has_trait = ambitious
+		}
+	}
+}
 	}
 }

@@ -494,3 +494,122 @@ scripted_trigger valid_migrator = {
 		}
 	}
 }
+
+
+"common/decisions/TFE_rome_decisions.txt" = {
+	# Restore Western Roman Empire decision should only be possible if the WRE actually existed
+	replace = {
+		before = {
+		title:e_western_roman_empire = {
+			OR = {
+				is_title_created = no
+				NOT = { exists = holder }
+			}
+		}
+		title:h_roman_empire = {
+			OR = {
+				is_title_created = no
+				NOT = { exists = holder }
+			}
+		}
+		}
+
+		after = {
+		title:e_western_roman_empire = {
+			OR = {
+				is_title_created = no
+				NOT = { exists = holder }
+			}
+			# IRToCK3: Made it so the WRE needs to have actually existed, otherwise this wouldn't make sense
+			exists = previous_holder
+		}
+		title:h_roman_empire = {
+			OR = {
+				is_title_created = no
+				NOT = { exists = holder }
+			}
+		}
+		}
+	}
+
+	# Restore Eastern Roman Empire decision should only be possible if the ERE actually existed
+	replace = {
+		before = {
+		title:e_byzantium = {
+			OR = {
+				is_title_created = no
+				NOT = { exists = holder }
+			}
+		}
+		title:h_roman_empire = {
+			OR = {
+				is_title_created = no
+				NOT = { exists = holder }
+			}
+		}
+		}
+
+		after = {
+		title:e_byzantium = {
+			OR = {
+				is_title_created = no
+				NOT = { exists = holder }
+			}
+			# IRToCK3: Made it so the ERE needs to have actually existed, otherwise this wouldn't make sense
+			exists = previous_holder
+		}
+		title:h_roman_empire = {
+			OR = {
+				is_title_created = no
+				NOT = { exists = holder }
+			}
+		}
+		}
+	}
+}
+
+
+"common/decisions/tfe_culture_decisions.txt" = {
+	# The decision to Proclaim a New Code of Law (Germans taking Roman-like law codes), should probably only be possible if the Romans are influential enough for them to want to mimic
+	replace = {
+		before = {
+		AND = {
+			exists = culture
+			culture = {
+				OR = {
+					has_cultural_pillar = heritage_central_germanic
+					has_cultural_pillar = heritage_east_germanic
+					has_cultural_pillar = heritage_west_germanic
+					THIS = culture:alan
+				}
+			}
+		}
+		}
+
+		after = {
+		AND = {
+			exists = culture
+			culture = {
+				OR = {
+					has_cultural_pillar = heritage_central_germanic
+					has_cultural_pillar = heritage_east_germanic
+					has_cultural_pillar = heritage_west_germanic
+					THIS = culture:alan
+				}
+			}
+		}
+		# IRToCK3: Rome should be influential enough for them to want to mimic to make a law code based after them
+		# These are variables the IRToCK3 converter uses to track if Rome has "elevated" themselves to at least Empire-tier
+		OR = {
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:irtock3_roman_kingdom_elevated
+			}
+			is_target_in_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:irtock3_elevate_roman_empire_decision
+			}
+		}
+		}
+	}
+}
