@@ -19,16 +19,16 @@
 
   <ItemGroup>
     <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
-    <PackageReference Include="coverlet.msbuild" Version="10.0.1">
+    <PackageReference Include="coverlet.msbuild" Version="10.1.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.1" />
-    <PackageReference Include="coverlet.collector" Version="10.0.1">
+    <PackageReference Include="coverlet.collector" Version="10.1.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.MTP" Version="10.0.1" />
+    <PackageReference Include="coverlet.MTP" Version="10.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +44,7 @@
 	<ItemGroup>
 		<ConfigurableFiles Include="..\ImperatorToCK3/Data_Files/configurables/imperator_mods.txt" />
 		<ConfigurableFiles Include="..\ImperatorToCK3/Data_Files/configurables/ck3_mods.txt" />
+		<ConfigurableFiles Include="..\ImperatorToCK3/Data_Files/configurables/version.txt" />
 		<ConfigurableFiles Include="TestFiles/configurables/provinces_prehistory.txt" />
 	</ItemGroup>
 	<Target Name="CopyCustomContent" AfterTargets="Build">
