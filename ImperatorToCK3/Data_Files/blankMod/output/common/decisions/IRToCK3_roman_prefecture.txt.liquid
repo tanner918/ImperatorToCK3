@@ -1,5 +1,6 @@
 ﻿@form_prefecture_decision_check_interval = 30
 
+{% unless tfe %} # TFE merges Britannia into Galliarum
 # irtock3_rome_empire_division_britannia: "Britannia"
 irtock3_form_prefecture_britannia_decision = {
 	picture = {
@@ -70,6 +71,7 @@ irtock3_form_prefecture_britannia_decision = {
 		irtock3_form_roman_prefecture_effect = { REGION = irtock3_rome_empire_division_britannia }
 	}
 }
+{% endunless %}
 
 # irtock3_rome_empire_division_galliarum: "Galliarum"
 irtock3_form_prefecture_galliarum_decision = {
