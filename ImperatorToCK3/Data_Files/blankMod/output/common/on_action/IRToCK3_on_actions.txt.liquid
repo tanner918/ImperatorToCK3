@@ -993,7 +993,30 @@ IRToCK3_game_start_onaction_effects = {
 			remove_culture_tradition = tradition_sinophilic
 		}
 
-		
+
+		##########################
+		### Mod-Specific Setup ###
+		##########################
+		{% if tfe %}
+		# TFE
+		## Setup variables for Roman diocese titles so they can properly be restored later
+		title:k_italia_suburbicariae = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_italia_annonariae = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_pannonia = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_hispania = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_septem_provinciae = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_gallia = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_britannia = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_africae = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_thracia = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_asiae = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_pontus_roman = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_orientis = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_aegyptus = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_macedon = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		title:k_daciae = { set_variable = { name = diocese_restoration_stage value = 0 } }
+		{% endif %}
+
 		# Government Setup
 		irtock3_setup_governments = yes
 	}

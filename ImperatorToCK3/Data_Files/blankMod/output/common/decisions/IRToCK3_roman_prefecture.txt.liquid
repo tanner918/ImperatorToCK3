@@ -1,6 +1,6 @@
 ﻿@form_prefecture_decision_check_interval = 30
 
-{% unless tfe %} # TFE merges Britannia into Galliarum
+{% unless tfe %} # For now, disabling for TFE since they have their own equivalent content to this, but only for historical regions, so need to figure out how to best integrate the rest of the map
 # irtock3_rome_empire_division_britannia: "Britannia"
 irtock3_form_prefecture_britannia_decision = {
 	picture = {
@@ -71,7 +71,6 @@ irtock3_form_prefecture_britannia_decision = {
 		irtock3_form_roman_prefecture_effect = { REGION = irtock3_rome_empire_division_britannia }
 	}
 }
-{% endunless %}
 
 # irtock3_rome_empire_division_galliarum: "Galliarum"
 irtock3_form_prefecture_galliarum_decision = {
@@ -1777,7 +1776,7 @@ irtock3_form_prefecture_septentrionalis_deserti_decision = {
 	}
 }
 
-{% unless wtwsms or tfe %} # WtWSMS/TFE don't have playable East Asia yet.
+{% unless wtwsms %} # WtWSMS/TFE don't have playable East Asia yet.
 # irtock3_rome_empire_division_insulae_remotae: "Insulae Remotae"
 irtock3_form_prefecture_insulae_remotae_decision = {
 	picture = {
@@ -2274,9 +2273,7 @@ irtock3_form_prefecture_serica_septentrionalis_decision = {
 		irtock3_form_roman_prefecture_effect = { REGION = irtock3_rome_empire_division_serica_septentrionalis }
 	}
 }
-{% endunless %}
 
-{% unless wtwsms %} # WtWSMS doesn't have playable East Asia yet.
 # irtock3_rome_empire_division_serica_deserti: "Serica Deserti"
 irtock3_form_prefecture_serica_deserti_decision = {
 	picture = {
@@ -2347,4 +2344,6 @@ irtock3_form_prefecture_serica_deserti_decision = {
 		irtock3_form_roman_prefecture_effect = { REGION = irtock3_rome_empire_division_serica_deserti }
 	}
 }
+{% endunless %}
+
 {% endunless %}
