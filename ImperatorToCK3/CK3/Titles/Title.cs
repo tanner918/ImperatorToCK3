@@ -1125,6 +1125,7 @@ internal sealed partial class Title : IPDXSerializable, IIdentifiable<string> {
 	[SerializedName("destroy_on_succession")] public bool? DestroyOnSuccession { get; set; }
 	[SerializedName("no_automatic_claims")] public bool? NoAutomaticClaims { get; set; }
 	[SerializedName("noble_family")] public bool? NobleFamily { get; set; }
+	[SerializedName("nomad")] public bool? Nomad { get; set; }
 	[SerializedName("always_follows_primary_heir")] public bool? AlwaysFollowsPrimaryHeir { get; set; }
 	[SerializedName("de_jure_drift_disabled")] public bool? DeJureDriftDisabled { get; set; }
 	[SerializedName("can_be_named_after_dynasty")] public bool? CanBeNamedAfterDynasty { get; set; }
@@ -1141,7 +1142,8 @@ internal sealed partial class Title : IPDXSerializable, IIdentifiable<string> {
 	[SerializedName("posthumous_regnal_female_names")] public StringOfItem? PosthumousRegnalFemaleNames { get; private set; }
 	[SerializedName("personal_relation_entry")] public StringOfItem? PersonalRelationEntry { get; private set; }
 	[SerializedName("personal_relation_vassal")] public StringOfItem? PersonalRelationVassal { get; private set; }
-	[SerializedName("disable_regnal_numbers")] public bool? DisableRegnalNumbers { get; set; }
+	[SerializedName("disable_regnal_numbers")] public String? DisableRegnalNumbers { get; private set; }
+	[SerializedName("dlc_feature")] public String? DLCFeature { get; private set; }
 
 	public int? GetOwnOrInheritedDevelopmentLevel(Date date) {
 		// Latest date (<= date) takes precedence.
@@ -1213,6 +1215,7 @@ internal sealed partial class Title : IPDXSerializable, IIdentifiable<string> {
 		parser.RegisterKeyword("destroy_on_succession", reader => DestroyOnSuccession = reader.GetBool());
 		parser.RegisterKeyword("no_automatic_claims", reader => NoAutomaticClaims = reader.GetBool());
 		parser.RegisterKeyword("noble_family", reader => NobleFamily = reader.GetBool());
+		parser.RegisterKeyword("nomad", reader => Nomad = reader.GetBool());
 		parser.RegisterKeyword("always_follows_primary_heir", reader => AlwaysFollowsPrimaryHeir = reader.GetBool());
 		parser.RegisterKeyword("de_jure_drift_disabled", reader => DeJureDriftDisabled = reader.GetBool());
 		parser.RegisterKeyword("can_be_named_after_dynasty", reader => CanBeNamedAfterDynasty = reader.GetBool());
@@ -1228,7 +1231,8 @@ internal sealed partial class Title : IPDXSerializable, IIdentifiable<string> {
 		parser.RegisterKeyword("posthumous_regnal_female_names", reader => PosthumousRegnalFemaleNames = reader.GetStringOfItem());
 		parser.RegisterKeyword("personal_relation_entry", reader => PersonalRelationEntry = reader.GetStringOfItem());
 		parser.RegisterKeyword("personal_relation_vassal", reader => PersonalRelationVassal = reader.GetStringOfItem());
-		parser.RegisterKeyword("disable_regnal_numbers", reader => DisableRegnalNumbers = reader.GetBool());
+		parser.RegisterKeyword("disable_regnal_numbers", reader => DisableRegnalNumbers = reader.GetString());
+		parser.RegisterKeyword("dlc_feature", reader => DLCFeature = reader.GetString());
 
 		parser.RegisterRegex(CommonRegexes.Catchall, (reader, token) => {
 			IgnoredTokens.Add(token);
