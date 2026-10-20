@@ -161,6 +161,53 @@
 				}
 		}
 	}
+
+	# Base game sets variables based on start date for historical Crusades, but that needs to be changed while still setting the appropriate variables
+	replace = {
+		before = {
+		### 1178 CRUSADE SETUP ###
+		if = {
+			limit = {
+				game_start_date >= 1178.10.1
+			}
+			religion:islam_religion = {
+				set_variable = {
+					name = variable_ghw_unlocked
+					value = yes
+				}
+			}
+			religion:christianity_religion = {
+				set_variable = {
+					name = variable_ghw_unlocked
+					value = yes
+				}
+			}
+			set_global_variable = {
+				name = had_first_catholic_crusade
+				value = yes
+			}
+			set_global_variable = {
+				name = num_catholic_crusades
+				value = 1
+			}
+		}
+		else = {
+			set_global_variable = {
+				name = num_catholic_crusades
+				value = 0
+			}
+		}
+		}
+
+		after = {
+		### CRUSADE SETUP ###
+		# IRToCK3: Base game sets various variables based off start date for historical crusade info, but just need to make sure this variable is set
+		set_global_variable = {
+			name = num_catholic_crusades
+			value = 0
+		}
+		}
+	} 
 }
 
 
@@ -170,10 +217,10 @@
 		before = {
 		any_held_title = {
 			OR = {
-				de_jure_liege = title:d_crimea
-				de_jure_liege = title:d_azov
-				this = title:d_crimea
+				de_jure_liege ?= title:d_crimea
 				this = title:d_azov
+				de_jure_liege ?= title:d_azov
+				this = title:d_crimea
 			}
 		}
 		} # end of before
@@ -181,20 +228,16 @@
 		after = {
 		any_held_title = {
 			OR = {
-				de_jure_liege = title:d_crimea
-				de_jure_liege = title:d_azov
-				this = title:d_crimea
+				de_jure_liege ?= title:d_crimea
 				this = title:d_azov
+				de_jure_liege ?= title:d_azov
+				this = title:d_crimea
 			}
 		}
 		# IRToCK3: "Added this just making sure the kingdom doesn't have a holder or de jure land" ~~tanner918
 		title:k_bosporan_kingdom = {
-			AND = {
-				NOT = { exists = holder }
-				any_de_jure_county = {
-					count < 1
-				}
-			}
+			NOT = { exists = holder }
+			is_titular = yes
 		}
 		} # end of after
 	}
@@ -221,7 +264,7 @@
 
 	replace = {
 		before = {
-			culture = {
+			culture ?= {
 				OR = {
 					this = culture:greek
 					any_parent_culture_or_above = { this = culture:greek }
@@ -230,18 +273,18 @@
 			AND = {
 				OR = {
 					ep3_orthodox_faith_trigger = yes
-					faith = faith:hellenic_pagan
+					faith ?= faith:hellenic_pagan
 				}
-				primary_title = {
+				primary_title ?= {
+					empire ?= title:e_byzantium
 					tier <= tier_empire
-					empire = title:e_latin_empire
 				}
 			}
 		} # end of before
 		
 		after = {
 			# IRToCK3: Allow Romans to use this decision too
-			culture = {
+			culture ?= {
 				OR = {
 					this = culture:greek
 					this = culture:roman
@@ -252,11 +295,11 @@
 			AND = {
 				OR = {
 					ep3_orthodox_faith_trigger = yes
-					faith = faith:hellenic_pagan
+					faith ?= faith:hellenic_pagan
 				}
-				primary_title = {
+				primary_title ?= {
+					empire ?= title:e_byzantium
 					tier <= tier_empire
-					empire = title:e_latin_empire
 				}
 			}
 		} # end of after
@@ -502,7 +545,6 @@
 	replace = {
 		before = {
 	is_shown = {
-		has_ep3_dlc_trigger = yes
 		has_title = title:e_byzantium
 		NOT = {
 			is_target_in_global_variable_list = {
@@ -510,13 +552,13 @@
 				target = flag:retake_eastern_provinces_decision
 			}
 		}
+		has_ep3_dlc_trigger = yes
 	}
 		} # end of before
 
 		after = {
 	is_shown = {
 		always = no # IRToCK3: Prevents the decision from being available since it doesn't really make sense given the new history of the world. Removing this line here will add it back in as normal
-		has_ep3_dlc_trigger = yes
 		has_title = title:e_byzantium
 		NOT = {
 			is_target_in_global_variable_list = {
@@ -524,6 +566,7 @@
 				target = flag:retake_eastern_provinces_decision
 			}
 		}
+		has_ep3_dlc_trigger = yes
 	}
 		} # end of after
 	}
@@ -536,12 +579,12 @@
 	# is_shown block
 	replace = {
 		before = {
+		faith.religion ?= religion:christianity_religion
 		# Byz emperor or governor
 		OR = {
+			liege ?= { has_title = title:e_byzantium }
 			has_title = title:e_byzantium
-			liege = { has_title = title:e_byzantium }
 		}
-		faith.religion = religion:christianity_religion
 		# You border with pagans to convert
 		trigger_if = {
 			limit = {
@@ -554,12 +597,12 @@
 		} # end of before
 
 		after = {
+		faith.religion ?= religion:christianity_religion
 		# Byz emperor or governor
 		OR = {
 			is_roman_emperor_trigger = yes # IRToCK3: Extend to other Roman Empire titles
-			liege = { is_roman_emperor_trigger = yes } # IRToCK3: Extend to other Roman Empire titles
+			liege ?= { is_roman_emperor_trigger = yes } # IRToCK3: Extend to other Roman Empire titles
 		}
-		faith.religion = religion:christianity_religion
 		# You border with pagans to convert
 		trigger_if = {
 			limit = {
@@ -625,9 +668,7 @@
 	replace = {
 		before = {
 	is_valid_showing_failures_only = {
-		is_at_war = no
-		NOT = { exists = involved_activity }
-		is_imprisoned = no
+		is_available_at_peace = yes
 		custom_tooltip = {
 			NOT = {
 				title:c_byzantion = { has_county_modifier = panem_et_circenses_county_modifier }
@@ -639,9 +680,7 @@
 
 		after = {
 	is_valid_showing_failures_only = {
-		is_at_war = no
-		NOT = { exists = involved_activity }
-		is_imprisoned = no
+		is_available_at_peace = yes
 		custom_tooltip = {
 			NOT = {
 				capital_county = { has_county_modifier = panem_et_circenses_county_modifier } # IRToCK3: The base game still has this set to only check c_byzantion, so it won't work with the new changes to allow other Roman Empire titles
@@ -660,18 +699,18 @@
 	# is_shown block
 	replace = {
 		before = {
-		has_ep3_dlc_trigger = yes
-		primary_title = title:h_roman_empire
+		primary_title ?= title:h_roman_empire
 		NOT = { exists = title:h_eastern_roman_empire.holder }
+		has_ep3_dlc_trigger = yes
 		} # end of before
 
 		after = {
-		has_ep3_dlc_trigger = yes
-		primary_title = title:h_roman_empire
+		primary_title ?= title:h_roman_empire
 		NOR = { # IRToCK3: Made it so both ERE and WRE can't have holders for decision to be taken
 			exists = title:h_eastern_roman_empire.holder
 			exists = title:h_western_roman_empire.holder
 		}
+		has_ep3_dlc_trigger = yes
 		} # end of after
 	} # end of is_shown block
 
@@ -750,8 +789,8 @@
 
 		if = {
 			limit = {
-				any_owned_story = { 
-					type = ep3_story_cycle_restoring_rome 
+				any_owned_story = {
+					type = ep3_story_cycle_restoring_rome
 					has_variable = roman_empire_hard_mode
 				}
 			}
@@ -782,9 +821,12 @@
 		before = {
 		OR = {
 			any_realm_county = { culture = culture:norse }
-			any_courtier = {
-				count >= 5
-				culture = culture:norse
+			custom_tooltip = {
+				text = has_5_norse_courtiers
+				any_courtier = {
+					count >= 5
+					culture = culture:norse
+				}
 			}
 			any_ally = { culture = culture:norse }
 		}
@@ -796,9 +838,12 @@
 			any_realm_county = {
 				culture = { has_cultural_pillar = heritage_north_germanic }
 			}
-			any_courtier = {
-				count >= 5
-				culture = { has_cultural_pillar = heritage_north_germanic }
+			custom_tooltip = {
+				text = has_5_norse_courtiers
+				any_courtier = {
+					count >= 5
+					culture = { has_cultural_pillar = heritage_north_germanic }
+				}
 			}
 			any_ally = {
 				culture = { has_cultural_pillar = heritage_north_germanic }
@@ -829,22 +874,41 @@
 	# is_shown block
 	replace = {
 		before = {
-			culture = culture:greek
-			culture = culture:roman
-			culture = {
-				any_parent_culture_or_above = {
-					this = culture:greek
-				}
+			AND = {
+				exists = title:h_eastern_roman_empire.holder
+				this = title:h_eastern_roman_empire.holder
+			}
+			AND = {
+				exists = title:h_roman_empire.holder
+				this = title:h_roman_empire.holder
+			}
+			AND = {
+				this = title:e_byzantium.holder
+				exists = title:e_byzantium.holder
 			}
 		}
 
 		after = {
-			culture = culture:greek
-			culture = culture:roman
-			culture = {
-				any_parent_culture_or_above = {
-					this = culture:greek
-				}
+			AND = {
+				exists = title:e_byzantium.holder
+				this = title:e_byzantium.holder
+			}
+			AND = {
+				exists = title:h_roman_empire.holder
+				this = title:h_roman_empire.holder
+			}
+			AND = {
+				exists = title:h_eastern_roman_empire.holder
+				this = title:h_eastern_roman_empire.holder
+			}
+			# IRToCK3: Added new Roman Empire titles as well
+			AND = {
+				exists = title:e_western_roman_empire.holder
+				this = title:e_western_roman_empire.holder
+			}
+			AND = {
+				exists = title:h_western_roman_empire.holder
+				this = title:h_western_roman_empire.holder
 			}
 			# IRToCK3: Allowing culture to descend from Roman as well
 			culture = {
@@ -858,8 +922,8 @@
 	replace = {
 		before = {
 			AND = {
-				exists = title:e_byzantium.holder
 				this = title:e_byzantium.holder
+				exists = title:e_byzantium.holder
 			}
 			AND = {
 				exists = title:h_roman_empire.holder
@@ -978,6 +1042,35 @@
 			has_title = title:e_byzantium
 		}
 	}
+
+	# ai_potential block
+	replace = {
+		before = {
+			culture = culture:greek
+			culture = culture:roman
+			culture = {
+				any_parent_culture_or_above = {
+					this = culture:greek
+				}
+			}
+		}
+
+		after = {
+			culture = culture:greek
+			culture = culture:roman
+			culture = {
+				any_parent_culture_or_above = {
+					this = culture:greek
+				}
+			}
+			# IRToCK3: Allowing culture to descend from Roman as well
+			culture = {
+				any_parent_culture_or_above = {
+					this = culture:roman
+				}
+			}
+		}
+	}
 }
 
 
@@ -1005,7 +1098,6 @@
 				set_de_jure_liege_title = title:e_byzantium
 			}
 		}
-		
 	}
 		} # end of before
 
@@ -1109,6 +1201,7 @@
 	replace = {
 		before = {
 		has_title = title:h_roman_empire
+		is_playable_character = yes
 		NOT = { capital_county = { this = title:c_roma } }
 		} # end of before
 
@@ -1118,6 +1211,7 @@
 			has_title = title:h_western_roman_empire
 			has_title = title:e_western_roman_empire
 		}
+		is_playable_character = yes
 		NOT = { capital_county = { this = title:c_roma } }
 		} # end of after
 	}
@@ -1148,18 +1242,20 @@
 
 	replace = {
 		before = {
-		# Standard filter checks.
-		is_playable_character = yes
-		# Sicily is still under the ERE.
-		title:e_byzantium = { is_de_jure_liege_or_above_target = title:k_sicily }
+		# Has land in Sicily.
+		any_held_title = {
+			title_tier = county
+			title_province ?= { geographical_region = custom_sicily }
+		}
 		} # end of before
 
 		after = {
 		always = no # IRToCK3: Makes decision impossible, since it doesn't really make sense given de jure map and history changes
-		# Standard filter checks.
-		is_playable_character = yes
-		# Sicily is still under the ERE.
-		title:e_byzantium = { is_de_jure_liege_or_above_target = title:k_sicily }
+		# Has land in Sicily.
+		any_held_title = {
+			title_tier = county
+			title_province ?= { geographical_region = custom_sicily }
+		}
 		} # end of after
 	}
 
@@ -1171,20 +1267,22 @@
 	replace = {
 		before = {
 		OR = {
-			is_roman_emperor_trigger = yes
 			has_title = title:e_hre
+			is_roman_emperor_trigger = yes
 		}
-		NOR = { #Once an Emperor throws the challenge, he has only one chance to dismantle the Empire.
-			has_character_flag = flag_emperor_challenging_byz #Applied below.
-			has_character_flag = flag_emperor_challenged_byz #Applied in war.
+		has_none_of_variables = {
+			#Once an Emperor throws the challenge, he has only one chance to dismantle the Empire.
+			name = flag_emperor_challenging_byz #Applied below.
+			name = flag_emperor_challenged_byz #Applied in war.
 		}
 		} # end of before
 
 		after = {
 		has_title = title:e_hre # IRToCK3: Limiting this decision so only the HRE can take it
-		NOR = { #Once an Emperor throws the challenge, he has only one chance to dismantle the Empire.
-			has_character_flag = flag_emperor_challenging_byz #Applied below.
-			has_character_flag = flag_emperor_challenged_byz #Applied in war.
+		has_none_of_variables = {
+			#Once an Emperor throws the challenge, he has only one chance to dismantle the Empire.
+			name = flag_emperor_challenging_byz #Applied below.
+			name = flag_emperor_challenged_byz #Applied in war.
 		}
 		} # end of after
 	}
@@ -1196,16 +1294,22 @@
 
 	replace = {
 		before = {
-		is_ruler = yes
-		is_playable_character = yes
 		has_title = title:e_hre
+		is_playable_character = yes
+		OR = {
+			NOT = { has_title = title:e_byzantium } # Prioritize Byzaboos
+			primary_title ?= title:e_hre
+		}
 		} # end of before
 
 		after = {
 		always = no # IRToCK3: Prevents decision from being available, given it doesn't make as much sense with new history, and giving priority to WRE and ERE forming Rome. Remove this line to add the decision back in as it was.
-		is_ruler = yes
-		is_playable_character = yes
 		has_title = title:e_hre
+		is_playable_character = yes
+		OR = {
+			NOT = { has_title = title:e_byzantium } # Prioritize Byzaboos
+			primary_title ?= title:e_hre
+		}
 		} # end of after
 	}
 
@@ -1216,14 +1320,20 @@
 
 	replace = {
 		before = {
-		is_ruler = yes
+		is_target_in_global_variable_list = { #Only available after unifying Italy.
+			name = unavailable_unique_decisions
+			target = flag:flag_unified_italian_empire
+		}
 		is_playable_character = yes
 		has_title = title:e_italy
 		} # end of before
 
 		after = {
 		always = no # IRToCK3: Prevents decision from being available, given it doesn't make as much sense with new history, and giving priority to WRE and ERE forming Rome. Remove this line to add the decision back in as it was.
-		is_ruler = yes
+		is_target_in_global_variable_list = { #Only available after unifying Italy.
+			name = unavailable_unique_decisions
+			target = flag:flag_unified_italian_empire
+		}
 		is_playable_character = yes
 		has_title = title:e_italy
 		} # end of after
@@ -1237,22 +1347,20 @@
 	# is_shown block
 	replace = {
 		before = {
-		is_ruler = yes
-		is_playable_character = yes
 		has_title = title:e_byzantium
+		is_playable_character = yes
 		NOT = { primary_title = title:e_hre }
 		NOT = { primary_title = title:e_italy }
 		} # end of before
 
 		after = {
-		is_ruler = yes
-		is_playable_character = yes
 		OR = { # IRToCK3: Making it so any of the WRE/ERE can reform rome
 			has_title = title:h_eastern_roman_empire
 			has_title = title:h_western_roman_empire
 			has_title = title:e_byzantium
 			has_title = title:e_western_roman_empire
 		}
+		is_playable_character = yes
 		NOT = { primary_title = title:e_hre }
 		NOT = { primary_title = title:e_italy }
 		} # end of after
@@ -1318,27 +1426,27 @@
 
 	replace = {
 		before = {
-		NOT = { culture = culture:greek }
-		NOT = { faith.religion = religion:christianity_religion }
-		OR = {
-			top_liege = this
-			top_liege = { faith.religion = faith:ashari.religion }
+		NOR = {
+			top_liege ?= { is_roman_emperor_trigger = yes }
+			exists = title:k_rum.holder
 		}
+		NOT = { faith.religion = religion:christianity_religion }
+		NOT = { culture = culture:greek }
 		} # end of before
 
 		after = {
+		NOR = {
+			top_liege ?= { is_roman_emperor_trigger = yes }
+			exists = title:k_rum.holder
+		}
 		# IRToCK3: Requires Rome to at least have elevated to hegemony rank, otherwise why would they be influential enough to mimic?
 		is_target_in_global_variable_list = {
 			name = unavailable_unique_decisions
 			target = flag:irtock3_elevate_roman_empire_decision
 		}
+		NOT = { faith.religion = religion:christianity_religion }
 		NOT = { culture = culture:greek }
 		NOT = { culture = culture:roman } # IRToCK3: Added roman as invalid culture
-		NOT = { faith.religion = religion:christianity_religion }
-		OR = {
-			top_liege = this
-			top_liege = { faith.religion = faith:ashari.religion }
-		}
 		} # end of after
 	}
 
@@ -1351,20 +1459,18 @@
 	# is_shown block
 	replace = {
 		before = {
-		culture = { has_cultural_pillar = heritage_latin }
-		is_ruler = yes
-		is_playable_character = yes
 		highest_held_title_tier > 2 #Dukes and above
-		capital_province = { geographical_region = world_europe_south_italy }
+		culture ?= { has_cultural_pillar = heritage_latin }
+		is_playable_character = yes
+		capital_province ?= { geographical_region = world_europe_south_italy }
 		}
 
 		after = {
 		always = no # IRToCK3: Makes this decision impossible for now since it doesn't make sense with the world's history changed
-		culture = { has_cultural_pillar = heritage_latin }
-		is_ruler = yes
-		is_playable_character = yes
 		highest_held_title_tier > 2 #Dukes and above
-		capital_province = { geographical_region = world_europe_south_italy }
+		culture ?= { has_cultural_pillar = heritage_latin }
+		is_playable_character = yes
+		capital_province ?= { geographical_region = world_europe_south_italy }
 		}
 	}
 
@@ -1571,35 +1677,6 @@
 			remove_character_flag = tgp_japan_restore_japanese_government_flag
 		}
 	}
-
-	# ai_will_do block
-	replace = {
-		before = {
-			culture = {
-				any_parent_culture_or_above = {
-					OR = {
-						this = culture:han
-						this = culture:greek
-					}
-				}
-			}
-			add = 100
-		} # end of before
-
-		after = {
-			culture = {
-				any_parent_culture_or_above = {
-					OR = {
-						this = culture:han
-						this = culture:greek
-						this = culture:roman # IRToCK3: Added roman as possible ancestor culture
-					}
-				}
-			}
-			add = 100
-		} # end of after
-	}
-
 }
 
 
@@ -1722,54 +1799,13 @@
 }
 
 
-"common/character_interactions/00_character_interactions.txt" = {
-	
-	# offer_vassalization_interaction ai_accept block
-	replace = {
-		before = {
-					OR = {
-						this = culture:greek
-						any_parent_culture_or_above = {
-							this = culture:greek
-						}
-						this = culture:han
-						any_parent_culture_or_above = {
-							this = culture:han
-						}
-					}
-		}# end of before
-
-		after = {
-					OR = { # IRToCK3: Modified to include roman since this is historical admin realm cultures
-						this = culture:greek
-						this = culture:roman
-						any_parent_culture_or_above = {
-							this = culture:greek
-						}
-						any_parent_culture_or_above = {
-							this = culture:roman
-						}
-						this = culture:han
-						any_parent_culture_or_above = {
-							this = culture:han
-						}
-					}
-		} # end of after
-	}
-
-}
-
-
 "common/culture/traditions/07_ep3_traditions.txt" = {
 	
 	# tradition_ep3_imperial_tagmata is_shown block
 	replace = {
 		before = {
 		OR = {
-			this = culture:greek
-			any_parent_culture_or_above = {
-				this = culture:greek
-			}
+			culture_is_or_has_ancestor_trigger = { CULTURE = culture:greek }
 			has_cultural_pillar = heritage_byzantine
 		}
 		# DLC check.
@@ -1780,15 +1816,9 @@
 		}# end of before
 
 		after = {
-		OR = { # IRToCK3: Added roman as possible culture
-			this = culture:greek
-			this = culture:roman
-			any_parent_culture_or_above = {
-				this = culture:greek
-			}
-			any_parent_culture_or_above = {
-				this = culture:roman
-			}
+		OR = { # IRToCK3: Added roman as possible culture, and removed heritage_byzantine since that is now meant for broader Hellenistic, not just Greek
+			culture_is_or_has_ancestor_trigger = { CULTURE = culture:greek }
+			culture_is_or_has_ancestor_trigger = { CULTURE = culture:roman }
 		}
 		# DLC check.
 		has_ep3_dlc_trigger = yes
@@ -1802,10 +1832,7 @@
 	replace = {
 		before = {
 		OR = {
-			this = culture:greek
-			any_parent_culture_or_above = {
-				this = culture:greek
-			}
+			culture_is_or_has_ancestor_trigger = { CULTURE = culture:greek }
 			has_cultural_pillar = heritage_byzantine
 			scope:character = {
 				is_roman_emperor_trigger = yes
@@ -1814,15 +1841,9 @@
 		}# end of before
 
 		after = {
-		OR = { # IRToCK3: Added roman as possible culture
-			this = culture:greek
-			this = culture:roman
-			any_parent_culture_or_above = {
-				this = culture:greek
-			}
-			any_parent_culture_or_above = {
-				this = culture:roman
-			}
+		OR = { # IRToCK3: Added roman as possible culture, and removed heritage_byzantine since that is now meant for broader Hellenistic, not just Greek
+			culture_is_or_has_ancestor_trigger = { CULTURE = culture:greek }
+			culture_is_or_has_ancestor_trigger = { CULTURE = culture:roman }
 			scope:character = {
 				is_roman_emperor_trigger = yes
 			}
@@ -1835,10 +1856,7 @@
 		before = {
 			limit = { # Admin should be more into this
 				OR = {
-					this = culture:greek
-					any_parent_culture_or_above = {
-						this = culture:greek
-					}
+					culture_is_or_has_ancestor_trigger = { CULTURE = culture:greek }
 					has_cultural_pillar = heritage_byzantine
 				}
 			}
@@ -1848,14 +1866,8 @@
 		after = {
 			limit = { # Admin should be more into this
 				OR = { # IRToCK3: Added roman as possible culture
-					this = culture:greek
-					this = culture:roman
-					any_parent_culture_or_above = {
-						this = culture:greek
-					}
-					any_parent_culture_or_above = {
-						this = culture:roman
-					}
+					culture_is_or_has_ancestor_trigger = { CULTURE = culture:greek }
+					culture_is_or_has_ancestor_trigger = { CULTURE = culture:roman }
 					#has_cultural_pillar = heritage_byzantine # IRToCK3: Removed since this heritage now represents general Hellenistic cultures
 				}
 			}
@@ -1866,48 +1878,31 @@
 }
 
 
-"common/scripted_modifiers/07_ep3_scripted_modifiers.txt" = {
+"common/scripted_triggers/00_cultural_triggers.txt" = {
 	
-	# demand_admin_acceptance_modifier
+	# culture_is_historically_admin_trigger
 	replace = {
 		before = {
-		scope:recipient = {
-			culture = {
-				OR = {
-					this = culture:greek
-					any_parent_culture_or_above = {
-						this = culture:greek
-					}
-					this = culture:han
-					any_parent_culture_or_above = {
-						this = culture:han
-					}
-				}
-			}
-		}
-		desc = "HISTORICAL_ADMIN_REASON"
-		}# end of before
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:greek }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:han }
+		# no japanese, they got warlord instead.
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:baekje }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:goguryeo }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:silla }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:viet }
+		} # end of before
 
 		after = {
-		scope:recipient = {
-			culture = {
-				OR = { # IRToCK3: Added roman as more likely culture
-					this = culture:greek
-					any_parent_culture_or_above = {
-						this = culture:greek
-					}
-					this = culture:roman
-					any_parent_culture_or_above = {
-						this = culture:roman
-					}
-					this = culture:han
-					any_parent_culture_or_above = {
-						this = culture:han
-					}
-				}
-			}
-		}
-		desc = "HISTORICAL_ADMIN_REASON"
+		# IRToCK3: Adding Roman, or an immediate descendent of Roman, as a possible option (not using `any_parent_culture_or_above` since the culture rework will inevitably make a lot more cultures be descendents of Roman that weren't historically Admin)
+		this = culture:roman
+		any_parent_culture = { this = culture:roman }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:greek }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:han }
+		# no japanese, they got warlord instead.
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:baekje }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:goguryeo }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:silla }
+		culture_is_or_has_ancestor_trigger = { CULTURE = culture:viet }
 		} # end of after
 	}
 	
@@ -3335,7 +3330,7 @@ tgp_is_ceremonial_regent_trigger = {
 		before = {
 						OR = {
 							scope:title = title:h_roman_empire
-							scope:title = title:h_eastern_roman_empire 
+							scope:title = title:h_eastern_roman_empire
 						}
 						NOT = { has_trait = augustus }
 		}
@@ -3343,7 +3338,7 @@ tgp_is_ceremonial_regent_trigger = {
 		after = {
 						OR = {
 							scope:title = title:h_roman_empire
-							scope:title = title:h_eastern_roman_empire 
+							scope:title = title:h_eastern_roman_empire
 							scope:title = title:h_western_roman_empire # IRToCK3: Added WRE as possible title
 						}
 						NOT = { has_trait = augustus }
@@ -3353,9 +3348,9 @@ tgp_is_ceremonial_regent_trigger = {
 	# These are responsible for specifying a ruler should be using the custom Caesar flavourization. Need to make sure WRE is included
 	replace = {
 		before = {
-			limit = { 
+			limit = {
 				OR = {
-					scope:title = title:h_roman_empire 
+					scope:title = title:h_roman_empire
 					scope:title = title:h_eastern_roman_empire
 				}
 			}
@@ -3363,9 +3358,9 @@ tgp_is_ceremonial_regent_trigger = {
 		}
 
 		after = {
-			limit = { 
+			limit = {
 				OR = {
-					scope:title = title:h_roman_empire 
+					scope:title = title:h_roman_empire
 					scope:title = title:h_eastern_roman_empire
 					scope:title = title:h_western_roman_empire # IRToCK3: Added WRE as possible title
 				}
@@ -3375,9 +3370,9 @@ tgp_is_ceremonial_regent_trigger = {
 	}
 	replace = {
 		before = {
-			limit = { 
+			limit = {
 				OR = {
-					scope:title = title:h_roman_empire 
+					scope:title = title:h_roman_empire
 					scope:title = title:h_eastern_roman_empire
 				}
 			}
@@ -3385,9 +3380,9 @@ tgp_is_ceremonial_regent_trigger = {
 		}
 
 		after = {
-			limit = { 
+			limit = {
 				OR = {
-					scope:title = title:h_roman_empire 
+					scope:title = title:h_roman_empire
 					scope:title = title:h_eastern_roman_empire
 					scope:title = title:h_western_roman_empire # IRToCK3: Added WRE as possible title
 				}
@@ -3551,21 +3546,6 @@ tgp_is_ceremonial_regent_trigger = {
 						}
 					}
 				}
-		}
-	}
-
-	# This part is just about notifying players in the same realm as someone getting a new administrative title, unless the title being obtained is the Chrysanthemum Throne. Changed to make sure it works for any Ritsuryo/Soryo realms too
-	replace = {
-		before = {
-						scope:title != title:k_chrysanthemum_throne
-		}
-
-		after = {
-						# IRToCK3: Modified to make sure it works for any Ritsuryo/Soryo realm, not just Japan
-						trigger_if = {
-							limit = { exists = top_liege.primary_title.var:administrative_ui_special_title }
-							scope:title != top_liege.primary_title.var:administrative_ui_special_title
-						}
 		}
 	}
 }
@@ -4181,63 +4161,27 @@ tgp_is_ceremonial_regent_trigger = {
 	#########################
 	## tgp_create_meritocratic_ruling_regent_title_effect
 	#########################
-	# Changed so "Yongson Throne" can be given out as long as you have the Korea title (since the Wang dynasty won't exist in game), and if you have 
-	replace = {
-		before = {
-			if = {
-				limit = { dynasty = dynasty:korean_wang_goryeo }
-				create_dynamic_title = {
-					tier = kingdom
-					name = k_yongson_throne
-				}
-				scope:new_title = { set_coa = k_yongson_throne }
-			}
-		}
-
-		after = {
-			if = {
-				limit = { # IRToCK3: Modified to just require the Korea title, since the base game's Wang dynasty won't exist, and the Yongson Throne title localization can't have been used before
-					primary_title = title:e_goryeo
-					NOT = { is_title_localization_key_used = k_yongson_throne }
-				}
-				create_dynamic_title = {
-					tier = kingdom
-					name = k_yongson_throne
-				}
-				scope:new_title = { set_coa = k_yongson_throne }
-			}
-		}
-	}
-
 	# Changed so that Meritocratic ceremonial liege titles are properly landless and figurehead titles (allowing them to have their own royal courts, which seems to be what is intended since the predefined k_yongson_throne title is setup that way)
 	replace = {
 		before = {
-			scope:new_title = {
-				save_scope_as = monarch_title
-				set_definitive_form = yes
-				# LINK TITLES
 				set_variable = {
 					name = ceremonial_title
 					value = scope:founder.primary_title
 				}
-			}
+				# LINK TITLES
 		}
 
 		after = {
-			scope:new_title = {
-				save_scope_as = monarch_title
-				set_definitive_form = yes
-				# LINK TITLES
 				set_variable = {
 					name = ceremonial_title
 					value = scope:founder.primary_title
 				}
+				# LINK TITLES
 				# IRToCK3: Added the below effects, mainly to make sure they can have their own royal court, which seems to be intended, and to also make sure the title doesn't accidentally get destroyed because someone was landless when they inherited it and this title was set as being landless
 				set_capital_county = scope:founder.capital_county
 				set_landless_title = yes
 				set_figurehead_title = yes
 				set_de_jure_liege_title = scope:founder.primary_title
-			}
 		}
 	}
 }
@@ -4326,52 +4270,14 @@ tgp_is_ceremonial_regent_trigger = {
 	#########################
 	## found_kingdom_decision
 	#########################
-	# Changing this decision so that it can be used to elevate d_rome to k_rome
-
-	# Change title/description/tooltip to account for d_rome to k_rome change
-	replace = {
-		before = {
-	desc = found_kingdom_decision_desc
-		}
-
-		after = {
-	# IRToCK3: Made it so that the title/description/tooltip change if the decision is being used to elevate d_rome to k_rome
-	title = {
-		first_valid = {
-			triggered_desc = {
-				trigger = { has_title = title:d_rome }
-				desc = irtock3_found_kingdom_decision_rome_title
-			}
-			desc = found_kingdom_decision
-		}
-	}
-
-	desc = {
-		first_valid = {
-			triggered_desc = {
-				trigger = { has_title = title:d_rome }
-				desc = irtock3_found_kingdom_decision_rome_desc
-			}
-			desc = found_kingdom_decision_desc
-		}
-	}
-
-	selection_tooltip = {
-		first_valid = {
-			triggered_desc = {
-				trigger = { has_title = title:d_rome }
-				desc = irtock3_found_kingdom_decision_rome_title
-			}
-			desc = found_kingdom_decision_tooltip
-		}
-	}
-		}
-	}
+	# Making it so this decision can't be taken if you have d_rome, since they will use the converter's new decision dedicate to elevating Rome to a Kingdom
 
 	# is_shown block
 	replace = {
 		before = {
 		highest_held_title_tier = tier_duchy
+		is_landed_or_landless_administrative = yes
+		is_confederation_member = no
 		NOT = {
 			has_game_rule = off_custom_kingdoms
 		}
@@ -4379,71 +4285,12 @@ tgp_is_ceremonial_regent_trigger = {
 
 		after = {
 		highest_held_title_tier = tier_duchy
-		# IRToCK3: Modified so that this decision can still be used to elevate d_rome to k_rome even if the game rules for custom kingdoms is off
-		trigger_if = {
-			limit = { has_title = title:d_rome }
-			NOT = {
-				is_target_in_global_variable_list = {
-					name = unavailable_unique_decisions
-					target = flag:irtock3_roman_duchy_elevated
-				}
-			}
+		is_landed_or_landless_administrative = yes
+		is_confederation_member = no
+		NOT = {
+			has_game_rule = off_custom_kingdoms
 		}
-		trigger_else = {
-			NOT = { has_game_rule = off_custom_kingdoms }
-		}
-		}
-	}
-
-	# is_valid block
-	replace = {
-		before = {
-		OR = {
-			custom_description = {
-				text = found_kingdom_decision_three_duchies_held
-				any_held_title = {
-					count > 2
-					title_tier = duchy
-				}
-			}
-			sub_realm_size >= 30
-		}
-		}
-
-		after = {
-		OR = {
-			custom_description = {
-				text = found_kingdom_decision_three_duchies_held
-				any_held_title = {
-					count > 2
-					title_tier = duchy
-				}
-			}
-			sub_realm_size >= 30
-		}
-		# IRToCK3: Modified so that if this decision is going to be used to elevate d_rome to k_rome, you need your capital to be c_roma
-		trigger_if = {
-			limit = { has_title = title:d_rome }
-			capital_county = title:c_roma
-		}
-		}
-	}
-
-	# effect block
-	replace = {
-		before = {
-		create_custom_kingdom_effect = yes
-		}
-
-		after = {
-		# IRToCK3: Modified so that if you have d_rome, only the effects relevant to elevating it to k_rome happen
-		if = {
-			limit = { has_title = title:d_rome }
-			irtock3_elevate_roman_duchy_effects = yes
-		}
-		else = {
-			create_custom_kingdom_effect = yes
-		}
+		NOT = { has_title = title:d_rome } # IRToCK3: Characters with this title instead should use the decision to elevate Rome to a Kingdom
 		}
 	}
 
@@ -4452,51 +4299,11 @@ tgp_is_ceremonial_regent_trigger = {
 	#########################
 	# Changing this decision so that it can be used to elevate k_rome to e_roman_empire
 
-	# Change title/description/tooltip to account for k_rome to e_roman_empire change
-	replace = {
-		before = {
-	desc = found_empire_decision_desc
-		}
-
-		after = {
-	# IRToCK3: Made it so that the title/description/tooltip change if the decision is being used to elevate k_rome to e_roman_empire
-	title = {
-		first_valid = {
-			triggered_desc = {
-				trigger = { has_title = title:k_rome }
-				desc = irtock3_found_empire_decision_rome_title
-			}
-			desc = found_empire_decision
-		}
-	}
-
-	desc = {
-		first_valid = {
-			triggered_desc = {
-				trigger = { has_title = title:k_rome }
-				desc = irtock3_found_kingdom_decision_rome_desc
-			}
-			desc = found_empire_decision_desc
-		}
-	}
-
-	selection_tooltip = {
-		first_valid = {
-			triggered_desc = {
-				trigger = { has_title = title:k_rome }
-				desc = irtock3_found_empire_decision_rome_title
-			}
-			desc = found_empire_decision_tooltip
-		}
-	}
-		}
-	}
-
 	# is_shown block
 	replace = {
 		before = {
 		OR = {
-			top_liege = this
+			top_liege ?= this
 			any_held_title = {
 				count >= 3
 				title_tier = kingdom
@@ -4509,59 +4316,28 @@ tgp_is_ceremonial_regent_trigger = {
 
 		after = {
 		OR = {
-			top_liege = this
+			top_liege ?= this
 			any_held_title = {
 				count >= 3
 				title_tier = kingdom
 			}
 		}
-		# IRToCK3: Modified so that this decision can still be used to elevate k_rome to e_roman_empire even if the game rules for custom kingdoms/empires is off
+		NOT = {
+			has_game_rule = off_custom_kingdoms
+		}
+		# IRToCK3: Modified so that this decision can't be taken if you have k_rome since they have a dedicated decision about elevating Rome to an empire, or have k_carthage while the decision to elevate/restore Carthage hasn't been taken
 		trigger_if = {
-			limit = { has_title = title:k_rome }
-			NOT = {
-				is_target_in_global_variable_list = {
-					name = unavailable_unique_decisions
-					target = flag:irtock3_roman_kingdom_elevated
+			limit = {
+				NOT = {
+					is_target_in_global_variable_list = {
+						name = unavailable_unique_decisions
+						target = flag:flag_restored_carthage
+					}
 				}
 			}
+			NOT = { has_title = title:k_carthage }
 		}
-		trigger_else = {
-			NOT = { has_game_rule = off_custom_kingdoms }
-		}
-		}
-	}
-
-	# is_valid block
-	replace = {
-		before = {
-		rule_title_creation_imperial_power_projection_title_creation_trigger = yes
-		}
-
-		after = {
-		rule_title_creation_imperial_power_projection_title_creation_trigger = yes
-
-		# IRToCK3: Modified so that if this decision is going to be used to elevate k_rome to e_roman_empire, you need your capital to be c_roma
-		trigger_if = {
-			limit = { has_title = title:k_rome }
-			capital_county = title:c_roma
-		}
-		}
-	}
-
-	# effect block
-	replace = {
-		before = {
-			create_custom_empire_effect = yes
-		}
-
-		after = {
-			if = {
-				limit = { has_title = title:k_rome }
-				irtock3_elevate_roman_kingdom_effects = yes
-			}
-			else = {
-				create_custom_empire_effect = yes
-			}
+		NOT = { has_title = title:k_rome }
 		}
 	}
 
@@ -4585,6 +4361,8 @@ tgp_is_ceremonial_regent_trigger = {
 					OR = {
 						has_title = title:k_carthage
 						title:k_carthage = { is_titular = no }
+						has_title = title:k_carthago_nova
+						title:k_carthago_nova = { is_titular = no }
 					}
 				}
 				desc = irtock3_elevate_carthage_decision_title
@@ -4601,6 +4379,8 @@ tgp_is_ceremonial_regent_trigger = {
 					OR = {
 						has_title = title:k_carthage
 						title:k_carthage = { is_titular = no }
+						has_title = title:k_carthago_nova
+						title:k_carthago_nova = { is_titular = no }
 					}
 				}
 				desc = irtock3_elevate_carthage_decision_desc
@@ -4617,6 +4397,8 @@ tgp_is_ceremonial_regent_trigger = {
 					OR = {
 						has_title = title:k_carthage
 						title:k_carthage = { is_titular = no }
+						has_title = title:k_carthago_nova
+						title:k_carthago_nova = { is_titular = no }
 					}
 				}
 				desc = irtock3_elevate_carthage_decision_tooltip
@@ -4630,23 +4412,25 @@ tgp_is_ceremonial_regent_trigger = {
 	# is_shown block
 	replace = {
 		before = {
-		OR = {
-			culture = { has_cultural_pillar = heritage_syriac }
-			culture = culture:levantine		
+		culture ?= {
+			OR = {
+				this = culture:levantine
+				has_cultural_pillar = heritage_syriac
+				has_cultural_pillar = heritage_phoenician
+			}
 		}
 		}
 
 		after = {
 		# IRToCK3: Base game only allows Mashriqi or Syriac Heritage. Changed to only allow Phoenician heritage, or for you to have k_carthage
 		OR = {
-			culture = { has_cultural_pillar = heritage_phoenician }
+			culture ?= {
+				OR = {
+					has_cultural_pillar = heritage_phoenician
+					culture_is_or_has_ancestor_trigger = { CULTURE = culture:carthaginian }
+				}
+			}
 			has_title = title:k_carthage
-		}
-
-		# IRToCK3: Don't allow this decision if e_carthage already has land/exists from conversion
-		title:e_carthage = {
-			is_titular = yes
-			NOT = { exists = holder }
 		}
 		}
 	}
@@ -4666,7 +4450,7 @@ tgp_is_ceremonial_regent_trigger = {
 		completely_controls_region = custom_mauretania
 		completely_controls_region = custom_carthago_nova
 
-		# IRToCK3: Made it so that if someone has k_carthage, or it has de jure land, the decision requires you to have k_carthage
+		# IRToCK3: Made it so that if someone has the relevant Kingdom titles, or they have de jure land, the decision requires you to have them
 		trigger_if = {
 			limit = {
 				OR = {
@@ -4675,6 +4459,33 @@ tgp_is_ceremonial_regent_trigger = {
 				}
 			}
 			has_title = title:k_carthage
+		}
+		trigger_if = {
+			limit = {
+				OR = {
+					exists = title:k_tripolitania.holder
+					title:k_tripolitania = { is_titular = no }
+				}
+			}
+			has_title = title:k_tripolitania
+		}
+		trigger_if = {
+			limit = {
+				OR = {
+					exists = title:k_mauretania.holder
+					title:k_mauretania = { is_titular = no }
+				}
+			}
+			has_title = title:k_mauretania
+		}
+		trigger_if = {
+			limit = {
+				OR = {
+					exists = title:k_carthago_nova.holder
+					title:k_carthago_nova = { is_titular = no }
+				}
+			}
+			has_title = title:k_carthago_nova
 		}
 		}
 	}
@@ -5096,16 +4907,24 @@ tgp_is_ceremonial_regent_trigger = {
 	# is_shown block
 	replace = {
 		before = {
-		NOR = { 
-			government_has_flag = government_is_japan_feudal 
+		NOR = {
+			government_has_flag = government_is_japan_feudal
 			has_global_variable = shogunate_established
+			AND = {
+				has_global_variable = tenno_restored
+				tgp_has_ceremonial_liege_title_trigger = yes
+			}
 		}
 		}
 
 		after = {
-		NOR = { 
-			government_has_flag = government_is_japan_feudal 
+		NOR = {
+			government_has_flag = government_is_japan_feudal
 			top_liege.primary_title = { has_variable = shogunate_established } # IRToCK3: Changed this from checking a global variable to checking if the primary title has the variable, so that one ritsuryo realm doesn't affect another
+			AND = {
+				top_liege.primary_title = { has_variable = tenno_restored } # IRToCK3: Changed this from checking a global variable to checking if the primary title has the variable, so that one ritsuryo realm doesn't affect another
+				tgp_has_ceremonial_liege_title_trigger = yes
+			}
 		}
 		}
 	}
@@ -5177,11 +4996,11 @@ tgp_is_ceremonial_regent_trigger = {
 	# is_shown block
 	replace = {
 		before = {
-		top_liege = { has_title = title:e_japan }
 		NOR = {
 			has_global_variable = shogunate_established
 			has_global_variable = tenno_restored
 		}
+		top_liege ?= { has_title = title:e_japan }
 		}
 
 		after = {
@@ -5270,18 +5089,16 @@ tgp_is_ceremonial_regent_trigger = {
 	# is_shown block
 	replace = {
 		before = {
-		has_tgp_dlc_trigger = yes
-		top_liege = { has_title = title:e_japan }
 		tgp_realm_has_ceremonial_liege_trigger = yes
 		custom_tooltip = {
 			text = tgp_is_ceremonial_liege_tt
 			tgp_has_ceremonial_liege_title_trigger = yes
 		}
 		NOT = { has_global_variable = tenno_restored }
+		top_liege ?= { has_title = title:e_japan }
 		}
 
 		after = {
-		has_tgp_dlc_trigger = yes
 		# IRToCK3: The base game just checks that your top_liege has e_japan. Generalized to just make sure you have a japanese government, since that is the main relevant factor
 		government_is_japanese_trigger = yes
 		tgp_realm_has_ceremonial_liege_trigger = yes
@@ -5397,14 +5214,14 @@ tgp_is_ceremonial_regent_trigger = {
 		# Monks need not apply
 		NOT = { has_trait = devoted }
 		# Must be within Japan
-		top_liege = { has_title = title:e_japan }
+		top_liege ?= { has_title = title:e_japan }
 		}
 
 		after = {
 		# Monks need not apply
 		NOT = { has_trait = devoted }
 		# Must be within Japan
-		#top_liege = { has_title = title:e_japan } # IRToCK3: Commented out to allow other realms aside from e_japan to take this decision, as other conditions should be good enough to limit it appropriately
+		#top_liege ?= { has_title = title:e_japan } # IRToCK3: Commented out to allow other realms aside from e_japan to take this decision, as other conditions should be good enough to limit it appropriately
 		}
 	}
 
@@ -5432,7 +5249,7 @@ tgp_is_ceremonial_regent_trigger = {
 			NOT = { title:e_japan.holder ?= title:k_chrysanthemum_throne.holder.top_liege }
 		}
 		# Japanese culture
-		culture = {
+		culture ?= {
 			OR = {
 				this = culture:japanese
 				any_parent_culture_or_above = { this = culture:japanese }
@@ -5511,9 +5328,9 @@ tgp_is_ceremonial_regent_trigger = {
 	replace = {
 		before = {
 		has_global_variable = shogunate_established
-		NOT = { has_variable = moved_shogunate_court }
+		capital_county ?= title:c_yamashiro
 		domain_size > 1
-		capital_county = title:c_yamashiro
+		NOT = { has_variable = moved_shogunate_court }
 		}
 
 		after = {
@@ -6064,15 +5881,15 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 	# should_start_with block
 	replace = {
 		before = {
-			has_ep3_dlc_trigger = yes
-			has_title = title:e_byzantium
-			government_allows = administrative
+		has_ep3_dlc_trigger = yes
+		has_title = title:e_byzantium
+		government_has_mechanic = administrative
 		}
 
 		after = {
-			has_ep3_dlc_trigger = yes
-			# IRToCK3: Removed reference to Byzantine Empire. Instead of forcing different realms to have different succession laws at game start, should be based off what they had in Imperator
-			always = no
+		has_ep3_dlc_trigger = yes
+		# IRToCK3: Removed reference to Byzantine Empire. Instead of forcing different realms to have different succession laws at game start, should be based off what they had in Imperator
+		always = no
 		}
 	}
 
@@ -6082,19 +5899,19 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 	# Need to generalize the law, so that one ritsuryo realm doesn't affect another
 	replace = {
 		before = {
-			government_has_flag = government_is_japan_administrative
-			is_independent_ruler = no
-			NOT = { has_title = title:k_chrysanthemum_throne }
+		government_has_flag = government_is_japan_administrative
+		is_independent_ruler = no
+		NOT = { has_title = title:k_chrysanthemum_throne }
 		}
 
 		after = {
-			government_has_flag = government_is_japan_administrative
-			is_independent_ruler = no
-			# IRToCK3: Instead of just checking for k_chrysanthemum_throne, just having it check if the realm has a ceremonial liege title, and that you don't have it
-			trigger_if = {
-				limit = { exists = top_liege.primary_title.var:administrative_ui_special_title }
-				NOT = { has_title = top_liege.primary_title.var:administrative_ui_special_title }
-			}
+		government_has_flag = government_is_japan_administrative
+		is_independent_ruler = no
+		# IRToCK3: Instead of just checking for k_chrysanthemum_throne, just having it check if the realm has a ceremonial liege title, and that you don't have it
+		trigger_if = {
+			limit = { exists = top_liege.primary_title.var:administrative_ui_special_title }
+			NOT = { has_title = top_liege.primary_title.var:administrative_ui_special_title }
+		}
 		}
 	}
 }
@@ -6798,134 +6615,71 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 }
 
 
-"common/succession_appointment/japanese_admin_regent.txt" = {
+"common/script_values/07_appointment_values.txt" = {
 	#########################
-	## japanese_regent
+	## appointment_score_regent
 	#########################
-	# Need to generalize the decision to better work with any realm, not just Japan
+	# Fixing some non-localized modifiers
 
-	# candidate_score block
 	replace = {
 		before = {
-			# Domicile is in the capital
-			if = {
-				limit = {
-					house ?= {
-						any_house_member = {
-							any_held_title = { is_noble_family_title = yes }
-							domicile ?= {
-								is_domicile_type = japanese_manor
-								domicile_location.county ?= title:e_japan.holder.capital_county
-							}
-						}
+	# Domicile is in the capital
+	if = {
+		limit = {
+			# A landless top liege has no capital county to match against
+			exists = root.top_liege.capital_county
+			house ?= {
+				any_house_member = {
+					any_held_title = { is_noble_family_title = yes }
+					domicile ?= {
+						domicile_is_estate_trigger = yes
+						domicile_location.county ?= root.top_liege.capital_county
 					}
 				}
-				add = 25
 			}
-			# Block non-admin
-			if = {
-				limit = {
-					NOT = { government_allows = administrative }
-				}
-				add = -2500
-			}
+		}
+		add = 25
+	}
+	# Block non-admin
+	if = {
+		limit = {
+			NOT = { government_has_mechanic = administrative }
+		}
+		add = -2500
+	}
 		}
 
 		after = {
-			# Domicile is in the capital
-			if = {
-				limit = {
-					house ?= {
-						any_house_member = {
-							any_held_title = { is_noble_family_title = yes }
-							domicile ?= {
-								is_domicile_type = japanese_manor
-								domicile_location.county ?= root.top_liege.capital_county # IRToCK3: Generalized to better work for any ritsuryo/soryo realm, not just Japan
-							}
-						}
+	# Domicile is in the capital
+	if = {
+		limit = {
+			# A landless top liege has no capital county to match against
+			exists = root.top_liege.capital_county
+			house ?= {
+				any_house_member = {
+					any_held_title = { is_noble_family_title = yes }
+					domicile ?= {
+						domicile_is_estate_trigger = yes
+						domicile_location.county ?= root.top_liege.capital_county
 					}
 				}
-				add = {
-					value = 25
-					desc = family_domicile_in_capital_bonus # IRToCK3: Base game doesn't have this localized, so this effect on your candidate score is invisible to the player. There are many others like this, but just this one was changed so far since its condition also had to be changed.
-				}
 			}
-			# Block non-admin
-			if = {
-				limit = {
-					NOT = { government_allows = administrative }
-				}
-				add = {
-					value = -2500
-					desc = non_administrative_government_penalty # IRToCK3: Base game doesn't have this localized, so this effect on your candidate score is invisible to the player.
-				}
-			}
+		}
+		add = {
+			value = 25
+			desc = family_domicile_in_capital_bonus # IRToCK3: Base game doesn't have this localized, so this effect on your candidate score is invisible to the player. There are many others like this, but just this one was changed so far since its condition also had to be changed.
 		}
 	}
-}
-
-
-"common/succession_appointment/meritocratic_regent.txt" = {
-	#########################
-	## meritocratic_regent
-	#########################
-
-	# candidate_score block
-	replace = {
-		before = {
-			# Domicile is in the capital
-			if = {
-				limit = {
-					house ?= {
-						any_house_member = {
-							any_held_title = { is_noble_family_title = yes }
-							domicile ?= {
-								is_domicile_type = japanese_manor
-								domicile_location.county ?= title:e_japan.holder.capital_county
-							}
-						}
-					}
-				}
-				add = 25
-			}
-			# Block non-admin
-			if = {
-				limit = {
-					NOT = { government_allows = administrative }
-				}
-				add = -2500
-			}
+	# Block non-admin
+	if = {
+		limit = {
+			NOT = { government_has_mechanic = administrative }
 		}
-
-		after = {
-			# Domicile is in the capital
-			if = {
-				limit = {
-					house ?= {
-						any_house_member = {
-							any_held_title = { is_noble_family_title = yes }
-							domicile ?= {
-								is_domicile_type = east_asian_estate # IRToCK3: The base game checks 'japanese_manor', which isn't used for Meritocratic, so fixed that here
-								domicile_location.county ?= root.top_liege.capital_county # IRToCK3: The base game checks if the domicile is in e_japan's capital county, changed to actually work for any realm
-							}
-						}
-					}
-				}
-				add = {
-					value = 25
-					desc = family_domicile_in_capital_bonus # IRToCK3: Base game doesn't have this localized, so this effect on your candidate score is invisible to the player.
-				}
-			}
-			# Block non-admin
-			if = {
-				limit = {
-					NOT = { government_allows = administrative }
-				}
-				add = {
-					value = -2500
-					desc = non_administrative_government_penalty # IRToCK3: Base game doesn't have this localized, so this effect on your candidate score is invisible to the player.
-				}
-			}
+		add = {
+			value = -2500
+			desc = non_administrative_government_penalty # IRToCK3: Base game doesn't have this localized, so this effect on your candidate score is invisible to the player.
+		}
+	}
 		}
 	}
 }
@@ -6987,6 +6741,7 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 		title:e_japan.holder = {
 			has_realm_law = japanese_bureaucracy_0
 			this != root
+			exists = location.county
 		}
 
 		any_held_title = {
@@ -6999,6 +6754,7 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 		top_liege = { # IRToCK3: Generalized to better work for any ritsuryo/soryo realm
 			has_realm_law = japanese_bureaucracy_0
 			this != root
+			exists = location.county
 		}
 
 		any_held_title = {
@@ -7371,7 +7127,7 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 								count >= 5
 								culture = prev
 								primary_title.tier >= tier_county
-								has_trait = scholar
+								has_trait = erudite
 							}
 						}
 					}
@@ -7381,7 +7137,7 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 				}
 				add = {
 					value = tradition_unfulfilled_criteria_penalty
-					desc = rulers_with_scholar_desc
+					desc = rulers_with_erudite_desc
 				}
 			}
 		}
@@ -7413,7 +7169,7 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 								count >= 5
 								culture = prev
 								primary_title.tier >= tier_county
-								has_trait = scholar
+								has_trait = erudite
 							}
 						}
 					}
@@ -7423,7 +7179,7 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 				}
 				add = {
 					value = tradition_unfulfilled_criteria_penalty
-					desc = rulers_with_scholar_desc
+					desc = rulers_with_erudite_desc
 				}
 			}
 			# IRToCK3: If you are a tributary/vassal of China, cut cost in half
@@ -7791,24 +7547,6 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 }
 
 
-"common/scripted_triggers/music_triggers.txt" = {
-	##########################
-	## should_use_byzantine_music_trigger
-	##########################
-	replace = {
-		before = {
-		top_liege = { has_title = title:e_byzantium }
-		top_liege = { has_title = title:h_roman_empire }
-		}
-
-		after = {
-		# IRToCK3: Changed to use any Rome title
-		top_liege = { is_roman_emperor_trigger = yes }
-		}
-	}
-}
-
-
 "common/scripted_triggers/00_law_triggers.txt" = {
 	##############
 	## can_keep_acclamation_succession_law_trigger
@@ -7823,49 +7561,6 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 			can_have_acclamation_succession_law_trigger = yes
 			# IRToCK3: The base game allows e_byzantium here, implying even if they somehow became a vassal of a hegemon, they should still be allowed to keep acclamation. Changed to allow any of the Rome empire titles
 			is_roman_emperor_trigger = yes
-		}
-	}
-}
-
-
-"events/travel_events/travel_events_cities.txt" = {
-	#################
-	## travel_events_cities.1030
-	#################
-	replace = {
-		before = {
-		NOT = {
-			has_title = title:e_byzantium #This just does not work for a byzantine emperor, even if they moved their capital out of the city
-		}
-		}
-
-		after = {
-		# IRToCK3: Changed to use more of the Rome titles than just e_byzantium, where it makes sense
-		NOR = {
-			has_title = title:e_byzantium #This just does not work for a byzantine emperor, even if they moved their capital out of the city
-			has_title = title:h_eastern_roman_empire
-			AND = {
-				has_title = title:h_roman_empire
-				capital_county = title:c_byzantion
-			}
-		}
-		}
-	}
-}
-
-
-"events/scheme_events/governor_contract_events.txt" = {
-	#################
-	## governor_contract_event.2071
-	#################
-	replace = {
-		before = {
-					liege = { has_title = title:e_byzantium }
-		}
-
-		after = {
-					# IRToCK3: Changed to make sure you are in any Rome realm
-					top_liege = { is_roman_emperor_trigger = yes }
 		}
 	}
 }
@@ -7933,23 +7628,6 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 }
 
 
-"common/character_interactions/00_heir.txt" = {
-	#################
-	## designate_heir_interaction
-	#################
-	replace = {
-		before = {
-				scope:actor = { NOT = { primary_title = title:e_byzantium } }
-		}
-
-		after = {
-				# IRToCK3: Changed to allow any Rome title, not just Byzantine Empire
-				scope:actor = { is_roman_emperor_primary_title_trigger = no }
-		}
-	}
-}
-
-
 "common/court_positions/types/00_court_positions.txt" = {
 	#################
 	## charioteer_court_position / bookmaker_court_position
@@ -7959,7 +7637,7 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 	replace = {
 		before = {
 				limit = {
-					has_title = title:e_byzantium
+					is_roman_emperor_trigger = yes
 				}
 		}
 
@@ -7985,65 +7663,6 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 		after = {
 					# IRToCK3: Base game only applies this bonus if your employer has the Byzantine Empire title. Removed to better work with any realm
 					employs_court_position = akolouthos_court_position
-		}
-	}
-}
-
-
-"common/culture/traditions/00_regional_traditions.txt" = {
-	#################
-	## tradition_byzantine_succession
-	#################
-
-	# is_shown block
-	replace = {
-		before = {
-		OR = {
-			has_cultural_pillar = heritage_byzantine
-			scope:character = {
-				has_title = title:e_byzantium
-			}
-		}
-		}
-
-		after = {
-		OR = {
-			# IRToCK3: Since heritage_byzantine is now used as a general Hellenic heritage, changing this to be based off the 'greek'/Romaioi culture
-			this = culture:greek
-			any_parent_culture_or_above = { this = culture:greek }
-			scope:character = {
-				has_title = title:e_byzantium
-			}
-		}
-		}
-	}
-
-	# can_pick block
-	replace = {
-		before = {
-		has_cultural_pillar = heritage_byzantine
-		scope:character = {
-			has_title = title:e_byzantium
-		}
-		custom_tooltip = {
-			text = cannot_have_tradition_court_eunuchs
-			NOT = { culture_tradition:tradition_court_eunuchs = { is_in_list = traits } }
-		}
-		}
-
-		after = {
-		# IRToCK3: Since heritage_byzantine is now used as a general Hellenic heritage, changing this to be based off the 'greek'/Romaioi culture
-		OR = {
-			this = culture:greek
-			any_parent_culture_or_above = { this = culture:greek }
-		}
-		scope:character = {
-			has_title = title:e_byzantium
-		}
-		custom_tooltip = {
-			text = cannot_have_tradition_court_eunuchs
-			NOT = { culture_tradition:tradition_court_eunuchs = { is_in_list = traits } }
-		}
 		}
 	}
 }
@@ -8102,19 +7721,19 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 }
 
 
-"common/scripted_character_templates/04_ep2_accolade_character_templates.txt" = {
+"common/scripted_effects/01_dlc_fp1_scripted_effects.txt" = {
 	replace = {
 		before = {
-				scope:new_owner = {
-					has_title = title:e_byzantium
-				}
+			scope:new_owner = {
+				is_roman_emperor_trigger = yes
+			}
 		}
 
 		after = {
-				scope:new_owner = {
-					# IRToCK3: Instead of just checking e_byzantium, made it so the varangian trait can be given in any realm where the Varangian Guard was founded
-					primary_title = { has_variable = founded_varangian_guard }
-				}
+			scope:new_owner = {
+				# IRToCK3: Instead of just checking that they are a roman emperor, made it so the varangian trait can be given in any realm where the Varangian Guard was founded
+				primary_title = { has_variable = founded_varangian_guard }
+			}
 		}
 	}
 }
@@ -8126,11 +7745,11 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 	#################
 	replace = {
 		before = {
-				has_title = title:e_byzantium
+				is_roman_emperor_trigger = yes
 		}
 
 		after = {
-				# IRToCK3: Instead of just checking e_byzantium, made it so it just checks if any of your held titles has founded the Varangian Guard
+				# IRToCK3: Instead of just checking that they are a roman emperor, made it so it just checks if any of your held titles has founded the Varangian Guard
 				any_held_title = { has_variable = founded_varangian_guard }
 		}
 	}
@@ -8159,16 +7778,16 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 		before = {
 					AND = {
 						this = scope:sc_defender
-						scope:sc_attacker = { has_title = title:e_byzantium }
+						scope:sc_attacker = { is_roman_emperor_trigger = yes }
 					}
 					AND = {
 						this = scope:sc_attacker
-						scope:sc_defender = { has_title = title:e_byzantium }
+						scope:sc_defender = { is_roman_emperor_trigger = yes }
 					}
 		}
 
 		after = {
-					# IRToCK3: Changed so instead of only checking Byzantium, it checks if any of their titles has founded the Varangian Guard
+					# IRToCK3: Changed so instead of only checking that they are a roman emperor, it checks if any of their titles has founded the Varangian Guard
 					AND = {
 						this = scope:sc_defender
 						scope:sc_attacker = {
@@ -8215,18 +7834,18 @@ japan_imperial_expansion_cb_allowed_for_character_trigger = {
 		before = {
 		name = {
 			text = ep3_emperor_yearly.8050.b.byz
-			trigger = { primary_title = title:e_byzantium }
+			trigger = { is_eastern_roman_emperor_primary_title_trigger = yes }
 		}
 		name = {
 			text = ep3_emperor_yearly.8050.b
-			trigger = { primary_title != title:e_byzantium }
+			trigger = { is_eastern_roman_emperor_primary_title_trigger = no }
 		}
 		pay_short_term_gold = {
 			gold = minor_gold_value
 			target = scope:raider
 		}
 		if = {
-			limit = { has_title = title:e_byzantium }
+			limit = { is_roman_emperor_trigger = yes }
 			scope:raider = { add_trait = varangian }
 		}
 		}

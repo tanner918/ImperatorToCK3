@@ -923,6 +923,262 @@ IRToCK3_game_start_onaction_effects = {
 			}
 		}
 
+		######################
+		### Carthage Setup ###
+		######################
+		# If the empire Carthage title exists at game start, the decision to reform it should be blocked from game start, and the relevant kingdom titles should also be setup, as if the decision was taken
+		if = {
+			limit = {
+				title:e_carthage = {
+					OR = {
+						exists = holder
+						is_titular = no
+					}
+				}
+			}
+
+			add_to_global_variable_list = {
+				name = unavailable_unique_decisions
+				target = flag:flag_restored_carthage
+			}
+
+			# Carthage
+			if = {
+				limit = {
+					title:k_carthage = {
+						# If someone starts the game holding the title, they need to be the one holding the Carthage Empire title, or in their realm
+						trigger_if = {
+							limit = { exists = holder }
+							holder = {
+								OR = {
+									title:e_carthage.holder ?= this
+									any_liege_or_above = { title:e_carthage.holder ?= this }
+								}
+							}
+						}
+						# Otherwise, the kingdom needs to be titular, or control at least half of the relevant region
+						trigger_else = {
+							OR = {
+								is_titular = yes
+								any_county_in_region = {
+									region = custom_carthage
+									percent >= 0.5
+									kingdom ?= title:k_carthage
+								}
+							}
+						}
+					}
+				}
+				title:k_carthage = { set_de_jure_liege_title = title:e_carthage }
+
+				every_county_in_region = {
+					region = custom_carthage
+					limit = {
+						NOT = { kingdom = title:k_carthage }
+						duchy ?= {
+							# Most counties in the duchy must be in the relevant region (not doing 100% of counties in case a total conversion mod changes the de jure setup)
+							any_de_jure_county = {
+								percent >= 0.75
+								title_province = { geographical_region = custom_carthage }
+							}
+							# At least half of the counties in the duchy must be in the realm of the holder of e_carthage (if they exist), otherwise have them be de jure under Carthage already (checking this since mods like TFE do some de jure changes on game start up)
+							any_de_jure_county = {
+								percent >= 0.5
+								trigger_if = {
+									limit = { exists = title:e_carthage.holder }
+									holder ?= {
+										OR = {
+											this = title:e_carthage.holder
+											any_liege_or_above = { this = title:e_carthage.holder }
+										}
+									}
+								}
+								trigger_else = { empire ?= title:e_carthage }
+							}
+						}
+					}
+					duchy ?= { set_de_jure_liege_title = title:k_carthage }
+				}
+			}
+			
+			# Tripolitania
+			if = {
+				limit = {
+					title:k_tripolitania = {
+						# If someone starts the game holding the title, they need to be the one holding the Carthage Empire title, or in their realm
+						trigger_if = {
+							limit = { exists = holder }
+							holder = {
+								OR = {
+									title:e_carthage.holder ?= this
+									any_liege_or_above = { title:e_carthage.holder ?= this }
+								}
+							}
+						}
+						# Otherwise, the kingdom needs to be titular, or control at least half of the relevant region
+						trigger_else = {
+							OR = {
+								is_titular = yes
+								any_county_in_region = {
+									region = custom_tripolitania
+									percent >= 0.5
+									kingdom ?= title:k_tripolitania
+								}
+							}
+						}
+					}
+				}
+				title:k_tripolitania = { set_de_jure_liege_title = title:e_carthage }
+
+				every_county_in_region = {
+					region = custom_tripolitania
+					limit = {
+						NOT = { kingdom = title:k_tripolitania }
+						duchy ?= {
+							# Most counties in the duchy must be in the relevant region (not doing 100% of counties in case a total conversion mod changes the de jure setup)
+							any_de_jure_county = {
+								percent >= 0.75
+								title_province = { geographical_region = custom_tripolitania }
+							}
+							# At least half of the counties in the duchy must be in the realm of the holder of e_carthage (if they exist), otherwise have them be de jure under Carthage already (checking this since mods like TFE do some de jure changes on game start up)
+							any_de_jure_county = {
+								percent >= 0.5
+								trigger_if = {
+									limit = { exists = title:e_carthage.holder }
+									holder ?= {
+										OR = {
+											this = title:e_carthage.holder
+											any_liege_or_above = { this = title:e_carthage.holder }
+										}
+									}
+								}
+								trigger_else = { empire ?= title:e_carthage }
+							}
+						}
+					}
+					duchy ?= { set_de_jure_liege_title = title:k_tripolitania }
+				}
+			}
+			
+			# Mauretania
+			if = {
+				limit = {
+					title:k_mauretania = {
+						# If someone starts the game holding the title, they need to be the one holding the Carthage Empire title, or in their realm
+						trigger_if = {
+							limit = { exists = holder }
+							holder = {
+								OR = {
+									title:e_carthage.holder ?= this
+									any_liege_or_above = { title:e_carthage.holder ?= this }
+								}
+							}
+						}
+						# Otherwise, the kingdom needs to be titular, or control at least half of the relevant region
+						trigger_else = {
+							OR = {
+								is_titular = yes
+								any_county_in_region = {
+									region = custom_mauretania
+									percent >= 0.5
+									kingdom ?= title:k_mauretania
+								}
+							}
+						}
+					}
+				}
+				title:k_mauretania = { set_de_jure_liege_title = title:e_carthage }
+
+				every_county_in_region = {
+					region = custom_mauretania
+					limit = {
+						NOT = { kingdom = title:k_mauretania }
+						duchy ?= {
+							# Most counties in the duchy must be in the relevant region (not doing 100% of counties in case a total conversion mod changes the de jure setup)
+							any_de_jure_county = {
+								percent >= 0.75
+								title_province = { geographical_region = custom_mauretania }
+							}
+							# At least half of the counties in the duchy must be in the realm of the holder of e_carthage (if they exist), otherwise have them be de jure under Carthage already (checking this since mods like TFE do some de jure changes on game start up)
+							any_de_jure_county = {
+								percent >= 0.5
+								trigger_if = {
+									limit = { exists = title:e_carthage.holder }
+									holder ?= {
+										OR = {
+											this = title:e_carthage.holder
+											any_liege_or_above = { this = title:e_carthage.holder }
+										}
+									}
+								}
+								trigger_else = { empire ?= title:e_carthage }
+							}
+						}
+					}
+					duchy ?= { set_de_jure_liege_title = title:k_mauretania }
+				}
+			}
+
+			# Carthago Nova
+			if = {
+				limit = {
+					title:k_carthago_nova = {
+						# If someone starts the game holding the title, they need to be the one holding the Carthage Empire title, or in their realm
+						trigger_if = {
+							limit = { exists = holder }
+							holder = {
+								OR = {
+									title:e_carthage.holder ?= this
+									any_liege_or_above = { title:e_carthage.holder ?= this }
+								}
+							}
+						}
+						# Otherwise, the kingdom needs to be titular, or control at least half of the relevant region
+						trigger_else = {
+							OR = {
+								is_titular = yes
+								any_county_in_region = {
+									region = custom_carthago_nova
+									percent >= 0.5
+									kingdom ?= title:k_carthago_nova
+								}
+							}
+						}
+					}
+				}
+				title:k_carthago_nova = { set_de_jure_liege_title = title:e_carthage }
+
+				every_county_in_region = {
+					region = custom_carthago_nova
+					limit = {
+						NOT = { kingdom = title:k_carthago_nova }
+						duchy ?= {
+							# Most counties in the duchy must be in the relevant region (not doing 100% of counties in case a total conversion mod changes the de jure setup)
+							any_de_jure_county = {
+								percent >= 0.75
+								title_province = { geographical_region = custom_carthago_nova }
+							}
+							# At least half of the counties in the duchy must be in the realm of the holder of e_carthage (if they exist), otherwise have them be de jure under Carthage already (checking this since mods like TFE do some de jure changes on game start up)
+							any_de_jure_county = {
+								percent >= 0.5
+								trigger_if = {
+									limit = { exists = title:e_carthage.holder }
+									holder ?= {
+										OR = {
+											this = title:e_carthage.holder
+											any_liege_or_above = { this = title:e_carthage.holder }
+										}
+									}
+								}
+								trigger_else = { empire ?= title:e_carthage }
+							}
+						}
+					}
+					duchy ?= { set_de_jure_liege_title = title:k_carthago_nova }
+				}
+			}
+		}
+
 		
 		# Government Setup
 		irtock3_setup_governments = yes

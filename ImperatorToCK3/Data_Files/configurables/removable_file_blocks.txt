@@ -45,7 +45,7 @@
 
 "common/on_action/death.txt" = {
 	{
-		# Fix gods-damned Bavaria splitting from East Francia in an ugly fashion in 867.
+		# Ludwig the Younger inherits East Francia and Karlmann Bavaria, as historically.
 		if = {
 			limit = {
 				# Make sure we're looking at the right guy & that the circumstances haven't changed too much.
@@ -68,28 +68,60 @@
 					}
 				}
 				NOT = { has_primary_title = title:k_bavaria }
-				# Players can sort this themselves: you just need to have Bavaria as your primary title and it's all fine.
-				is_ai = yes
+				NOT = { exists = designated_heir }
+				is_valid_designated_heir = character:42019
 			}
-			# If we've got no Bavaria, create it.
-			if = {
-				limit = {
-					title:k_bavaria = { is_title_created = no }
-				}
-				create_title_and_vassal_change = {
-					type = created
-					save_scope_as = change
-				}
-				title:k_bavaria = {
-					change_title_holder = {
-						holder = root
-						change = scope:change
+			set_designated_heir = character:42019
+		}
+		else_if = {
+			limit = {
+				this = character:90107
+				has_variable = ludwig_younger_designated_by_history
+				designated_heir ?= character:42019
+				NAND = {
+					highest_held_title_tier = tier_kingdom
+					has_realm_law = confederate_partition_succession_law
+					title:k_bavaria = {
+						OR = {
+							is_title_created = no
+							holder = root
+						}
+						any_in_de_jure_hierarchy = {
+							tier = tier_county
+							count >= 22
+							holder = {
+								any_liege_or_above = { this = root }
+							}
+						}
 					}
+					NOT = { has_primary_title = title:k_bavaria }
 				}
-				resolve_title_and_vassal_change = scope:change
 			}
-			# Then switch around.
-			set_primary_title_to = title:k_bavaria
+			clear_designated_heir = yes
+		}
+		# Salzburg sits outside any de jure kingdom, so it would follow Ludwig the Younger into East Francia instead of going to Bavaria with Karlmann
+		if = {
+			limit = {
+				this = character:90107
+				designated_heir ?= character:42019
+				title:d_et_salzburg.holder ?= { is_vassal_of = root }
+				character:42018 ?= {
+					is_alive = yes
+					is_vassal_of = root
+				}
+			}
+			create_title_and_vassal_change = {
+				type = granted
+				save_scope_as = salzburg_change
+				add_claim_on_loss = no
+			}
+			title:d_et_salzburg.holder = {
+				change_liege = {
+					liege = character:42018
+					change = scope:salzburg_change
+				}
+			}
+			resolve_title_and_vassal_change = scope:salzburg_change
 		}
 	}
 	
@@ -167,10 +199,16 @@
 
 "common/on_action/game_start.txt" = {
 	# events
-	{		fp1_scandinavian_adventurers.0011	# FP1 - Corral famous Norse adventurers that haven't done much yet.}
-	{		fp1_scandinavian_adventurers.0021	# FP1 - Mark game-start prioritised adventurers.}
-	{		easteregg_event.0001				# Charna and Jakub duel.}
-	{		game_rule.1011	#Hungarian Migration management.}
+	{
+		fp1_scandinavian_adventurers.0011	# FP1 - Corral famous Norse adventurers that haven't done much yet.
+		fp1_scandinavian_adventurers.0021	# FP1 - Mark game-start prioritised adventurers.
+	}
+	{
+		easteregg_event.0001				# Charna and Jakub duel.
+	}
+	{
+		game_rule.1011	#Hungarian Migration management.
+	}
 	{
 		### 867 - RADHANITES IN KHAZARIA ###
 		character:74025 = {
@@ -314,7 +352,7 @@
 				limit = {
 					government_has_flag = government_is_feudal
 					vassal_contract_has_modifiable_obligations = yes
-					faith = faith:armenian_apostolic
+					rite = rite:armenian_rite
 				}
 				vassal_contract_set_obligation_level = { type = religious_rights level = 1 }
 				set_subject_contract_modification_blocked = no
@@ -325,7 +363,7 @@
 				limit = {
 					government_has_flag = government_is_feudal
 					vassal_contract_has_modifiable_obligations = yes
-					faith = faith:armenian_apostolic
+					rite = rite:armenian_rite
 				}
 				vassal_contract_set_obligation_level = { type = feudal_government_taxes level = 3 }
 				vassal_contract_set_obligation_level = { type = feudal_government_levies level = 2 }
@@ -548,7 +586,7 @@
 						limit = {
 							highest_held_title_tier >= tier_kingdom
 							NOR = {
-								government_allows = administrative
+								government_has_mechanic = administrative
 								is_landed = no
 							}
 						}
@@ -561,7 +599,7 @@
 						limit = {
 							highest_held_title_tier >= tier_kingdom
 							NOR = {
-								government_allows = administrative
+								government_has_mechanic = administrative
 								is_landed = no
 							}
 							has_trait = august
@@ -569,32 +607,6 @@
 						convert_to_administrative_from_feudalism_game_start_effect = yes
 					}
 				}
-			}
-		}
-	}
-
-	# Anachronistic
-	{
-		### 1178 CRUSADE SETUP ###
-		if = {
-			limit = {
-				game_start_date >= 1178.10.1
-			}
-			religion:islam_religion = {
-				set_variable = {
-					name = variable_ghw_unlocked
-					value = yes
-				}
-			}
-			religion:christianity_religion = {
-				set_variable = {
-					name = variable_ghw_unlocked
-					value = yes
-				}
-			}
-			set_global_variable = {
-				name = had_first_catholic_crusade
-				value = yes
 			}
 		}
 	}
@@ -955,13 +967,9 @@
 					}
 				}
 				pay_short_term_gold = {
-					target = character:83355
+					target = character:906
 					gold = gold
 				}
-			}
-			random_player = {
-				limit = { this = character:83355 }
-				set_player_character = character:906
 			}
 			resolve_title_and_vassal_change = scope:title_change
 			# Since Murchad is back to his historical self, he gets to suck.
@@ -991,51 +999,19 @@
 					allied_through_target = character:922
 				}
 			}
-		}
-	}
-	
-	{
-		if = {
-			limit = {
-				game_start_date >= 1178.10.1
+			character:906 = {
+				every_held_title = {
+					title_tier = county
+					change_county_control = 100
+				}
 			}
-			character:st_amand_1 = {
-				save_scope_as = leader
-			}
-			character:223523 = {
-				save_scope_as = founder
-			}
-			title:b_saida = {
-				save_scope_as = barony
-			}
-			create_holy_order_neutral_effect = {
-				LEADER = scope:leader
-				CAPITAL = scope:barony
-				NEW_HO_SCOPE = new_holy_order
-				FOUNDER = scope:founder
-			}
-		}
-		if = {
-			limit = {
-				game_start_date >= 1178.10.1
-			}
-			character:231000 = {
-				save_scope_as = leader_1
-			}
-			character:223523 = {
-				save_scope_as = founder_1
-			}
-			title:b_hebron = {
-				save_scope_as = barony_1
-			}
-			create_holy_order_neutral_effect = {
-				LEADER = scope:leader_1
-				CAPITAL = scope:barony_1
-				NEW_HO_SCOPE = new_holy_order
-				FOUNDER = scope:founder_1
+			random_player = {
+				limit = { this = character:83355 }
+				set_player_character = character:906
 			}
 		}
 	}
+
 	{
 		# UNITY CONFIG
 		## 867.
@@ -1405,6 +1381,7 @@
 			limit = { has_tgp_dlc_trigger = yes }
 			### DYNASTIES
 			tgp_dynasty_house_name_setup_effect = yes
+			
 			### BLOCS
 			tgp_setup_historical_house_bloc_effect = yes
 		}
@@ -1427,835 +1404,6 @@
 						}
 					}
 				}
-	}
-
-	# Anachronistic China circuit type setup
-	{
-					if = {
-						limit = {
-							game_start_date = 867.1.1
-						}
-						title:k_hebei.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_youji.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_daibei.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_guannei.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_viet.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_lingxi.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-					}
-					else_if = {
-						limit = {
-							game_start_date = 1066.9.15
-						}
-						title:k_hebei.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_hedong.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_guannei.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_lingxi.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-					}
-					else_if = {
-						limit = {
-							game_start_date = 1178.10.1
-						}
-						title:k_huainan.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_shannan.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_xingyuan.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_lingxi.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-						title:k_xichuan.holder = {
-							hidden_effect = {
-								vassal_contract_set_obligation_level = {
-									type = celestial_provinces
-									level = 3 # Military
-								}
-								if = {
-									limit = {
-										NOT = {
-											has_realm_law = celestial_military_appointment_succession_law
-										}
-									}
-									add_realm_law_skip_effects = celestial_military_appointment_succession_law
-								}
-							}
-							every_vassal = {
-								limit = {
-									primary_title.tier >= tier_county
-								}
-								hidden_effect = {
-									vassal_contract_set_obligation_level = {
-										type = celestial_provinces
-										level = 3 # Military
-									}
-									if = {
-										limit = {
-											NOT = {
-												has_realm_law = celestial_military_appointment_succession_law
-											}
-										}
-										add_realm_law_skip_effects = celestial_military_appointment_succession_law
-									}
-								}
-								every_vassal = {
-									limit = {
-										primary_title.tier >= tier_county
-									}
-									hidden_effect = {
-										vassal_contract_set_obligation_level = {
-											type = celestial_provinces
-											level = 3 # Military
-										}
-										if = {
-											limit = {
-												NOT = {
-													has_realm_law = celestial_military_appointment_succession_law
-												}
-											}
-											add_realm_law_skip_effects = celestial_military_appointment_succession_law
-										}
-									}
-								}
-							}
-						}
-					}
 	}
 
 	{
@@ -2318,10 +1466,21 @@
 		if = {
 			limit = { current_date = 867.1.1 }
 
+			character:90107 ?= {
+				if = {
+					limit = { is_valid_designated_heir = character:42019 }
+					set_designated_heir = character:42019
+					set_variable = {
+						name = ludwig_younger_designated_by_history
+					}
+				}
+			}
+
 			# Iberian Struggle
-			if = { # If we're in 867, Aragonese should be removed from the Struggle, since they don't quite exist yet.
-				limit = { exists = struggle:iberian_struggle }
-				struggle:iberian_struggle = { set_culture_as_uninvolved = culture:aragonese }
+			struggle:iberian_struggle ?= {
+				set_culture_as_uninvolved = culture:aragonese
+				set_faith_as_involved = rite:mozarabic_church.faith
+				set_faith_as_uninvolved = faith:catholic
 			}
 
 			# Persian Struggle
@@ -2436,6 +1595,10 @@
 						has_government = landless_adventurer_government
 					}
 					add_realm_law_skip_effects = camp_purpose_mercenaries
+					create_maa_regiment = {
+						type = horse_archers
+						size = 2
+					}
 				}
 			}
 	}
@@ -2652,6 +1815,118 @@
 						has_government = landless_adventurer_government
 					}
 					add_realm_law_skip_effects = camp_purpose_scholars
+					save_scope_as = chongyang_camp_holder
+					# Quanzhen Seven Masters (minus Wang Chuyi himself)
+					create_character = { # Ma Yu / Danyangzi
+						age = 55
+						name = "Ma Yu"
+						gender_female_chance = 0
+						random_traits = no
+						faith = faith:shangqing_faith
+						culture = culture:han
+						trait = education_learning_3
+						trait = lifestyle_mystic
+						trait = theologian
+						trait = zealous
+						trait = temperate
+						employer = character:wang_chuyi_1
+						save_scope_as = quanzhen_disciple
+					}
+					scope:quanzhen_disciple ?= {
+						set_character_rite = rite:quanzhen
+					}
+					create_character = { # Tan Chuduan / Changzhenzi
+						age = 55
+						name = "Tan Chuduan"
+						gender_female_chance = 0
+						random_traits = no
+						faith = faith:shangqing_faith
+						culture = culture:han
+						trait = education_learning_3
+						trait = lifestyle_mystic
+						trait = theologian
+						trait = zealous
+						trait = patient
+						employer = character:wang_chuyi_1
+						save_scope_as = quanzhen_disciple
+					}
+					scope:quanzhen_disciple ?= {
+						set_character_rite = rite:quanzhen
+					}
+					create_character = { # Liu Chuxuan / Changshengzi
+						age = 31
+						name = "Liu Chuxuan"
+						gender_female_chance = 0
+						random_traits = no
+						faith = faith:shangqing_faith
+						culture = culture:han
+						trait = education_learning_3
+						trait = lifestyle_mystic
+						trait = theologian
+						trait = zealous
+						trait = diligent
+						employer = character:wang_chuyi_1
+						save_scope_as = quanzhen_disciple
+					}
+					scope:quanzhen_disciple ?= {
+						set_character_rite = rite:quanzhen
+					}
+					create_character = { # Qiu Chuji / Changchunzi
+						age = 30
+						name = "Qiu Chuji"
+						gender_female_chance = 0
+						random_traits = no
+						faith = faith:shangqing_faith
+						culture = culture:han
+						trait = education_learning_4
+						trait = lifestyle_mystic
+						trait = theologian
+						trait = zealous
+						trait = temperate
+						employer = character:wang_chuyi_1
+						save_scope_as = quanzhen_disciple
+					}
+					scope:quanzhen_disciple ?= {
+						set_character_rite = rite:quanzhen
+						add_trait = herald
+						set_variable = qiu_chuji
+					}
+					create_character = { # Hao Datong / Guangningzi
+						age = 38
+						name = "Hao Datong"
+						gender_female_chance = 0
+						random_traits = no
+						faith = faith:shangqing_faith
+						culture = culture:han
+						trait = education_learning_3
+						trait = lifestyle_mystic
+						trait = theologian
+						trait = zealous
+						trait = calm
+						employer = character:wang_chuyi_1
+						save_scope_as = quanzhen_disciple
+					}
+					scope:quanzhen_disciple ?= {
+						set_character_rite = rite:quanzhen
+					}
+					create_character = { # Sun Buer / Qingjingzi
+						age = 59
+						name = "Sun Buer"
+						gender_female_chance = 100
+						random_traits = no
+						faith = faith:shangqing_faith
+						culture = culture:han
+						trait = education_learning_3
+						trait = lifestyle_mystic
+						trait = theologian
+						trait = zealous
+						trait = humble
+						employer = character:wang_chuyi_1
+						save_scope_as = quanzhen_disciple
+					}
+					scope:quanzhen_disciple ?= {
+						set_character_rite = rite:quanzhen
+					}
 				}
 			}
 			character:jiang_kui_1 ?= {
@@ -3468,6 +2743,44 @@
 					VARIABLE = started_the_iron_and_golden_king_achievement
 					VALUE = yes
 				}
+				# CE3 achievement: Guido's Guiding Light
+				if = {
+					limit = {
+						this = character:et_milano_1066_1
+					}
+					add_achievement_global_variable_effect = {
+						VARIABLE = started_ce3_02_guidos_guiding_light_achievement
+						VALUE = yes
+					}
+				}
+				# CE3 achievement: Servus Servorum Dei
+				if = {
+					limit = {
+						OR = {
+							AND = {
+								is_clergy = no
+								is_ruler = yes
+								highest_held_title_tier <= tier_duchy
+							}
+							AND = {
+								is_clergy = yes
+								highest_held_title_tier = tier_county
+							}
+						}
+					}
+					add_achievement_flag_effect = { FLAG = ce3_11_servus_servorum_dei_achievement_start }
+				}
+				# CE3 achievement: Cardinal Sin
+				if = {
+					limit = {
+						is_clergy = no
+						is_ruler = yes
+					}
+					add_achievement_global_variable_effect = {
+						VARIABLE = started_ce3_15_cardinal_sin_achievement
+						VALUE = yes
+					}
+				}
 
 				### RULER DESIGNER ACHIEVEMENT BLOCKS ###
 				if = {
@@ -3841,7 +3154,10 @@
 			every_in_list = {
 				list = goryeo_military_provinces
 				limit = {
-					holder ?= { is_governor = yes }
+					holder ?= {
+						has_subject_contract_group = meritocratic_vassal
+						is_governor = yes
+					}
 				}
 				holder = {
 					vassal_contract_set_obligation_level = {
@@ -3865,7 +3181,10 @@
 			every_in_list = {
 				list = silla_military_provinces
 				limit = {
-					holder ?= { is_governor = yes }
+					holder ?= {
+						has_subject_contract_group = meritocratic_vassal
+						is_governor = yes
+					}
 				}
 				holder = {
 					vassal_contract_set_obligation_level = {
@@ -3888,7 +3207,10 @@
 			title:c_chikuzen ?= { # Dazaifu
 				if = {
 					limit = {
-						holder ?= { is_governor = yes }
+						holder ?= {
+							has_subject_contract_group = japan_administrative_vassal
+							is_governor = yes
+						}
 					}
 					holder = {
 						vassal_contract_set_obligation_level = {
@@ -3903,7 +3225,10 @@
 			every_in_list = {
 				list = japan_military_provinces
 				limit = {
-					holder ?= { is_governor = yes }
+					holder ?= {
+						has_subject_contract_group = japan_administrative_vassal
+						is_governor = yes
+					}
 				}
 				holder = {
 					vassal_contract_set_obligation_level = {
@@ -3934,6 +3259,21 @@
 			add_to_list = holder_to_learn_chinese
 		}
 		title:e_goryeo.holder ?= {
+			add_to_list = holder_to_learn_chinese
+		}
+		title:k_xia.holder ?= {
+			add_to_list = holder_to_learn_chinese
+		}
+		title:e_great_liao.holder ?= {
+			add_to_list = holder_to_learn_chinese
+		}
+		title:e_jin.holder ?= {
+			add_to_list = holder_to_learn_chinese
+		}
+		title:k_balhae.holder ?= {
+			add_to_list = holder_to_learn_chinese
+		}
+		title:k_dali.holder ?= {
 			add_to_list = holder_to_learn_chinese
 		}
 	}
@@ -3997,6 +3337,258 @@
 		}
 	}
 
+	# Since Faiths can change dynamically in game, this feels anachronistic to keep
+	{
+		#Rabbene Gershom outlaws polygamy
+		if = {
+			limit = {
+				current_date >= 1000.1.1
+			}
+			religion:judaism_religion = {
+				every_faith = {
+					limit = {
+						main_rite = {
+							rite_has_doctrine = temple_authority_rabbinic_doctrine
+							rite_has_doctrine = doctrine_polygamy
+						}
+					}
+					remove_doctrine = doctrine_polygamy
+					add_doctrine = doctrine_monogamy
+				}
+			}
+		}
+	}
+
+	# Most of these buildings were created well after Imperator would end, so are being removed. They should probably get their own decisions, or ways of building them naturally, later
+	{
+		#CP3 Special Buildings - Goes Before Holy Sites
+		if = {
+			limit = {
+				has_cp3_dlc_trigger = yes
+			}
+			title:b_barcelona.title_province = { add_special_building_slot = drassanes_01 } #1892
+			title:b_merv.title_province = { add_special_building = kyz_kala_01 } #4238
+			if = { limit = { game_start_date >= 1178.10.1 } title:b_cluny.title_province = { add_special_building = cluny_abbey_02 } } #2304
+			else_if = { limit = { game_start_date >= 1066.9.15 } title:b_cluny.title_province = { add_special_building = cluny_abbey_01 } }
+			else = { title:b_cluny.title_province = { add_special_building_slot = cluny_abbey_01 } }
+			title:b_york.title_province = { add_special_building = york_walls_01 } #1595
+			title:b_damascus.title_province = { add_special_building = damascus_mosque_01 } #5924
+			title:b_lhasa.title_province = { add_special_building = jokhang_01 } #9237
+			if = { limit = { game_start_date >= 1178.10.1 } title:b_schmalkalden.title_province = { add_special_building = wartburg_01 } } #3010
+			else = { title:b_schmalkalden.title_province = { add_special_building_slot = wartburg_01 } }
+			title:b_lalibela.title_province = { add_special_building_slot = beta_giyorgis_01 } #8301
+			if = { limit = { game_start_date >= 1066.9.15 } title:b_novgorod.title_province = { add_special_building = holy_wisdom_01 } } #5137
+			else = { title:b_novgorod.title_province = { add_special_building_slot = holy_wisdom_01 } }
+			title:b_kano.title_province = { add_special_building_slot = kano_walls_01 } #6519
+			title:b_somapur.title_province = { add_special_building = somapura_university_01 } #848
+			if = { limit = { game_start_date >= 1178.10.1 } title:b_firenze.title_province = { add_special_building = duomo_florence_02 } } #2543
+			else = { title:b_firenze.title_province = { add_special_building = duomo_florence_01 } }
+			title:b_konarak.title_province = { add_special_building_slot = konark_temple_01 } #928
+			title:b_fes.title_province = { add_special_building = al_qarawiyyin_university_01 } #4694
+			title:b_kairouan.title_province = { add_special_building = kairouan_basins_01 } #4594
+			title:b_al-ghaba.title_province = { add_special_building = ghana_palace_01 } #6628 #NOTE: likely existed since the 8th, but earliest (only) source on palace is from 1068
+			title:b_visegrad_hun.title_province = { add_special_building_slot = visegrad_castle_01 } #3803
+			if = { limit = { game_start_date >= 1161.9.15 } title:b_leczyca.title_province = { add_special_building = wawel_cathedral_01 } } #4924 #Date of consecreation of Archcollegiate Church of St. Mary and St. Alexius in Tum
+			else = { title:b_leczyca.title_province = { add_special_building_slot = wawel_cathedral_01 } }
+			title:b_vatapi.title_province = { add_special_building = vatapi_caves_01 } #1198
+			if = { limit = { game_start_date >= 1178.10.1 } title:b_jaisalmer.title_province = { add_special_building = jaisalmer_fort_01 } } #3387
+			else = { title:b_jaisalmer.title_province = { add_special_building_slot = jaisalmer_fort_01 } } #3387
+		}
+
+		#CP6 Special Buildings - Goes Before Holy Sites
+		if = {
+			limit = {
+				has_cp6_dlc_trigger = yes
+			}
+			#remove
+			title:b_indraprastha.title_province = { remove_building = iron_pillar_of_delhi_01 } #1365
+
+			#always exists
+			title:b_kathmandu.title_province = { add_special_building = boudhanath_01 } #9116
+			title:b_indraprastha.title_province = { add_special_building = qutb_minar_01 } #1365
+			title:b_sanchi.title_province = { add_special_building = sanchi_stupa_01 } #3323
+
+			#only buildable
+			title:b_yazd.title_province = { add_special_building_slot = yazd_mosque_01 } #4053
+
+			#different by start date
+			if = {
+				limit = {
+					game_start_date >= 1066.9.15
+				}
+				title:b_avranches.title_province = { add_special_building = mont_st_michel_02 }
+			} #2167
+			else = {
+				title:b_avranches.title_province = { add_special_building = mont_st_michel_01 }
+			}
+
+		}
+
+		#CP8 Special Buildings  - Goes Before Holy Sites
+		if = {
+			limit = { has_cp8_dlc_trigger = yes }
+			#Great Buddha of Kamakura - from the 1250s
+			title:b_kamakura.title_province = { add_special_building_slot = buddha_kamakura_01 }
+			#Kizuki Taisha
+			title:b_kizuki_taisha.title_province = { add_special_building = izumo_taisha_01 }
+			#Stone Pagoda of Mireuksa
+			title:b_Goryeo_Jeolla_Jeonju.title_province = { add_special_building = stone_pagoda_01 }
+			#Tomb of a Goguryeo King
+			title:b_Liao_Xijing.title_province = { add_special_building = goguryeo_tomb_01 }
+			#Iron Lion of Cangzhou - from the 950s
+			if = { limit = { game_start_date >= 1066.9.15 } title:b_qingchi.title_province = { add_special_building = iron_lion_cangzhou_01 } }
+			else = { title:b_qingchi.title_province = { add_special_building_slot = iron_lion_cangzhou_01 } }
+			#Temple of Confucius
+			title:b_fuqu.title_province = { add_special_building = confucius_temple_01 }
+			#Gaocheng Observatory #NOTE: technically in continuous use from the 8th century, but the major expansion depicted is from the 1200s
+			title:b_yangzhai.title_province = { add_special_building_slot = dengfeng_observatory_01 } #1
+			#Maijishan Grottoes
+			title:b_chengji.title_province = { add_special_building = maijishan_grottoes_01 }
+			#Yuelu Academy - from 976
+			if = { limit = { game_start_date >= 1066.9.15 } title:b_changsha.title_province = { add_special_building = yuelu_academy_01 } }
+			else = { title:b_changsha.title_province = { add_special_building_slot = yuelu_academy_01 } }
+			#Imperial Citadel of Lin'an - from the 1130s-1150s
+			if = { limit = { game_start_date >= 1038.1.1 } title:b_qiantang.title_province = { add_special_building = citadel_linan_01 } } #2
+			else = { title:b_qiantang.title_province = { add_special_building_slot = citadel_linan_01 } } #2
+			#Fanfang of Guangzhou
+			title:b_nanhai.title_province = { add_special_building = fanfang_guangzhou_01 }
+			#My Son Sanctuary
+			title:b_my_son.title_province = { add_special_building = my_son_sanctuary_01 }
+			#Ha Long Bay
+			title:b_long_hung.title_province = { add_special_building = ha_long_bay_01 }
+			#Three Pagodas of Dali
+			title:b_dali_1.title_province = { add_special_building = three_pagodas_dali_01 }
+			#Thuriang Kilns - from the 1200s
+			title:b_sukhothai.title_province = { add_special_building = thuriang_kilns_01 remove_building = thuriang_kilns_01 } #3
+			#Lingapura Pyramid - from the 900s
+			if = { limit = { game_start_date >= 1066.9.15 } title:b_koh_ker.title_province = { add_special_building = pyramid_lingapura_01 } }
+			else = { title:b_koh_ker.title_province = { add_special_building_slot = pyramid_lingapura_01 } }
+			if = { limit = { game_start_date >= 1066.1.1 } title:b_SUM_Muara_Takus.title_province = { add_special_building = muara_takus_01 } }
+			else = { title:b_SUM_Muara_Takus.title_province = { add_special_building = muara_takus_01 remove_building = muara_takus_01 } } #8
+			#Wilwatikta Palace - sometime in the mid 1300s
+			title:b_JAV_Daha.title_province = { add_special_building_slot = wilwatikta_palace_01 } #4
+			#Gunung Api
+			title:b_BOR_Brunei.title_province = { add_special_building = gunung_api_01 } #5
+			#Chocolate Hills
+			title:b_PHI_Bool.title_province = { add_special_building = chocolate_hills_01 }
+			#Sulawesi Megaliths
+			title:b_SUL_Malangke.title_province = { add_special_building = suwalesi_megaliths_01 } #6
+			#Temples of Angkor
+			if = {
+				limit = { game_start_date >= 1150.1.1 }
+				title:b_angkor.title_province = {
+					remove_building = angkor_wat_01
+					add_special_building = temples_angkor_02
+				}
+			}
+			else = {
+				title:b_angkor.title_province = { add_special_building = temples_angkor_01 } #7
+			}
+		}
+	}
+
+	# Anachronistic
+	{
+		if = {
+			limit = {
+				has_pam_dlc_trigger = yes
+			}
+			set_up_historical_monastic_orders_effect = yes
+		}
+		set_up_historical_military_orders_effect = yes
+	}
+
+	# Anachronistic; When we get to working on Christianity evolution, these should be setup that way
+	{
+		# We put Christian faiths on conditional appointment in 1066 so the Investiture Crisis can happen
+		# 867 is too early for it and by 1178 it is over
+		if = {
+			limit = {
+				has_pam_dlc_trigger = yes
+				current_date >= 1066.1.1
+				NOT = { current_date >= 1178.1.1 }
+			}
+			religion:christianity_religion = {
+				every_faith = {
+					limit = { has_doctrine_parameter = has_clerical_regions }
+					change_doctrine = doctrine_clerical_succession_conditional
+					# Faith-level doctrine changes only hit the main rite
+					every_faith_rite = {
+						limit = { NOT = { rite_has_doctrine = doctrine_clerical_succession_conditional } }
+						change_rite_doctrine = doctrine_clerical_succession_conditional
+					}
+				}
+			}
+		}
+	}
+	{
+		# Schism already happened
+		if = {
+			limit = { game_start_date >= 1054.7.16 }
+			set_global_variable = pam_great_schism_decision_taken
+			pam_copy_chalcedonian_saints_to_schism_faiths_effect = yes
+		}
+	}
+	{
+		# Post-schism starts: top the College up if history left it under the vacancy floor
+		if = {
+			limit = { has_global_variable = pam_great_schism_decision_taken }
+			faith:christian_faith = { remove_doctrine = special_doctrine_has_clerical_electors }
+			faith:catholic = { pam_seed_cardinals_effect = yes }
+		}
+		else_if = {
+			limit = {
+				has_pam_dlc_trigger = yes
+				exists = title:k_papal_state.holder
+			}
+			title:k_papal_state.holder = { add_realm_law_skip_effects = theocratic_elective_succession_law }
+			pam_seed_867_college_effect = yes
+		}
+	}
+
+	# Anachronistic
+	{
+			if = {
+				limit = {
+					game_start_date = 867.1.1
+				}
+				title:k_hebei = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_youji = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_daibei = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_guannei = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_viet = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_lingxi = { tgp_make_military_celestial_provinces_effect = yes }
+			}
+			else_if = {
+				limit = {
+					game_start_date = 1066.9.15
+				}
+				title:k_hebei = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_hebei = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_guannei = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_lingxi = { tgp_make_military_celestial_provinces_effect = yes }
+			}
+			else_if = {
+				limit = {
+					game_start_date = 1178.10.1
+				}
+				title:k_huainan = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_shannan = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_xingyuan = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_lingxi = { tgp_make_military_celestial_provinces_effect = yes }
+				title:k_xichuan = { tgp_make_military_celestial_provinces_effect = yes }
+			}
+	}
+
+	# Anachronistic
+	{
+			# Spawn the Slavic Rite story cycle
+			title:k_moravia.holder ?= {
+				# Fire the story cycle for Rostislav
+				create_story = story_slavic_rite
+			}
+	}
+
 } # End of "common/on_action/game_start.txt"
 
 "common/on_action/title_on_actions.txt" = {
@@ -4052,6 +3644,10 @@
 				limit = {
 					# The title they've acquired is Norway.
 					scope:title = title:k_norway
+					# Norway has been created by them.
+					scope:transfer_type = flag:created
+					# Norway has not been created previously.
+					NOT = { exists = global_var:norway_created }
 				}
 				# Tanglehair becomes Fairhair.
 				if = {
@@ -4059,10 +3655,6 @@
 						# This character is Harald Fairhair.
 						exists = character:144000
 						this = character:144000
-						# Norway has been created by them.
-						scope:transfer_type = flag:created
-						# Norway has not been created previously.
-						NOT = { exists = global_var:norway_created }
 					}
 					trigger_event = {
 						id = fp1_major_decisions.1011
@@ -4070,11 +3662,7 @@
 					}
 				}
 				# Check Norway's creation status.
-				if = {
-					limit = {
-						scope:transfer_type = flag:created
-						NOT = { exists = global_var:norway_created }
-					}
+				else = {
 					trigger_event = {
 						id = fp1_major_decisions.1012
 						days = 1
@@ -4424,7 +4012,7 @@ bookmark_867_northmen_aellas_capture_war_imprisonment_effect = {
 				# The bells have been morphed once.
 				scope:newly_created_artifact = {
 					set_variable = {
-						name = artefact_santiago_bells
+						name = artifact_santiago_bells
 						value = 1
 					}
 				}
@@ -4441,7 +4029,7 @@ bookmark_867_northmen_aellas_capture_war_imprisonment_effect = {
 				# The bells have been morphed once.
 				scope:newly_created_artifact = {
 					set_variable = {
-						name = artefact_santiago_bells
+						name = artifact_santiago_bells
 						value = 1
 					}
 				}
@@ -4749,7 +4337,7 @@ create_artifact_goblet_chalice_of_dona_urraca = {
 	}
 	scope:newly_created_artifact = {
 		set_variable = {
-			name = dlc_potential_court_artefact
+			name = dlc_potential_court_artifact
 			value = yes
 		}
 		set_variable = {
@@ -4757,8 +4345,8 @@ create_artifact_goblet_chalice_of_dona_urraca = {
 			value = yes
 		}
 		set_variable = {
-			name = relic
-			value = flag:christian
+			name = relic_religion
+			value = religion:christianity_religion
 		}
 	}
 }
@@ -4785,7 +4373,7 @@ create_artifact_various_aquamanile_santiago = {
 	}
 	scope:newly_created_artifact = {
 		set_variable = {
-			name = dlc_potential_court_artefact
+			name = dlc_potential_court_artifact
 			value = yes
 		}
 		set_variable = {
@@ -4873,8 +4461,8 @@ create_artifact_edmund_head_effect = {
 		set_variable = edmund_head
 		add_scaled_artifact_modifier_devotion_effect = yes
 		set_variable = {
-			name = relic
-			value = flag:christian
+			name = relic_religion
+			value = religion:christianity_religion
 		}
 		save_scope_as = epic
 		add_artifact_history = {
@@ -5001,7 +4589,7 @@ create_artifact_monomachus_crown_effect = {
 	create_artifact = {	
 		name = monomachus_crown_name
 		description = monomachus_crown_description
-		template = crown_wearable_template
+		template = unique_crown_wearable_template
 		type = helmet
 		visuals = pedestal_justinian
 		wealth = scope:wealth
@@ -5421,10 +5009,6 @@ create_artifact_papal_tiara_effect = {
 
 	scope:newly_created_artifact = {
 		set_variable = { name = historical_unique_artifact value = yes }
-		set_variable = {
-			name = relic
-			value = flag:christian
-		}
 		set_variable = {
 			name = artifact_succession_title
 			value = title:k_papal_state
@@ -5852,12 +5436,12 @@ create_artifact_statue_constantine_effect = {
 		add = -5000
 		years_from_game_start <= 5
 		OR = {
-			scope:actor = character:122
+			scope:puppet_or_actor = character:122
 			scope:recipient = character:122
 			scope:secondary_actor = character:122
 			scope:secondary_recipient = character:122
 		}
-		scope:actor = {
+		scope:puppet_or_actor = {
 			is_ai = yes
 		}
 		scope:recipient = {
@@ -6220,7 +5804,7 @@ bookmark.0003 = { #by Mathilda Bjarnehed
 	hidden = yes
 	
 	trigger = {
-		scope:imprisoner.faith = { trait_is_virtue = vengeful }
+		root.rite = { trait_is_virtue_rite = vengeful }
 		scope:imprisoner = {
 			any_close_family_member = {
 				even_if_dead = yes
@@ -6411,6 +5995,10 @@ bookmark.0004 = { #by Mathilda Bjarnehed
 		}
 		execute_opinion_effect = { VICTIM = scope:prisoner EXECUTIONER = root }
 
+		stress_and_fulfillment_impact = {
+			zealous = medium_stress_impact_loss
+		}
+
 		ai_chance = {
 			base = 50
 		}
@@ -6503,12 +6091,28 @@ bookmark.1069 = {
 		}
 		if = {
 			limit = { character:528 = { is_councillor_of = root } }
-			fire_councillor = character:528
+			show_as_tooltip = { fire_councillor = character:528 }
 		}
 		assign_councillor_type = {
 			type = councillor_court_chaplain
 			remove_existing_councillor = yes
 			target = character:john_monk
+		}
+		if = {
+			limit = {
+				has_pam_dlc_trigger = yes
+				can_have_realm_priest_puppet_trigger = yes
+				NOT = {
+					exists = puppet:theological_agent_puppet
+				}
+				character:john_monk = {
+					NOT = { exists = puppeteer }
+				}
+			}
+			set_puppet = {
+				target = character:john_monk
+				type = theological_agent_puppet
+			}
 		}
 		add_character_flag = {
 			flag = bishop_assignment
@@ -6556,6 +6160,7 @@ bookmark.1069 = {
 			if = {
 				limit = {
 					has_character_flag = bishop_assignment
+					NOT = { cp:councillor_court_chaplain ?= character:john_monk }
 				}
 				assign_councillor_type = {
 					type = councillor_court_chaplain
@@ -7201,6 +6806,7 @@ bookmark.0500 = {
 		start_war = {
 			casus_belli = admin_barbarian_conquest_cb
 			target = title:d_biansong.holder
+			target_title = title:d_biansong
 		}
 
 		spawn_army = {
@@ -7251,11 +6857,12 @@ bookmark.0500 = {
 			is_landed = no
 		}
 
-		set_character_faith = faith:maitreya
+		set_character_faith = faith:maitreya_faith
+		set_character_rite = rite:maitreya
 
-		faith:maitreya = {
+		faith:maitreya_faith = {
 			change_fervor = {
-				value = 100
+				value = massive_fervor_gain
 				desc = maitreya_has_descended_fervor_desc
 			}
 		}
@@ -7291,6 +6898,7 @@ bookmark.0500 = {
 		start_war = {
 			casus_belli = admin_barbarian_conquest_cb
 			target = title:d_biansong.holder
+			target_title = title:d_biansong
 		}
 
 		spawn_army = {
@@ -8828,7 +8436,7 @@ game_rule.1142 = {
 	option = {
 		name = game_rule.1142.b
 		trigger = { is_ai = no }
-		
+
 		reverse_add_opinion = {
 			target = scope:elect
 			modifier = grateful_opinion
@@ -8851,7 +8459,7 @@ game_rule.1142 = {
 			is_ai = no
 			scope:elect = { is_ai = yes }
 		}
-		
+
 		set_player_character = scope:elect
 		trigger_event = {
 			id = game_rule.1143
@@ -10786,10 +10394,10 @@ game_rule.1143 = {
 
 "common/decisions/80_major_decisions_british_isles.txt" = {
 	{
-			dynasty = dynasty:1029001	#The Cornish royal house is always able to get away with these shenanigans.
+			dynasty ?= dynasty:1029001	#The Cornish royal house is always able to get away with these shenanigans.
 	}
 	{
-			dynasty = dynasty:1029001	#The Cornish royal house is at it again.
+			dynasty ?= dynasty:1029001	#The Cornish royal house is at it again.
 	}
 }
 
@@ -10819,39 +10427,50 @@ restore_holy_roman_empire_decision = {
 	selection_tooltip = restore_holy_roman_empire_decision_tooltip
 
 	is_shown = {
-		is_landed_or_landless_administrative = yes
-		exists = dynasty # Everyone should have a dynasty, but in case they don't...
-		NOT = { has_global_variable = flag_restored_roman_empire } # Not if Rome already exists (prevent Rome from restoring HRE)
-		NOR = {	#Title existence cnditions.
+		NOR = {	#Title existence conditions.
 			exists = title:e_hre.holder	#Well, that'd be redundant.
-			#highest_held_title_tier = tier_empire	#Existing emperors likewise should not be giving up their empire.
+		}
+		OR = {	#Government conditions.
+			government_has_mechanic = administrative
+			government_has_flag = government_is_feudal
+			government_has_flag = government_is_clan
+		}
+		AND = {	#Faith conditions.
+			faith = {
+				religion_tag = christianity_religion
+			}
+			trigger_if = {
+				limit = { exists = faith.religious_head }
+				this != faith.religious_head
+			}
+			trigger_else = {
+				NOT = { faith.main_rite.head_of_rite ?= this }
+			}
+			#NAND = {	#No need for a competing empire if your faith controls the ERE.
+			#	exists = title:e_byzantium.holder
+			#	faith = title:e_byzantium.holder.faith
+			#}
 		}
 		NOR = { #It doesn't make sense for these competing empires.
 			is_roman_emperor_trigger = yes
 			mpo_has_gok_mongol_empire_trigger = yes
 		}
-		AND = {	#Faith conditions.
-			this != faith.religious_head	#Nice try, Mr. Pope.
-			faith = {
-				religion_tag = christianity_religion
-				has_doctrine_parameter = spiritual_head_of_faith	#Gotta be invested with the authority by someone other than yourself.
-			}
-			NAND = {	#No need for a competing empire if your faith controls the ERE.
-				exists = title:e_byzantium.holder
-				faith = title:e_byzantium.holder.faith
-			}
-		}
-		OR = {	#Government conditions.
-			government_has_flag = government_is_feudal
-			government_has_flag = government_is_clan
-			government_allows = administrative
-		}
-		exists = faith.religious_head
+		highest_held_title_tier < tier_hegemony	# Don't destroy your hegemony.
+		NOT = { has_global_variable = flag_restored_roman_empire } # Not if Rome already exists (prevent Rome from restoring HRE)
+		is_landed_or_landless_administrative = yes
+		exists = dynasty # Everyone should have a dynasty, but in case they don't...
 	}
 
 	is_valid = {
 		#Standard requirements.
 		top_liege = this
+		custom_description = {
+			text = restore_hre_mainline_rite_requirement_tt
+			OR = {
+				rite = faith.main_rite
+				rite = rite:carolingian_christianity
+			}
+		}
 		trigger_if = {
 			limit = {
 				is_ai = no
@@ -10859,19 +10478,22 @@ restore_holy_roman_empire_decision = {
 			prestige_level >= high_prestige_level
 		}
 		#Title ownership conditions.
-		OR = { #Gotta be King of a core Carolingian Kingdom.
-			has_title = title:k_east_francia
-			has_title = title:k_bavaria
-			has_title = title:k_france
-			has_title = title:k_italy
-			has_title = title:k_lotharingia
-			any_vassal = {
-				OR = {
-					has_title = title:k_east_francia
-					has_title = title:k_bavaria
-					has_title = title:k_france
-					has_title = title:k_italy
-					has_title = title:k_lotharingia
+		custom_tooltip = {
+			text = decision_refound_hre_kingdom_list.tt
+			OR = { #Gotta be King of a core Carolingian Kingdom.
+				has_title = title:k_east_francia
+				has_title = title:k_bavaria
+				has_title = title:k_france
+				has_title = title:k_italy
+				has_title = title:k_lotharingia
+				any_vassal = {
+					OR = {
+						has_title = title:k_east_francia
+						has_title = title:k_bavaria
+						has_title = title:k_france
+						has_title = title:k_italy
+						has_title = title:k_lotharingia
+					}
 				}
 			}
 		}
@@ -10888,52 +10510,86 @@ restore_holy_roman_empire_decision = {
 			}
 		}
 		sub_realm_size >= 120	#Plus your various kingdoms should be ruling something.
-		#HoF preference conditions.
-		trigger_if = {
-			limit = {
-				is_ai = no
-			}
-			OR = {
-				faith.religious_head = {	#And they have to actually like you enough to want to invest you.
-					opinion = {
-						target = root
-						value >= high_positive_opinion
+		# Must be 7 potential Electors
+		custom_tooltip = {
+			text = restore_holy_roman_empire_decision_trigger_de_jure_vassals.tt
+			any_vassal = {
+				count >= 7
+				hre_valid_prince_elector_trigger = yes
+				# prince-bishopric or duchy
+				trigger_if = {
+					limit = { government_has_flag = government_is_theocracy }
+					any_held_title = {
+						tier >= tier_county
+						is_landless_type_title = no
+						has_clerical_region = no
 					}
 				}
-				root = { has_strong_usable_hook = faith.religious_head }	#Or you have a strong hook on them that you can actually use.
-				root = { has_weak_hook = faith.religious_head }	#Or a regular hook, to be fair, provided you meet the other criteria.
+				trigger_else = {
+					OR = {
+						primary_title.tier >= tier_duchy
+						has_character_flag = hre_kingdom_destroyed
+					}
+				}
 			}
 		}
+		rule_title_creation_imperial_power_projection_title_creation_trigger = yes
 	}
 
 	is_valid_showing_failures_only = {
 		is_available_adult = yes
-		faith.religious_head = { is_available_adult = yes }
-		NOR = {
-			has_trait = excommunicated
-			is_at_war_with = faith.religious_head
-		}
+		NOT = { has_trait = excommunicated }
 	}
 
 	effect = {
+		hre_assign_dynamic_prince_electors_effect = yes
+		save_scope_as = founder
+		if = {
+			limit = { exists = faith.religious_head }
+			faith.religious_head = { save_scope_as = founder_religious_authority }
+		}
+		else_if = {
+			limit = { exists = faith.main_rite.head_of_rite }
+			faith.main_rite.head_of_rite = { save_scope_as = founder_religious_authority }
+		}
+		capital_province ?= { save_scope_as = ceremony_locale }
+		if = {
+			limit = {
+				exists = scope:founder_religious_authority
+				scope:founder_religious_authority = {
+					is_available_adult = yes
+					OR = {
+						opinion = {
+							target = root
+							value >= high_positive_opinion
+						}
+						root = { has_strong_usable_hook = this }
+						root = { has_weak_hook = this }
+					}
+				}
+				NOT = { is_at_war_with = scope:founder_religious_authority }
+			}
+			scope:founder_religious_authority = {
+				save_scope_as = hre_blessing_authority
+				if = {
+					limit = { is_playable_character = yes }
+					capital_province ?= { save_scope_as = ceremony_locale }
+				}
+			}
+		}
+		if = {
+			limit = { exists = scope:hre_blessing_authority }
+			custom_tooltip = restore_hre_with_blessing_tt
+		}
+		else = {
+			custom_tooltip = restore_hre_without_blessing_tt
+		}
 		show_as_tooltip = {
 			restore_holy_roman_empire_decision_scripted_effect = yes
 		}
+		custom_tooltip = hre_elector_list_creation_tt
 		gain_heroic_legend_seed_tooltip_effect = yes
-		save_scope_as = founder
-		faith.religious_head = { save_scope_as = founder_hof }
-		if = {
-			limit = {
-				faith.religious_head = { is_playable_character = yes }
-			}
-			faith.religious_head.capital_province = { save_scope_as = ceremony_locale }
-		}
-		else = {
-			capital_province = { save_scope_as = ceremony_locale }
-		}
-		trigger_event = {
-			id = middle_europe_decisions.0015
-		}
+		trigger_event = middle_europe_decisions.0015
 		#Notify other players.
 		every_player = {
 			limit = {
@@ -10951,81 +10607,6 @@ restore_holy_roman_empire_decision = {
 				name = restore_holy_roman_empire_decision
 				value = root
 			}
-		}
-		# Assign Dynamic Prince-Electors
-		hidden_effect = {
-			if = {
-				limit = { has_global_variable_list = hre_elector_list }
-				clear_global_variable_list = hre_elector_list
-			}
-			while = {
-				count = 7
-				random_vassal = {
-					limit = {
-						capital_province.empire = title:e_hre # must be de-jure vassal of empire
-						OR = { # prince-bishopric or duchy
-							AND = {
-								government_has_flag = government_is_theocracy
-								primary_title.tier >= tier_county
-							}
-							primary_title.tier >= tier_duchy
-						}
-						NOT = { # not already selected
-							is_target_in_global_variable_list = {
-								name = hre_elector_list
-								target = primary_title
-							}
-						}
-					}
-					weight = {
-						modifier = { # major vassals heavily weighted
-							factor = 10
-							is_powerful_vassal = yes
-						}
-						modifier = { # same culture as emperor preferred
-							factor = 4
-							culture = root.culture
-						}
-						modifier = { # we don't mind going outside Germania, but prefer it
-							factor = 1.5
-							trigger = { exists = primary_title.title_province }
-							primary_title.title_province.barony = {
-								OR = {
-									target_is_de_jure_liege_or_above = title:k_bavaria
-									target_is_de_jure_liege_or_above = title:k_bohemia
-									target_is_de_jure_liege_or_above = title:k_east_francia
-									target_is_de_jure_liege_or_above = title:k_frisia
-									target_is_de_jure_liege_or_above = title:k_lotharingia
-									target_is_de_jure_liege_or_above = title:k_pomerania
-								}
-							}
-						}
-						modifier = { # we want at least 3 theocracies ideally
-							factor = 10
-							any_in_global_list = {
-								variable = hre_elector_list
-								count < 3
-								holder = { government_has_flag = government_is_theocracy }
-							}
-							government_has_flag = government_is_theocracy
-						}
-						modifier = { # 3 is enough theocracies unless we can't find feudal
-							factor = 0.1
-							any_in_global_list = {
-								variable = hre_elector_list
-								count >= 3
-								holder = { government_has_flag = government_is_theocracy }
-							}
-							government_has_flag = government_is_theocracy
-						}
-					}
-					add_to_global_variable_list = {
-						name = hre_elector_list
-						target = primary_title
-					}
-				}
-			}
-			hre_elector_list_save_effect = yes # saves list scopes to title as variables for tooltip
 		}
 	}
 
@@ -11103,19 +10684,19 @@ reform_carolingian_empire_decision = {
 	}
 
 	is_shown = {
-		faith.religion = faith:catholic.religion #Christian
-		is_ruler = yes
+		culture ?= { has_cultural_pillar = heritage_frankish }
+		top_liege ?= this
 		is_playable_character = yes
+		capital_province ?= { geographical_region = world_europe_west }
+		faith.religion ?= faith:catholic.religion #Christian
 		NOT = {  #Can only do it once.
 			is_target_in_global_variable_list = {
 				name = unavailable_unique_decisions
 				target = flag:flag_reformed_carolingian_empire
 			}
 		}
-		top_liege = this
-		culture = { has_cultural_pillar = heritage_frankish }
-		capital_province = { geographical_region = world_europe_west }
 		NOT = { has_title = title:e_hre } #HRE title holders can't Restore Carolingian Borders as the decision requires the HRE to serve as an "antagonist"
+		is_ruler = yes
 	}
 
 	is_valid = {
@@ -11164,7 +10745,7 @@ reform_carolingian_empire_decision = {
 			}
 		}
 	}
-	
+
 	ai_potential = {
 		always = yes
 	}
@@ -11689,18 +11270,63 @@ fp1_major_decisions.1011 = {
 middle_europe_decisions.0015 = {
 	type = character_event
 	title = middle_europe_decisions.0015.t
-	desc = middle_europe_decisions.0015.desc
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { exists = scope:hre_blessing_authority }
+				desc = middle_europe_decisions.0015.desc
+			}
+			desc = middle_europe_decisions.0015.desc.unblessed
+		}
+	}
 	theme = realm
 	left_portrait =	{
 		character = scope:founder
 		animation = personality_bold
 	}
+	artifact = {
+		target = scope:newly_created_artifact
+		position = lower_right_portrait
+	}
 
 	immediate = {
 		play_music_cue = "mx_cue_epic_sacral_moment"
 		restore_holy_roman_empire_decision_scripted_effect = yes
+		custom_tooltip = hre_elector_list_created_tt
 		legend_seed_new_title_effect = yes
 		create_artifact_reichskrone_effect = { OWNER = this }
+		if = {
+			limit = {
+				has_pam_dlc_trigger = yes
+				exists = scope:hre_blessing_authority
+				religion = religion:christianity_religion
+				situation:the_christian_church ?= {
+					situation_top_has_catalyst = catalyst_restore_hre_with_pope_blessing
+				}
+			}
+			situation:the_christian_church = {
+				trigger_situation_catalyst = {
+					catalyst = catalyst_restore_hre_with_pope_blessing
+					character = root
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_pam_dlc_trigger = yes
+				NOT = { exists = scope:hre_blessing_authority }
+				religion = religion:christianity_religion
+				situation:the_christian_church ?= {
+					situation_top_has_catalyst = catalyst_the_christian_church_restored_hre_without_blessing
+				}
+			}
+			situation:the_christian_church = {
+				trigger_situation_catalyst = {
+					catalyst = catalyst_the_christian_church_restored_hre_without_blessing
+					character = root
+				}
+			}
+		}
 	}
 
 	#Renovatio Imperii!
@@ -11709,11 +11335,15 @@ middle_europe_decisions.0015 = {
 		give_nickname = nick_the_great
 		add_prestige_experience = monumental_fame_gain
 		every_vassal = {
+			custom = custom_every_rightful_vassal
+			limit = {
+				save_temporary_scope_as = vassal_temp
+				root = { is_rightful_liege_of = scope:vassal_temp }
+			}
 			add_opinion = {
 				modifier = reformed_holy_roman_empire_opinion
 				target = root
 			}
-			custom = restore_holy_roman_empire_decision_effects_vassal_opinion.tt
 		}
 		ai_chance = {	#When taken, the AI should always pick this.
 			base = 100
@@ -12039,7 +11669,7 @@ fp3_yearly.8020 = {
 		has_game_rule = default_gender_equality #this triggers an error. Suspected code issue.
 
 		NOT = {
-			faith = { has_doctrine = doctrine_gender_female_dominated } 
+			rite = { rite_has_doctrine = doctrine_gender_female_dominated }
 		}
 
 		#checking for approppriate county 
@@ -12060,9 +11690,9 @@ fp3_yearly.8020 = {
 		root.faith.religious_head = { 
 			fp3_zealous_caliph_trigger = yes
 			#checking that his Islam hasn't been reformed into something that'd make the event's premise weird
-			faith = { 
+			rite = {
 				NOT = {
-					has_doctrine = doctrine_gender_female_dominated 
+					rite_has_doctrine = doctrine_gender_female_dominated 
 				}	
 			}	
 		}	
@@ -12100,9 +11730,9 @@ fp3_yearly.8020 = {
 			if = {
 				limit = {
 					fp3_zealous_caliph_trigger = yes
-					faith = { 
+					rite = {
 						NOT = {
-							has_doctrine = doctrine_gender_female_dominated 
+							rite_has_doctrine = doctrine_gender_female_dominated 
 						}
 					}	
 				}	
@@ -12211,7 +11841,11 @@ fp3_yearly.8020 = {
 					opinion = 20 
 				}
 			}	
-			else = {
+			else_if = {
+				limit = {
+					matching_gender_and_sexuality_with_trigger = { CHARACTER = root }
+					likely_to_commit_incest_with_trigger = { CHARACTER_1 = root CHARACTER_2 = scope:pious_woman }
+				}
 				root = {
 					progress_towards_lover_effect = {
 						CHARACTER = scope:pious_woman
@@ -12230,7 +11864,7 @@ fp3_yearly.8020 = {
 			}
 		}
 
-		stress_impact = {
+		stress_and_fulfillment_impact = {
    			callous = major_stress_impact_gain
    			shy = medium_stress_impact_gain
    			zealous = major_stress_impact_gain
@@ -12276,7 +11910,7 @@ fp3_yearly.8020 = {
 			}
 		}
 
-		stress_impact = {
+		stress_and_fulfillment_impact = {
    			compassionate = minor_stress_impact_loss
    			cynical = medium_stress_impact_gain 
    			zealous = major_stress_impact_gain
@@ -12341,7 +11975,7 @@ fp3_yearly.8020 = {
 			}
 		}
 
-		stress_impact = {
+		stress_and_fulfillment_impact = {
    			zealous = minor_stress_impact_loss
    			compassionate = medium_stress_impact_gain 
    			content = medium_stress_impact_gain
@@ -12363,6 +11997,7 @@ fp3_yearly.8020 = {
 
 "common/decisions/dlc_decisions/fp_3/fp3_islamic_decisions.txt" = {
 	{
+### Avenge the Battle of Nahrawan ###
 avenge_the_battle_of_nahrawan_decision = {
 	picture = {
 		reference = "gfx/interface/illustrations/decisions/fp3/fp3_decision_supremacy.dds"
@@ -12382,12 +12017,14 @@ avenge_the_battle_of_nahrawan_decision = {
 		first_valid = {
 			triggered_desc = {
 				trigger = {
-					faith = {
-						OR = {
-							has_doctrine = tenet_fp3_fedayeen
-							has_doctrine = tenet_warmonger 
-							has_doctrine_parameter = pluralism_fundamentalist_proselytization_bonus
+					OR = {
+						rite = {
+							OR = {
+								rite_has_tenet = tenet_fp3_fedayeen
+								rite_has_tenet = tenet_warmonger
+							}
 						}
+						rite = { rite_has_parameter = pluralism_fundamentalist_proselytization_bonus }
 					}
 				}
 				desc = destroy_the_apostates_decision_name
@@ -12401,12 +12038,11 @@ avenge_the_battle_of_nahrawan_decision = {
 	selection_tooltip = avenge_the_battle_of_nahrawan_decision_tooltip
 
 	is_shown = {
-		has_fp3_dlc_trigger = yes
-		faith = { has_doctrine = muhammad_succession_muhakkima_doctrine	}
+		rite ?= { rite_has_doctrine = muhammad_succession_muhakkima_doctrine }
 		capital_province ?= {
 			OR = {
+				geographical_region = world_middle_east
 				geographical_region = world_persian_empire
-				geographical_region = world_middle_east 
 			}		
 		}
 		NOT = {
@@ -12415,6 +12051,7 @@ avenge_the_battle_of_nahrawan_decision = {
 				target = flag:avenge_the_battle_of_nahrawan_decision
 			}
 		}
+		has_fp3_dlc_trigger = yes
 	}
 
 	is_valid = {
@@ -12422,7 +12059,7 @@ avenge_the_battle_of_nahrawan_decision = {
 		custom_description = {
 			text = "restore_high_priesthood_holy_sites"
 			faith = {
-				any_holy_site = {
+				any_holy_site_barony = {
 					OR = {
 						county.holder = root
 						county.holder.top_liege = { this = root }
@@ -12453,19 +12090,12 @@ avenge_the_battle_of_nahrawan_decision = {
 		
 		#Sunni penalty scope save
 		title:e_arabia = {
-			random_de_jure_county_holder = { #If there's a big Sunni presence in Arabia
+			ordered_de_jure_county_holder = { #If there's a big Sunni presence in Arabia
 				limit = {
-					faith = { has_doctrine = muhammad_succession_sunni_doctrine } 
-					highest_held_title_tier = tier_empire
+					rite = { rite_has_doctrine = muhammad_succession_sunni_doctrine }
+					highest_held_title_tier >= tier_duchy
 				}
-				alternative_limit = {
-					faith = { has_doctrine = muhammad_succession_sunni_doctrine }
-					highest_held_title_tier = tier_kingdom
-				}
-				alternative_limit = {
-					faith = { has_doctrine = muhammad_succession_sunni_doctrine }
-					highest_held_title_tier = tier_duchy
-				}
+				order_by = primary_title.tier
 				faith = {
 					save_scope_as = sunni_faith
 				}
@@ -12473,19 +12103,12 @@ avenge_the_battle_of_nahrawan_decision = {
 		}
 
 		title:e_persia = {
-			random_de_jure_county_holder = { #If there's a big Sunni presence in Persia
+			ordered_de_jure_county_holder = { #If there's a big Sunni presence in Persia
 				limit = {
-					faith = { has_doctrine = muhammad_succession_sunni_doctrine } 
-					highest_held_title_tier = tier_empire
+					rite = { rite_has_doctrine = muhammad_succession_sunni_doctrine }
+					highest_held_title_tier >= tier_duchy
 				}
-				alternative_limit = {
-					faith = { has_doctrine = muhammad_succession_sunni_doctrine }
-					highest_held_title_tier = tier_kingdom
-				}
-				alternative_limit = {
-					faith = { has_doctrine = muhammad_succession_sunni_doctrine }
-					highest_held_title_tier = tier_duchy
-				}
+				order_by = primary_title.tier
 				faith = {
 					save_scope_as = sunni_faith
 				}
@@ -12494,19 +12117,12 @@ avenge_the_battle_of_nahrawan_decision = {
 
 		#Shia penalty scope save
 		title:e_arabia = {
-			random_de_jure_county_holder = { #If there's a big Shia presence in Arabia
+			ordered_de_jure_county_holder = { #If there's a big Shia presence in Arabia
 				limit = {
-					faith = { has_doctrine = muhammad_succession_shia_doctrine } 
-					highest_held_title_tier = tier_empire
+					rite = { rite_has_doctrine = muhammad_succession_shia_doctrine }
+					highest_held_title_tier >= tier_duchy
 				}
-				alternative_limit = {
-					faith = { has_doctrine = muhammad_succession_shia_doctrine }
-					highest_held_title_tier = tier_kingdom
-				}
-				alternative_limit = {
-					faith = { has_doctrine = muhammad_succession_shia_doctrine }
-					highest_held_title_tier = tier_duchy
-				}
+				order_by = primary_title.tier
 				faith = {
 					save_scope_as = shia_faith
 				}
@@ -12515,19 +12131,12 @@ avenge_the_battle_of_nahrawan_decision = {
 
 		#Shia penalty scope save
 		title:e_persia = {
-			random_de_jure_county_holder = { #If there's a big Shia presence in Persia
+			ordered_de_jure_county_holder = { #If there's a big Shia presence in Persia
 				limit = {
-					faith = { has_doctrine = muhammad_succession_shia_doctrine } 
-					highest_held_title_tier = tier_empire
+					rite = { rite_has_doctrine = muhammad_succession_shia_doctrine }
+					highest_held_title_tier >= tier_duchy
 				}
-				alternative_limit = {
-					faith = { has_doctrine = muhammad_succession_shia_doctrine }
-					highest_held_title_tier = tier_kingdom
-				}
-				alternative_limit = {
-					faith = { has_doctrine = muhammad_succession_shia_doctrine }
-					highest_held_title_tier = tier_duchy
-				}
+				order_by = primary_title.tier
 				faith = {
 					save_scope_as = shia_faith
 				}
@@ -12570,12 +12179,14 @@ fp3_decision.0011 = {
 		first_valid = {
 			triggered_desc = {
 				trigger = {
-					faith = {
-						OR = {
-							has_doctrine = tenet_fp3_fedayeen
-							has_doctrine = tenet_warmonger 
-							has_doctrine_parameter = pluralism_fundamentalist_proselytization_bonus
+					OR = {
+						rite = {
+							OR = {
+								rite_has_tenet = tenet_fp3_fedayeen
+								rite_has_tenet = tenet_warmonger
+							}
 						}
+						rite = { rite_has_parameter = pluralism_fundamentalist_proselytization_bonus }
 					}
 				}
 				desc = fp3_decision.0011_fanatic_murderer.desc
@@ -12605,7 +12216,7 @@ fp3_decision.0011 = {
 
 		avenge_the_battle_of_nahrawan_scripted_effect = yes	
 
-		stress_impact = {  
+		stress_and_fulfillment_impact = {  
 			zealous = major_stress_impact_loss
 			vengeful = major_stress_impact_loss
 			ambitious = medium_stress_impact_loss
@@ -12644,12 +12255,12 @@ hasan_evangelize_the_faith = {
 	cooldown = { months = 1 }
 
 	is_shown = {
-		#DLC check.
-		has_ep3_dlc_trigger = yes
 		is_landed = no
 		any_owned_story = {
 			type = story_hasan
 		}
+		#DLC check.
+		has_ep3_dlc_trigger = yes
 	}
 
 	is_valid = {
@@ -12669,9 +12280,7 @@ hasan_evangelize_the_faith = {
 	}
 
 	is_valid_showing_failures_only = {
-		is_alive = yes
 		is_available_adult = yes
-		has_contagious_deadly_disease_trigger = no
 	}
 
 	cost = { piety = 250 }
@@ -12729,19 +12338,19 @@ hasan_agitate_the_populace = {
 	cooldown = { months = 1 }
 
 	is_shown = {
-		#DLC check.
-		has_ep3_dlc_trigger = yes
 		is_landed = no
 		any_owned_story = {
 			type = story_hasan
 		}
+		#DLC check.
+		has_ep3_dlc_trigger = yes
 	}
 
 	is_valid = {
 		hasan_camp_in_foes_realm_trigger = yes
 		OR = {
 			domicile.domicile_location.county = {
-				faith != root.faith
+				rite != root.rite
 				NOT = { has_county_modifier = ep3_agitated_populace }
 				NOT = { has_county_modifier = tougher_to_convert }
 			}
@@ -12750,7 +12359,7 @@ hasan_agitate_the_populace = {
 				domicile.domicile_location.county = {
 					save_temporary_scope_as = county_check
 					any_neighboring_county = {
-						faith != root.faith
+						rite != root.rite
 						NOT = { has_county_modifier = ep3_agitated_populace }
 						NOT = { has_county_modifier = tougher_to_convert }
 						holder.top_liege = scope:county_check.holder.top_liege
@@ -12761,9 +12370,7 @@ hasan_agitate_the_populace = {
 	}
 
 	is_valid_showing_failures_only = {
-		is_alive = yes
 		is_available_adult = yes
-		has_contagious_deadly_disease_trigger = no
 	}
 
 	cost = { prestige = 250 }
@@ -12772,7 +12379,7 @@ hasan_agitate_the_populace = {
 		if = {
 			limit = {
 				domicile.domicile_location.county = {
-					faith != root.faith
+					rite != root.rite
 					NOT = { has_county_modifier = ep3_agitated_populace }
 					NOT = { has_county_modifier = tougher_to_convert }
 				}
@@ -12784,7 +12391,7 @@ hasan_agitate_the_populace = {
 				save_temporary_scope_as = county_check
 				random_neighboring_county = {
 					limit = {
-						faith != root.faith
+						rite != root.rite
 						NOT = { has_county_modifier = ep3_agitated_populace }
 						NOT = { has_county_modifier = tougher_to_convert }
 						holder.top_liege = scope:county_check.holder.top_liege
@@ -12827,11 +12434,11 @@ hasan_ignite_the_flames = {
 	cooldown = { months = 1 }
 
 	is_shown = {
-		#DLC check.
-		has_ep3_dlc_trigger = yes
 		any_owned_story = {
 			type = story_hasan
 		}
+		#DLC check.
+		has_ep3_dlc_trigger = yes
 	}
 
 	is_valid = {
@@ -12842,16 +12449,14 @@ hasan_ignite_the_flames = {
 			domicile.domicile_location.county.holder.top_liege = {
 				any_sub_realm_county = {
 					count >= 5
-					faith = root.faith
+					rite = root.rite
 				}
 			}
 		}
 	}
 
 	is_valid_showing_failures_only = {
-		is_alive = yes
 		is_available_adult = yes
-		has_contagious_deadly_disease_trigger = no
 	}
 
 	cost = {
@@ -12861,7 +12466,7 @@ hasan_ignite_the_flames = {
 	effect = {
 		random_owned_story = {
 			type = story_hasan
-			var:ultimate_foe = { save_scope_as = ultimate_foe }
+			var:ultimate_foe ?= { save_scope_as = ultimate_foe }
 		}
 		hasan_sabbah_ignite_decision_effect = yes
 	}
@@ -12896,23 +12501,23 @@ hasan_found_the_assassins = {
 	decision_group_type = story_cycle_hasan
 
 	is_shown = {
+		is_landed = no
+		rite ?= rite:nizari
+		NOT = {
+			has_character_flag = founded_assassins_already
+		}
 		#DLC check.
 		has_ep3_dlc_trigger = yes
 		any_owned_story = {
 			type = story_hasan
 			NOT = { exists = var:assassins }
 		}
-		is_landed = no
-		faith = faith:nizari
-		NOT = {
-			has_character_flag = founded_assassins_already
-		}
 	}
 
 	is_valid = {
 		hasan_camp_in_foes_realm_trigger = yes
 		domicile.domicile_location.barony = { is_leased_out = no }
-		domicile.domicile_location.county.faith = root.faith
+		domicile.domicile_location.county.rite = root.rite
 		custom_tooltip = {
 			text = is_mountainous_desc
 			domicile.domicile_location = { is_mountainous_trigger = yes }
@@ -12923,9 +12528,7 @@ hasan_found_the_assassins = {
 	}
 
 	is_valid_showing_failures_only = {
-		is_alive = yes
 		is_available_adult = yes
-		has_contagious_deadly_disease_trigger = no
 	}
 
 	cost = { piety = 1500 }
@@ -12976,12 +12579,18 @@ hasan_found_the_assassins = {
 		create_holy_order = {
 			leader = scope:leader
 			capital = scope:location.barony
+			random_holy_order_type = military
 			save_scope_as = new_holy_order
 		}
 		scope:new_holy_order ?= {
 			title = { set_title_name = holy_order_hashshashin }
 		}
-		create_holy_order_effect = yes
+		create_holy_order_accompanying_effect = yes
+		create_alliance = {
+			target = scope:leader
+			allied_through_owner = root
+			allied_through_target = scope:leader
+		}
 		random_owned_story = {
 			type = story_hasan
 			set_variable = {
@@ -13007,6 +12616,7 @@ hasan_found_the_assassins = {
 				add_special_building = alamut_castle_02
 			}
 		}
+		add_character_modifier = construct_assassin_castle_modifier
 		add_intrigue_skill = 2
 		give_nickname = nick_old_man_of_the_mountain
 	}
@@ -13041,20 +12651,20 @@ hasan_expand_the_assassins = {
 	decision_group_type = story_cycle_hasan
 
 	is_shown = {
+		is_landed = no
+		any_owned_story = {
+			has_variable = assassins
+			type = story_hasan
+		}
 		#DLC check.
 		has_ep3_dlc_trigger = yes
-		any_owned_story = {
-			type = story_hasan
-			has_variable = assassins
-		}
-		is_landed = no
-		faith = faith:nizari
+		rite ?= rite:nizari
 	}
 
 	is_valid = {
 		hasan_camp_in_foes_realm_trigger = yes
 		domicile.domicile_location.barony = { is_leased_out = no }
-		domicile.domicile_location.county.faith = root.faith
+		domicile.domicile_location.county.rite = root.rite
 		custom_tooltip = {
 			text = is_mountainous_desc
 			domicile.domicile_location = { is_mountainous_trigger = yes }
@@ -13062,9 +12672,7 @@ hasan_expand_the_assassins = {
 	}
 
 	is_valid_showing_failures_only = {
-		is_alive = yes
 		is_available_adult = yes
-		has_contagious_deadly_disease_trigger = no
 		domicile.domicile_location = { is_county_capital = no }
 	}
 
@@ -13076,7 +12684,7 @@ hasan_expand_the_assassins = {
 			var:assassins = { save_scope_as = assassins }
 		}
 		show_as_tooltip = {
-			domicile.domicile_location.barony = { lease_out_to = scope:assassins }
+			domicile.domicile_location.barony = { lease_out_to_holy_order = scope:assassins }
 		}
 		hidden_effect = {
 			if = {
@@ -13093,7 +12701,7 @@ hasan_expand_the_assassins = {
 					}
 				}
 				resolve_title_and_vassal_change = scope:change
-				domicile.domicile_location.barony = { lease_out_to = scope:assassins }
+				domicile.domicile_location.barony = { lease_out_to_holy_order = scope:assassins }
 			}
 		}
 	}
@@ -13531,7 +13139,10 @@ hasan_camp_in_foes_realm_trigger = {
 }
 
 "events/story_cycles/ep3_story_cycle_hasan.txt" = {
+	# Entire file
 	{
+namespace = hasan_sabbah
+
 # Ismaili Preachers
 # You meet Amira Zarrab and begin the story cycle
 # 1000
@@ -13570,13 +13181,14 @@ hasan_sabbah.1000 = {
 					education_learning_4 = {}
 				}
 				location = root.location
-				faith = faith:ismaili
+				faith = faith:shia
+				rite = rite:ismaili
 				culture = culture:persian
+				save_scope_as = amira
 				after_creation = {
 					dynasty = { set_dynasty_name = dynn_zarrab }
 					house = { set_house_name = dynn_zarrab }
 				}
-				save_scope_as = amira
 			}
 			location = { save_scope_as = location }
 		}
@@ -13593,10 +13205,12 @@ hasan_sabbah.1000 = {
 			POS = second
 		}
 
-		set_character_faith = faith:ismaili
+		set_character_faith = faith:shia
+		set_character_rite = rite:ismaili
+		change_spiritual_fulfillment = medium_spiritual_fulfillment_value
 		if = {
 			limit = { 
-				faith:ismaili = { has_doctrine = doctrine_monotheist }
+				faith:shia = { has_doctrine = doctrine_monotheist }
 			}
 			custom_description_no_bullet = { text = mandala_monotheist_warning_tt }
 		}
@@ -13614,7 +13228,8 @@ hasan_sabbah.1000 = {
 				limit = {
 					religion = religion:islam_religion
 				}
-				set_character_faith = faith:ismaili
+				set_character_faith = faith:shia
+				set_character_rite = rite:ismaili
 			}
 		}
 		custom_tooltip = advance_to_the_assassins_tt
@@ -13643,9 +13258,7 @@ hasan_sabbah.1000 = {
 		}
 	}
 }
-	}
 
-	{
 # Shiite Evangelism
 # You try to convert the local populace to your faith
 # 1010-1019
@@ -13758,12 +13371,12 @@ hasan_sabbah.1010 = {
 						var:radical_points >= 5
 					}
 					OR = {
-						faith = faith:ismaili
-						faith = faith:nizari
+						rite = rite:ismaili
+						rite = rite:nizari
 					}
-					NOR = {
-						has_character_flag = arrived_in_egypt
-						has_character_flag = had_hasan_sabah_20
+					has_none_of_variables = {
+						name = arrived_in_egypt
+						name = had_hasan_sabah_20
 					}
 				}
 				trigger_event = {
@@ -13794,15 +13407,7 @@ hasan_sabbah.1010 = {
 						var:story_phase >= 2
 						NOT = { exists = var:ultimate_foe }
 					}
-					faith:ismaili = {
-						NOT = {
-							religious_head = scope:location.county.holder
-							religious_head = scope:location.county.holder.top_liege
-							religious_head = scope:location.county.holder.liege
-							religious_head = scope:location.county.holder.liege.liege
-						}
-					}
-					faith:nizari = {
+					faith:shia = {
 						NOT = {
 							religious_head = scope:location.county.holder
 							religious_head = scope:location.county.holder.top_liege
@@ -13819,9 +13424,7 @@ hasan_sabbah.1010 = {
 		}
 	}
 }
-	}
 
-	{
 # Divine Calling
 # You're summoned to Egypt
 # 1020-1029
@@ -13845,7 +13448,7 @@ hasan_sabbah.1020 = {
 		NOT = {
 			has_character_flag = had_hasan_sabah_20
 		}
-		faith:ismaili.religious_head ?= { is_landed = yes }
+		faith:shia.religious_head ?= { is_landed = yes }
 	}
 
 	immediate = {
@@ -13858,7 +13461,7 @@ hasan_sabbah.1020 = {
 				years = 1
 			}
 		}
-		faith:ismaili.religious_head = {
+		faith:shia.religious_head = {
 			save_scope_as = ismaili_caliph
 			capital_county = { save_scope_as = cairo }
 		}
@@ -13887,7 +13490,7 @@ hasan_sabbah.1020 = {
 	# Let'sa not
 	option = {
 		name = hasan_sabbah.1020.b
-		stress_impact = {
+		stress_and_fulfillment_impact = {
 			zealous = medium_stress_impact_gain
 			ambitious = medium_stress_impact_gain
 		}
@@ -13896,9 +13499,7 @@ hasan_sabbah.1020 = {
 		}
 	}
 }
-	}
 
-	{
 # The Ismaili Caliphate
 # Arrive in Egypt, is it time to become Nizari? I think it's time to become Nizari
 # 1022
@@ -13925,7 +13526,7 @@ hasan_sabbah.1022 = {
 
 	immediate = {
 		add_character_flag = arrived_in_egypt
-		faith:ismaili.religious_head = {
+		faith:shia.religious_head = {
 			save_scope_as = ismaili_caliph
 			save_scope_as = background_throne_room_scope
 		}
@@ -13945,9 +13546,10 @@ hasan_sabbah.1022 = {
 			}
 			hidden_effect = {
 				if = {
-					limit = { NOT = { character:41706.faith = faith:nizari } }
+					limit = { NOT = { character:41706.rite = rite:nizari } }
 					character:41706 = {
-						set_character_faith = faith:nizari
+						set_character_faith = faith:shia
+						set_character_rite = rite:nizari
 					}
 				}
 			}
@@ -13956,10 +13558,11 @@ hasan_sabbah.1022 = {
 		if = {
 			limit = {
 				NOT = {
-					faith = faith:nizari
+					rite = rite:nizari
 				}
 			}
-			set_character_faith = faith:nizari
+			set_character_faith = faith:shia
+			set_character_rite = rite:nizari
 		}
 		add_piety = major_piety_gain
 		ai_chance = {
@@ -13973,12 +13576,13 @@ hasan_sabbah.1022 = {
 		if = {
 			limit = {
 				NOT = {
-					faith = faith:ismaili
+					rite = rite:ismaili
 				}
 			}
-			set_character_faith = faith:ismaili
+			set_character_faith = faith:shia
+			set_character_rite = rite:ismaili
 		}
-		stress_impact = {
+		stress_and_fulfillment_impact = {
 			ambitious = medium_stress_impact_gain
 		}
 		ai_chance = {
@@ -13986,9 +13590,7 @@ hasan_sabbah.1022 = {
 		}
 	}
 }
-	}
 
-	{
 # Death of a Caliph
 # The original caliph died, it's *definitely* time to become Nizari
 # 1030
@@ -14020,14 +13622,14 @@ hasan_sabbah.1030 = {
 
 	trigger = {
 		OR = {
-			faith = faith:ismaili
-			faith = faith:nizari
+			rite = rite:ismaili
+			rite = rite:nizari
 		}
-		exists = faith:ismaili.religious_head
+		exists = faith:shia.religious_head
 	}
 
 	immediate = {
-		faith:ismaili.religious_head = { save_scope_as = new_ismaili_caliph }
+		faith:shia.religious_head = { save_scope_as = new_ismaili_caliph }
 		character:41706 ?= {
 			liege = { save_scope_as = liege }
 			save_scope_as = nizar
@@ -14040,8 +13642,9 @@ hasan_sabbah.1030 = {
 			}
 			hidden_effect = {
 				if = {
-					limit = { NOT = { faith = faith:nizari } }
-					set_character_faith = faith:nizari
+					limit = { NOT = { rite = rite:nizari } }
+					set_character_faith = faith:shia
+					set_character_rite = rite:nizari
 				}
 			}
 		}
@@ -14093,8 +13696,9 @@ hasan_sabbah.1030 = {
 			}
 		}
 		if = {
-			limit = { NOT = { faith = faith:nizari } }
-			set_character_faith = faith:nizari
+			limit = { NOT = { rite = rite:nizari } }
+			set_character_faith = faith:shia
+			set_character_rite = rite:nizari
 		}
 		add_piety = medium_piety_gain
 		if = {
@@ -14132,10 +13736,11 @@ hasan_sabbah.1030 = {
 			reason = friend_supported_my_claim
 		}
 		if = {
-			limit = { NOT = { faith = faith:ismaili } }
-			set_character_faith = faith:ismaili
+			limit = { NOT = { rite = rite:ismaili } }
+			set_character_faith = faith:shia
+			set_character_rite = rite:ismaili
 		}
-		stress_impact = {
+		stress_and_fulfillment_impact = {
 			ambitious = medium_stress_impact_gain
 		}
 		ai_chance = {
@@ -14150,10 +13755,11 @@ hasan_sabbah.1030 = {
 			NOT = { exists = scope:new_ismaili_caliph }
 		}
 		if = {
-			limit = { NOT = { faith = faith:ismaili } }
-			set_character_faith = faith:ismaili
+			limit = { NOT = { rite = rite:ismaili } }
+			set_character_faith = faith:shia
+			set_character_rite = rite:ismaili
 		}
-		stress_impact = {
+		stress_and_fulfillment_impact = {
 			ambitious = medium_stress_impact_gain
 		}
 		ai_chance = {
@@ -14161,9 +13767,7 @@ hasan_sabbah.1030 = {
 		}
 	}
 }
-	}
 
-	{
 # The Enemy of Nizarism
 # Time to decide my ultimate enemy
 # 1031
@@ -14183,10 +13787,22 @@ hasan_sabbah.1031 = {
 	}
 
 	trigger = {
-		scope:location.county.holder.top_liege = {
-			faith != root.faith
-			realm_size >= 10
-			highest_held_title_tier >= tier_kingdom
+		trigger_if = {
+			limit = {
+				NOT = { exists = scope:location }
+			}
+			location.county.holder.top_liege ?= {
+				faith != root.faith
+				realm_size >= 10
+				highest_held_title_tier >= tier_kingdom
+			}
+		}
+		trigger_else = {
+			scope:location.county.holder.top_liege = {
+				faith != root.faith
+				realm_size >= 10
+				highest_held_title_tier >= tier_kingdom
+			}
 		}
 		any_owned_story = {
 			type = story_hasan
@@ -14197,6 +13813,12 @@ hasan_sabbah.1031 = {
 	}
 
 	immediate = {
+		if = {
+			limit = {
+				NOT = { exists = scope:location }
+			}
+			location ?= { save_scope_as = location }
+		}
 		scope:location.county.holder.top_liege = { save_scope_as = seljuk_equivalent }
 		random_owned_story = {
 			type = story_hasan
@@ -14218,7 +13840,7 @@ hasan_sabbah.1031 = {
 		}
 		if = {
 			limit = {
-				faith = faith:nizari
+				rite = rite:nizari
 			}
 			custom_tooltip = unlock_final_hasan_decisions_2_tt
 		}
@@ -14250,9 +13872,7 @@ hasan_sabbah.1031 = {
 		}
 	}
 }
-	}
 
-	{
 # A Rousing Sermon
 # Agitate the populace decision event
 # 1040
@@ -14330,9 +13950,7 @@ hasan_sabbah.1040 = {
 		}
 	}
 }
-	}
 
-	{
 # The Old Man of the Mountain
 # Post-war settling down event
 # 1050
@@ -14393,6 +14011,60 @@ hasan_sabbah.1050 = {
 			}
 		}
 		if = {
+			limit = {
+				exists = scope:assassins
+				title:b_alamut = {
+					is_leased_out = no
+					holder ?= { top_liege = root }
+				}
+			}
+			show_as_tooltip = {
+				title:b_alamut = { lease_out_to_holy_order = scope:assassins }
+			}
+			hidden_effect = {
+				if = {
+					limit = { title:b_alamut.holder != root }
+					create_title_and_vassal_change = {
+						type = leased_out
+						save_scope_as = alamut_change
+						add_claim_on_loss = no
+					}
+					title:b_alamut = {
+						change_title_holder_include_vassals = {
+							holder = root
+							change = scope:alamut_change
+						}
+					}
+					resolve_title_and_vassal_change = scope:alamut_change
+				}
+				title:b_alamut = { lease_out_to_holy_order = scope:assassins }
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:caliph
+				scope:caliph = {
+					is_alive = yes
+					is_landed = no
+				}
+				scope:caliph.faith = root.faith
+				root.faith.religious_head ?= { rite != root.rite }
+			}
+			if = {
+				limit = { has_pam_dlc_trigger = yes }
+				custom_tooltip = declare_antipope_decision_effect_tt
+			}
+			else = {
+				custom_tooltip = declare_antipope_decision_effect_no_puppet_tt
+			}
+			hidden_effect = {
+				pam_establish_antipope_effect = {
+					ANTIPOPE = scope:caliph
+					SPONSOR = root
+				}
+			}
+		}
+		else_if = {
 			limit = {
 				exists = scope:caliph
 				scope:caliph = {
@@ -14500,12 +14172,12 @@ story_hasan = {
 					var:radical_points >= 5
 					story_owner = {
 						OR = {
-							faith = faith:ismaili
-							faith = faith:nizari
+							rite = rite:ismaili
+							rite = rite:nizari
 						}
-						NOR = {
-							has_character_flag = arrived_in_egypt
-							has_character_flag = had_hasan_sabah_20
+						has_none_of_variables = {
+							name = arrived_in_egypt
+							name = had_hasan_sabah_20
 						}
 					}
 				}
@@ -14535,27 +14207,14 @@ story_hasan = {
 					story_owner.domicile.domicile_location.county.holder ?= {
 						save_temporary_scope_as = county_holder
 					}
-					faith:ismaili = {
-						religious_head = {
-							save_temporary_scope_as = ismaili_hof
+				faith:shia = {
+					religious_head = {
+						save_temporary_scope_as = shia_hof
 							NOR = {
 								this = scope:county_holder
 								scope:county_holder = {
 									any_liege_or_above = {
-										this = scope:ismaili_hof
-									}
-								}
-							}
-						}
-					}
-					faith:nizari = {
-						religious_head = {
-							save_temporary_scope_as = nizari_hof
-							NOR = {
-								this = scope:county_holder
-								scope:county_holder = {
-									any_liege_or_above = {
-										this = scope:nizari_hof
+										this = scope:shia_hof
 									}
 								}
 							}
@@ -14592,7 +14251,7 @@ story_hasan = {
 						# Must be landless
 						NOT = { story_owner = { has_government = landless_adventurer_government } }
 						# Must not be Sunni
-						story_owner = { faith = { has_doctrine = muhammad_succession_sunni_doctrine } }
+						story_owner = { rite = { rite_has_doctrine = muhammad_succession_sunni_doctrine } }
 					}
 				}
 				effect = {
@@ -14677,6 +14336,7 @@ scripted_effect create_el_cid_story = {
 cid.0001 = {
 	type = character_event
 	window = fullscreen_event
+	queue_icon = "gfx/interface/icons/splash_icons/splash_byzantine.dds"
 	title = cid.0001.t
 	desc = {
 		desc = cid.0001.desc.intro
@@ -15438,9 +15098,7 @@ cid.1020 = {
 		custom_tooltip = cid_loyalty_counter_very_negative
 		if = {
 			limit = {
-				NOT = {
-					can_set_relation_lover_trigger = { CHARACTER = scope:spouse }
-				}
+				can_set_relation_lover_trigger = { CHARACTER = scope:spouse }
 			}
 			set_relation_lover = {
 				target = scope:spouse
@@ -15628,6 +15286,9 @@ cid.1040 = {
 				add = 2
 			}
 		}
+		stress_and_fulfillment_impact = {
+			zealous = minor_stress_impact_loss
+		}
 		ai_chance = {
 			base = 1000 # Historically determined
 		}
@@ -15642,6 +15303,9 @@ cid.1040 = {
 				name = cid_loyalty_counter
 				add = 1
 			}
+		}
+		stress_and_fulfillment_impact = {
+			forgiving = minor_stress_impact_loss
 		}
 		ai_chance = {
 			base = 1000 # Historically determined
@@ -15661,6 +15325,9 @@ cid.1040 = {
 				name = cid_loyalty_counter
 				add = -1
 			}
+		}
+		stress_and_fulfillment_impact = {
+			vengeful = minor_stress_impact_loss
 		}
 		ai_chance = {
 			base = 0
@@ -15982,7 +15649,7 @@ scripted_trigger cid_2010_possible_child_trigger = {
 	trigger_if = {
 		limit = {
 			NOR = {
-				faith = { has_doctrine = doctrine_polygamy }
+				rite = { rite_has_doctrine = doctrine_polygamy }
 				allowed_more_spouses = yes
 			}
 		}
@@ -16007,6 +15674,7 @@ scripted_effect cid_2010_create_proposed_spouse_effect = {
 		location = scope:liege.location
 		culture = scope:liege.location.culture
 		faith = scope:liege.location.faith
+		rite = scope:liege.location.rite
 		gender_female_chance = $CHANCE$
 		save_scope_as = proposed_spouse
 	}
@@ -16067,6 +15735,7 @@ cid.2010 = {
 				location = scope:liege.location
 				culture = scope:liege.location.culture
 				faith = scope:liege.location.faith
+				rite = scope:liege.location.rite
 				gender_female_chance = root_faith_dominant_gender_adjusted_female_chance
 				save_scope_as = herald
 			}
@@ -16494,6 +16163,7 @@ cid.4010 = {
 				location = scope:liege.location
 				culture = scope:liege.location.culture
 				faith = scope:liege.location.faith
+				rite = scope:liege.location.rite
 				gender_female_chance = root_faith_dominant_gender_adjusted_female_chance
 				save_scope_as = herald
 			}
@@ -16713,7 +16383,7 @@ ep3_hasan_assassin_war = {
 	on_white_peace = {
 		scope:attacker = {
 			show_pow_release_message_effect = yes
-			stress_impact = {
+			stress_and_fulfillment_impact = {
  				ambitious = medium_stress_impact_gain
  				arrogant = medium_stress_impact_gain
  			}
@@ -16730,7 +16400,7 @@ ep3_hasan_assassin_war = {
 		}
 
 		scope:defender = {
-			stress_impact = {
+			stress_and_fulfillment_impact = {
  				arrogant = medium_stress_impact_gain
  			}
 
@@ -16843,7 +16513,7 @@ ep3_hasan_assassin_war = {
 
 	max_attacker_score_from_battles = 100
 	max_defender_score_from_battles = 50
-	
+
 	max_defender_score_from_occupation = 150
 	max_attacker_score_from_occupation = 150
 
@@ -17026,7 +16696,7 @@ story_el_cid = {
 	visible = yes
 
 	icon = {
-		reference = "gfx/interface/icons/artifact/artefact_icons_unique_artifact_excalibur.dds"
+		reference = "gfx/interface/icons/artifact/artifact_icons_unique_artifact_excalibur.dds"
 	}
 
 	background = {
@@ -17673,6 +17343,29 @@ hasan_sabbah_ignite_decision_effect = {
 		target = root.location.county.holder.top_liege
 		target_title = root.location.county.holder.top_liege.primary_title
 	}
+	if = {
+		limit = {
+			has_character_flag = founded_assassins_already
+		}
+		faith = {
+			every_faith_holy_order = {
+				limit = {
+					leader = {
+						is_allied_to = root
+					}
+				}
+				leader = {
+					save_scope_as = holy_order_leader
+				}
+			}
+		}
+		every_character_war = {
+			limit = {
+				using_cb = ep3_hasan_assassin_war
+			}
+			add_attacker = scope:holy_order_leader
+		}
+	}
 }
 	}
 
@@ -17741,6 +17434,10 @@ hasan_sabbah_end_war = {
 					var:preferred_caliph = { save_scope_as = caliph }
 				}
 			}
+			random_owned_story = {
+				type = story_hasan
+				var:assassins ?= { save_scope_as = assassins }
+			}
 			trigger_event = {
 				id = hasan_sabbah.1050
 			}
@@ -17808,7 +17505,7 @@ hasan_sabbah_end_war = {
 	$SELJUK$ = {
 		if = {
 			limit = {
-				government_has_flag = government_is_administrative
+				government_has_mechanic = administrative
 			}
 			admin_government_reset_effect = yes
 		}
@@ -18013,7 +17710,7 @@ apply_historic_administrative_game_rule_effect = {
 					culture = culture:somali
 				}
 			}
-			set_character_faith = faith:ashari
+			set_character_faith = faith:sunni
 			if = {
 				limit = {
 					root.capital_county.faith = {
@@ -18021,6 +17718,7 @@ apply_historic_administrative_game_rule_effect = {
 					}
 				}
 				set_character_faith = root.capital_county.faith
+				set_character_rite = root.capital_county.rite
 			}
 		}
 	}
@@ -18034,10 +17732,12 @@ apply_historic_administrative_game_rule_effect = {
 			}
 			random_list = {
 				10 = {
-					set_character_faith = faith:ibadi
+					set_character_faith = faith:kharijite
+					set_character_rite = rite:ibadi
 				}
 				10 = {
-					set_character_faith = faith:sufri
+					set_character_faith = faith:kharijite
+					set_character_rite = rite:sufri
 				}
 			}
 		}
@@ -18076,8 +17776,8 @@ apply_historic_administrative_game_rule_effect = {
 		}
 	}
 	{
-				5 = {
-					set_character_faith = faith:nestorian
+			5 = {
+				set_character_faith = faith:nestorian
 				}
 	}
 	{
@@ -18096,397 +17796,375 @@ apply_historic_administrative_game_rule_effect = {
 	{
 	if = {
 		limit = { has_mpo_dlc_trigger = yes	}
-		if = {
-    		limit = { current_date < 1066.9.15 } # so, 867
-        	mpo_867_tributary_setup_effect = yes
-    	}
-    	else_if = {
-    		limit = { current_date = 1066.9.15 }
-        	mpo_1066_tributary_setup_effect = yes
-    	}
-    	else_if = {
-    		limit = { current_date > 1066.9.15 } # so, 1178
-        	mpo_1178_tributary_setup_effect = yes
-    	}
-    }
+		mpo_tributary_setup_effect = yes
+	}
 	if = {
 		limit = { has_tgp_dlc_trigger = yes	}
-		if = {
-    		limit = { current_date < 1066.9.15 } # so, 867
-        	tgp_867_tributary_setup_effect = yes
-    	}
-    	else_if = {
-    		limit = { current_date = 1066.9.15 }
-        	tgp_1066_tributary_setup_effect = yes
-    	}
-    	else_if = {
-    		limit = { current_date > 1066.9.15 } # so, 1178
-        	tgp_1178_tributary_setup_effect = yes
-    	}
-    }
-   	if = {
-		limit = {
-			current_date < 1066.9.15
-		}
-		base_867_tributary_setup_effect = yes
+		tgp_tributary_setup_effect = yes
+	}
+	base_tributary_setup_effect = yes
+	}
+
+	{
+mpo_tributary_setup_effect = {
+	if = {
+		limit = { current_date >= 1178.1.1 }
+		mpo_1178_tributary_setup_effect = yes
 	}
 	else_if = {
-		limit = { 
-			current_date = 1066.9.15 
-		}
-		base_1066_tributary_setup_effect = yes
+		limit = { current_date >= 1066.1.1 }
+		mpo_1066_tributary_setup_effect = yes
 	}
 	else_if = {
-		limit = { 
-			current_date > 1066.9.15
-		}
-		base_1178_tributary_setup_effect = yes
+		limit = { current_date >= 867.1.1 }
+		mpo_867_tributary_setup_effect = yes
 	}
+}
 	}
 
 	{
 mpo_867_tributary_setup_effect = {
 
 	#### k_magyar
-	character:159137 = { # Almos Árpád of k_magyar
+	character:159137 ?= { # Almos Árpád of k_magyar
 		save_scope_as = suzerain
-		character:fictional_mogyers_1 = {
+		character:fictional_mogyers_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### k_zhetysu
-	character:34872 = { # Bilge Karakhanid of k_zhetysu
+	character:34872 ?= { # Bilge Karakhanid of k_zhetysu
 		save_scope_as = suzerain
-		character:188834 = {
+		character:188834 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:188852 = {
+		character:188852 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
-	character:188834 = {
+	character:188834 ?= {
 		save_scope_as = suzerain
-		character:fictional_karluks_16 = {
+		character:fictional_karluks_16 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_karluks_18 = {
+		character:fictional_karluks_18 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### k_oghuz_il
-	character:74031 = { # Kurush Yoishta of k_oghuz_il
+	character:74031 ?= { # Kurush Yoishta of k_oghuz_il
 		save_scope_as = suzerain
-		character:fictional_turkish_5 = {
+		character:fictional_turkish_5 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_7 = {
+		character:fictional_turkish_7 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_9 = {
+		character:fictional_turkish_9 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_10 = {
+		character:fictional_turkish_10 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_11 = {
+		character:fictional_turkish_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_13 = {
+		character:fictional_turkish_13 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_31 = {
+		character:fictional_turkish_31 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_33 = {
+		character:fictional_turkish_33 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_turkish_7 = {
+	character:fictional_turkish_7 ?= {
 		save_scope_as = suzerain
-		character:fictional_turkish_34 = {
+		character:fictional_turkish_34 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_turkish_31 = {
+	character:fictional_turkish_31 ?= {
 		save_scope_as = suzerain
-		character:fictional_turkish_8 = {
+		character:fictional_turkish_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_turkish_11 = { # Cuneyd of c_mangyshalak
+	character:fictional_turkish_11 ?= { # Cuneyd of c_mangyshalak
 		save_scope_as = suzerain
-		character:fictional_turkish_12 = {
+		character:fictional_turkish_12 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_turkish_13 = { # Cuneyd of c_mangyshalak
+	character:fictional_turkish_13 ?= { # Cuneyd of c_mangyshalak
 		save_scope_as = suzerain
-		character:fictional_turkish_32 = {
+		character:fictional_turkish_32 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	### e_caspian-pontic_steppe
-	character:74025 = { # Manasseh Bulanid of e_caspian-pontic_steppe
+	character:74025 ?= { # Manasseh Bulanid of e_caspian-pontic_steppe
 		save_scope_as = suzerain
-		character:180236 = {
+		character:180236 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:159128 = {
+		character:159128 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:160111 = {
+		character:160111 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:160112 = {
+		character:160112 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:6860 = {
+		character:6860 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:6834 = {
+		character:6834 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302238 = {
+		character:302238 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302235 = {
+		character:302235 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:159708 = {
+		character:159708 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302276 = {
+		character:302276 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:163118= {
+		character:163118 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_khazars_11 = {
+		character:fictional_khazars_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_khazars_12 = {
+		character:fictional_khazars_12 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_khazars_14 = {
+		character:fictional_khazars_14 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_pechenegs_2 = {
+		character:fictional_pechenegs_2 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_pechenegs_10 = {
+		character:fictional_pechenegs_10 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_alans_3 = {
+		character:fictional_alans_3 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### e_kirghiz_khanate
-	character:303238 = { # Uzur Enisey Kyrgyz of e_kirghiz_khanate
+	character:303238 ?= { # Uzur Enisey Kyrgyz of e_kirghiz_khanate
 		save_scope_as = suzerain
-		character:302426 = {
+		character:302426 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303104 = {
+		character:303104 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303009 = {
+		character:303009 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303288 = {
+		character:303288 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303295 = {
+		character:303295 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303308 = {
+		character:303308 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302958 = {
+		character:302958 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302952 = {
+		character:302952 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303301 = {
+		character:303301 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303220 = {
+		character:303220 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303189 = {
+		character:303189 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303180 = {
+		character:303180 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302995 = {
+		character:302995 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303255 = {
+		character:303255 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303123 = {
+		character:303123 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kirghiz_1 = {
+		character:fictional_kirghiz_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kirghiz_2 = {
+		character:fictional_kirghiz_2 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 
 
 		# herders
-		character:fictional_uriankhais_11 = {
+		character:fictional_uriankhais_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_uriankhais_12 = {
+		character:fictional_uriankhais_12 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_buryats_2 = {
+		character:fictional_buryats_2 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_buryats_3 = {
+		character:fictional_buryats_3 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_buryats_7 = {
+		character:fictional_buryats_7 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kirghiz_12 = {
+		character:fictional_kirghiz_12 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kirghiz_13 = {
+		character:fictional_kirghiz_13 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kirghiz_14 = {
+		character:fictional_kirghiz_14 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kirghiz_16 = {
+		character:fictional_kirghiz_16 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kirghiz_18 = {
+		character:fictional_kirghiz_18 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kirghiz_19 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-	}
-	character:302426 = {
-		save_scope_as = suzerain
-		character:fictional_laktans_1 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_ostyaks_1 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_ostyaks_2 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_ostyaks_3 = {
+		character:fictional_kirghiz_19 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303308 = {
+	character:302426 ?= {
 		save_scope_as = suzerain
-		character:fictional_naimans_1 = {
+		character:fictional_laktans_1 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_ostyaks_1 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_ostyaks_2 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_ostyaks_3 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303189 = {
+	character:303308 ?= {
 		save_scope_as = suzerain
-		character:fictional_kirghiz_15 = {
+		character:fictional_naimans_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303180 = {
+	character:303189 ?= {
 		save_scope_as = suzerain
-		character:fictional_uriankhais_13 = {
+		character:fictional_kirghiz_15 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:302995 = {
+	character:303180 ?= {
 		save_scope_as = suzerain
-		character:fictional_kirghiz_3 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_kirghiz_4 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_kirghiz_11 = {
+		character:fictional_uriankhais_13 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303255 = { # Bodonchar Munkhag of c_karabalgasun
+	character:302995 ?= {
 		save_scope_as = suzerain
-		character:fictional_mongols_11 = {
+		character:fictional_kirghiz_3 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_kirghiz_4 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_kirghiz_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303220 = { # Jakha Kereyid of d_ovorkhangai
+	character:303255 ?= { # Bodonchar Munkhag of c_karabalgasun
 		save_scope_as = suzerain
-		character:fictional_keraits_5 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_mongols_1 = {
+		character:fictional_mongols_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303123 = { # Menggei Mergid of d_selenga_valley
+	character:303220 ?= { # Jakha Kereyid of d_ovorkhangai
 		save_scope_as = suzerain
-		character:fictional_mongols_10 = {
+		character:fictional_keraits_5 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_mongols_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303301 = { # Qatarqa Güchügüd of d_gobi_altai
+	character:303123 ?= { # Menggei Mergid of d_selenga_valley
 		save_scope_as = suzerain
-		character:fictional_naimans_12 = {
+		character:fictional_mongols_10 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_mongols_12 = {
+	}
+	character:303301 ?= { # Qatarqa Güchügüd of d_gobi_altai
+		save_scope_as = suzerain
+		character:fictional_naimans_12 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_mongols_12 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	### k_balhae
-	character:balhae_dae_12 = { # King Geon_hwang of k_balhae
+	character:balhae_dae_12 ?= { # King Geon_hwang of k_balhae
 		save_scope_as = suzerain
-		character:jurchen_tieli_1 = {
+		character:jurchen_tieli_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_odoli_01_fic = {
+		character:jurchen_odoli_01_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_tuowen_01_fic = {
+		character:jurchen_tuowen_01_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_funie_1 = {
+		character:mohe_funie_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_yuexi_1 = {
+		character:mohe_yuexi_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_yulou_1 = {
+		character:mohe_yulou_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 	
 	### d_BAL_hoewon
-	character:jurchen_tuowen_01_fic = {
+	character:jurchen_tuowen_01_fic ?= {
 		save_scope_as = suzerain
-		character:mohe_suhemo_1 = {
+		character:mohe_suhemo_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	### k_silla
-	character:balhae_dae_12 = { # King Eung-nyeom of k_silla
+	character:balhae_dae_12 ?= { # King Eung-nyeom of k_silla
 		save_scope_as = suzerain
-		character:mohe_a_1 = {
+		character:mohe_a_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
@@ -18497,401 +18175,401 @@ mpo_867_tributary_setup_effect = {
 mpo_1066_tributary_setup_effect = {
 
 	#### e_great_liao
-	character:194333 = {
+	character:194333 ?= {
 		save_scope_as = suzerain
-		character:303309 = {
+		character:303309 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303226 = {
+		character:303226 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_naimans_4 = {
+		character:fictional_naimans_4 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_naimans_5 = {
+		character:fictional_naimans_5 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_naimans_11 = {
+		character:fictional_naimans_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303013 = {
+		character:303013 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303083 = {
+		character:303083 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303296 = {
+		character:303296 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303062 = {
+		character:303062 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303083 = {
+		character:303083 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_uriankhais_2 = {
+		character:fictional_uriankhais_2 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_uriankhais_4 = {
+		character:fictional_uriankhais_4 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_mongols_2 = {
+		character:fictional_mongols_2 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_mongols_7 = {
+		character:fictional_mongols_7 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_mongols_8 = {
+		character:fictional_mongols_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:ruzhe_8 = {
+		character:ruzhe_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:nn_yelu_zongyuan = {
+		character:nn_yelu_zongyuan ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303303 = {
+		character:303303 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303314 = {
+		character:303314 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303226 = {
+		character:303226 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303267 = {
+		character:303267 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303289 = {
+		character:303289 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:303131 = {
+		character:303131 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:nn_yelu_tieli_LUF = {
+		character:nn_yelu_tieli_LUF ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:nn_xiao_yangliu = {
+		character:nn_xiao_yangliu ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 		#Eastern tributaries, mostly Jurchens
-		character:balhae_go_8 = {
+		character:balhae_go_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_wanyan_6 = {
+		character:jurchen_wanyan_6 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_jiagu_10_fic = {
+		character:jurchen_jiagu_10_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_adian_10_fic = {
+		character:jurchen_adian_10_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_tangkuo_10_fic = {
+		character:jurchen_tangkuo_10_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_nipanggu_10_fic = {
+		character:jurchen_nipanggu_10_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_tudan_10_fic = {
+		character:jurchen_tudan_10_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_yulou_8 = {
+		character:jurchen_yulou_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_yuexi_8 = {
+		character:jurchen_yuexi_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_hesheli_10_fic = {
+		character:jurchen_hesheli_10_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 		#Tribs in k_amur
-		character:jurchen_boli_10_fic = {
+		character:jurchen_boli_10_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_boli_11_fic = {
+		character:jurchen_boli_11_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_boli_12_fic = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-	}
-	character:fictional_uriankhais_4 = {
-		save_scope_as = suzerain
-		character:fictional_uriankhais_10 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_uriankhais_3 = {
+		character:jurchen_boli_12_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303062 = {
+	character:fictional_uriankhais_4 ?= {
 		save_scope_as = suzerain
-		character:fictional_mongols_9 = {
+		character:fictional_uriankhais_10 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_uriankhais_3 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303083 = {
+	character:303062 ?= {
 		save_scope_as = suzerain
-		character:fictional_uriankhais_1 = {
+		character:fictional_mongols_9 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:303013 = {
+	character:303083 ?= {
 		save_scope_as = suzerain
-		character:fictional_oirats_2 = {
+		character:fictional_uriankhais_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_buryats_1 = {
+	}
+	character:303013 ?= {
+		save_scope_as = suzerain
+		character:fictional_oirats_2 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_buryats_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### k_zhetysu
-	character:144107 = {
+	character:144107 ?= {
 		save_scope_as = suzerain
-		character:fictional_karluks_12 = {
+		character:fictional_karluks_12 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_karluks_15 = {
+		character:fictional_karluks_15 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302790 = {
+		character:302790 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:188843 = {
+		character:188843 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:3022 = {
+		character:3022 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
-	character:fictional_karluks_15 = {
+	character:fictional_karluks_15 ?= {
 		save_scope_as = suzerain
-		character:fictional_karluks_5 = {
+		character:fictional_karluks_5 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
-	character:188843 = {
+	character:188843 ?= {
 		save_scope_as = suzerain
-		character:188844 = {
+		character:188844 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
-	character:3022 = {
+	character:3022 ?= {
 		save_scope_as = suzerain
-		character:fictional_karluks_11 = {
+		character:fictional_karluks_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### k_pechenegs
-	character:20641 = {
+	character:20641 ?= {
 		save_scope_as = suzerain
-		character:fictional_pechenegs_8 = {
+		character:fictional_pechenegs_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_pechenegs_9 = {
+		character:fictional_pechenegs_9 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 	
 
 	#### k_caspian_steppe
-	character:806 = {
+	character:806 ?= {
 		save_scope_as = suzerain
 
-		character:302765 = {
+		character:302765 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302584 = {
+		character:302584 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302575 = {
+		character:302575 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302596 = {
+		character:302596 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302621 = {
+		character:302621 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302762 = {
+		character:302762 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:228058 = {
+		character:228058 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:194447 = {
+		character:194447 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_14 = {
+		character:fictional_kimeks_14 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_18 = {
+		character:fictional_kimeks_18 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_19 = {
+		character:fictional_kimeks_19 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_21 = {
+		character:fictional_kimeks_21 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_23 = {
+		character:fictional_kimeks_23 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_25 = {
+		character:fictional_kimeks_25 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_27 = {
+		character:fictional_kimeks_27 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_28 = {
+		character:fictional_kimeks_28 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_16 = {
+		character:fictional_turkish_16 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_17 = {
+		character:fictional_turkish_17 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_18 = {
+		character:fictional_turkish_18 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_19 = {
+		character:fictional_turkish_19 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_20 = {
+		character:fictional_turkish_20 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_cumans_15 = {
+		character:fictional_cumans_15 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_cumans_16 = {
+		character:fictional_cumans_16 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_4 = {
+		character:fictional_kipchaks_4 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_28 = {
+		character:fictional_kipchaks_28 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
-	character:fictional_kipchaks_4 = {
+	character:fictional_kipchaks_4 ?= {
 		save_scope_as = suzerain
-		character:fictional_kipchaks_7 = {
+		character:fictional_kipchaks_7 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_27 = {
+		character:fictional_kipchaks_27 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_kimeks_23 = {
+	character:fictional_kimeks_23 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_24 = {
+		character:fictional_kimeks_24 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_54 = {
+		character:fictional_kimeks_54 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_kimeks_21 = {
+	character:fictional_kimeks_21 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_26 = {
+		character:fictional_kimeks_26 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:302762 = {
+	character:302762 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_22 = {
+		character:fictional_kimeks_22 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_30 = {
+		character:fictional_kimeks_30 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_53 = {
+		character:fictional_kimeks_53 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_11 = {
+		character:fictional_kipchaks_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_kimeks_19 = {
+	character:fictional_kimeks_19 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_29 = {
+		character:fictional_kimeks_29 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:302621 = {
+	character:302621 ?= {
 		save_scope_as = suzerain
-		character:fictional_kipchaks_9 = {
+		character:fictional_kipchaks_9 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_kimeks_14 = {
+	character:fictional_kimeks_14 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_13 = {
+		character:fictional_kimeks_13 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:302765 = {
+	character:302765 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_17 = {
+		character:fictional_kimeks_17 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:302596 = {
+	character:302596 ?= {
 		save_scope_as = suzerain
-		character:fictional_bashkirs_7 = {
+		character:fictional_bashkirs_7 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_ostyaks_4 = {
+		character:fictional_ostyaks_4 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_turkish_19 = {
+	character:fictional_turkish_19 ?= {
 		save_scope_as = suzerain
-		character:fictional_kipchaks_10 = {
+		character:fictional_kipchaks_10 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_25 = {
+		character:fictional_kipchaks_25 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_turkish_17 = {
+	character:fictional_turkish_17 ?= {
 		save_scope_as = suzerain
-		character:fictional_turkish_27 = {
+		character:fictional_turkish_27 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_turkish_16 = {
+	character:fictional_turkish_16 ?= {
 		save_scope_as = suzerain
-		character:fictional_turkish_15 = {
+		character:fictional_turkish_15 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_28 = {
+		character:fictional_turkish_28 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### d_kargassia
 
-	character:303046 = {
+	character:303046 ?= {
 		save_scope_as = suzerain
-		character:fictional_uriankhais_14 = {
+		character:fictional_uriankhais_14 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### e_goryeo
 
-	character:194333 = {
+	character:194333 ?= {
 		save_scope_as = suzerain
-		character:jurchen_yalu_10_fic = {
+		character:jurchen_yalu_10_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
@@ -18902,265 +18580,655 @@ mpo_1066_tributary_setup_effect = {
 mpo_1178_tributary_setup_effect = {
 
 	#### k_caspian_steppe
-	character:228030 = {
+	character:228030 ?= {
 		save_scope_as = suzerain
-		character:302579 = {
+		character:302579 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302606 = {
+		character:302606 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302627 = {
+		character:302627 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302782 = {
+		character:302782 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_16 = {
+		character:fictional_kipchaks_16 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_17 = {
+		character:fictional_kipchaks_17 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_34 = {
+		character:fictional_kimeks_34 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_35 = {
+		character:fictional_kimeks_35 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_42 = {
+		character:fictional_kimeks_42 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 
 		# herders
-		character:fictional_cumans_9 = {
+		character:fictional_cumans_9 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_cumans_10 = {
+		character:fictional_cumans_10 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_cumans_11 = {
+		character:fictional_cumans_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_cumans_12 = {
+		character:fictional_cumans_12 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_cumans_13 = {
+		character:fictional_cumans_13 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_cumans_14 = {
+		character:fictional_cumans_14 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_13 = {
+		character:fictional_kipchaks_13 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_14 = {
+		character:fictional_kipchaks_14 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_19 = {
+		character:fictional_kipchaks_19 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_20 = {
+		character:fictional_kipchaks_20 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_bolghars_7 = {
+		character:fictional_bolghars_7 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_khazars_9 = {
+		character:fictional_khazars_9 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_turkish_21 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-	}
-	character:302627 = {
-		save_scope_as = suzerain
-		character:fictional_kipchaks_15 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_kipchaks_21 = {
+		character:fictional_turkish_21 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_kimeks_35 = {
+	character:302627 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_51 = {
+		character:fictional_kipchaks_15 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_kipchaks_21 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:fictional_kipchaks_16 = {
+	character:fictional_kimeks_35 ?= {
 		save_scope_as = suzerain
-		character:fictional_kipchaks_18 = {
+		character:fictional_kimeks_51 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:302606 = {
+	character:fictional_kipchaks_16 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_32 = {
-			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
-		}
-		character:fictional_kimeks_41 = {
+		character:fictional_kipchaks_18 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
-	character:302782 = {
+	character:302606 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_33 = {
+		character:fictional_kimeks_32 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_37 = {
+		character:fictional_kimeks_41 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_38 = {
+	}
+	character:302782 ?= {
+		save_scope_as = suzerain
+		character:fictional_kimeks_33 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_39 = {
+		character:fictional_kimeks_37 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_40 = {
+		character:fictional_kimeks_38 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_kimeks_39 ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		character:fictional_kimeks_40 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### e_kara_khitai
-	character:188912 = {
+	character:188912 ?= {
 		save_scope_as = suzerain
-		character:144122 = { # Khan Ibrahim III Karakhanid of Syr Darya
+		character:144122 ?= { # Khan Ibrahim III Karakhanid of Syr Darya
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:302983 = { # Idiqut Bilga Kutan of Qocho
+		character:302983 ?= { # Idiqut Bilga Kutan of Qocho
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:188855 = { # Khan Muhammad Karakhanid of Khotan
+		character:188855 ?= { # Khan Muhammad Karakhanid of Khotan
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:karakhanid_4 = { # Prince Muhammad II Karakhanid of Ferghana
+		character:karakhanid_4 ?= { # Prince Muhammad II Karakhanid of Ferghana
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 		# Herders
-		character:fictional_karluks_7 = {
+		character:fictional_karluks_7 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_karluks_8 = {
+		character:fictional_karluks_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_karluks_22 = {
+		character:fictional_karluks_22 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_48 = {
+		character:fictional_kimeks_48 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_52 = {
+		character:fictional_kimeks_52 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kipchaks_22 = {
+		character:fictional_kipchaks_22 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### k_naiman
-	character:naiman_guchugud_1 = {
+	character:naiman_guchugud_1 ?= {
 		save_scope_as = suzerain
-		character:fictional_naimans_6 = {
+		character:fictional_naimans_6 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_naimans_7 = {
+		character:fictional_naimans_7 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_naimans_8 = {
+		character:fictional_naimans_8 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_naimans_9 = {
+		character:fictional_naimans_9 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### d_degelen
-	character:fictional_kimeks_44 = {
+	character:fictional_kimeks_44 ?= {
 		save_scope_as = suzerain
-		character:fictional_kimeks_45 = {
+		character:fictional_kimeks_45 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_46 = {
+		character:fictional_kimeks_46 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_49 = {
+		character:fictional_kimeks_49 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_kimeks_50 = {
+		character:fictional_kimeks_50 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### d_khakass_hollow
-	character:303249 = {
+	character:303249 ?= {
 		save_scope_as = suzerain
-		character:fictional_kirghiz_28 = {
+		character:fictional_kirghiz_28 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### d_ovorkhangai
-	character:303211 = {
+	character:303211 ?= {
 		save_scope_as = suzerain
-		character:fictional_keraits_1 = {
+		character:fictional_keraits_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_keraits_2 = {
+		character:fictional_keraits_2 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### d_khovsgol
-	character:303019 = {
+	character:303019 ?= {
 		save_scope_as = suzerain
-		character:303022 = {
+		character:303022 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:fictional_oirats_1 = {
+		character:fictional_oirats_1 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### d_selenga_valley
-	character:303142 = {
+	character:303142 ?= {
 		save_scope_as = suzerain
-		character:fictional_mongols_5 = {
+		character:fictional_mongols_5 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 	}
 
 	#### e_andong
-	character:jurchen_wanyan_14 = {
+	character:jurchen_wanyan_14 ?= {
 		save_scope_as = suzerain
-		character:jurchen_yulou_12 = {
+		character:jurchen_yulou_12 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:jurchen_yuexi_11 = {
+		character:jurchen_yuexi_11 ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
 		#Tribs in k_amur
-		character:mohe_molihewen_20_fic = {
+		character:mohe_molihewen_20_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_choripi_20_fic = {
+		character:mohe_choripi_20_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_wuguihai_20_fic = {
+		character:mohe_wuguihai_20_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_heishuiyang_20_fic = {
+		character:mohe_heishuiyang_20_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_beihean_20_fic = {
+		character:mohe_beihean_20_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_vanda_20_fic = {
+		character:mohe_vanda_20_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
-		character:mohe_nimen_20_fic = {
+		character:mohe_nimen_20_fic ?= {
 			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
 		}
+	}
+}
+	}
+
+	{
+tgp_tributary_setup_effect = {
+	title:h_china.holder ?= {
+		save_scope_as = suzerain
+
+		if = {
+			limit = { current_date >= 851.1.1 current_date <= 1036.1.1 }
+			title:k_hexi.holder ?= {
+				break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+			}
+		}
+		if = {
+			limit = { current_date >= 705.1.1 current_date <= 926.1.1 }
+			title:k_balhae.holder ?= {
+				break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+			}
+		}
+		if = {
+			limit = { current_date >= 337.1.1 current_date <= 935.1.1 }
+			title:k_silla.holder ?= {
+				break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+			}
+		}
+		if = {
+			limit = { current_date >= 866.1.1 current_date <= 1132.1.1 }
+			title:k_dzungaria.holder ?= {
+				break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+			}
+		}
+	}
+
+	if = {
+		limit = { current_date >= 1178.1.1 }
+		tgp_1178_tributary_setup_effect = yes
+	}
+	else_if = {
+		limit = { current_date >= 1066.1.1 }
+		tgp_1066_tributary_setup_effect = yes
+	}
+	else_if = {
+		limit = { current_date >= 867.1.1 }
+		tgp_867_tributary_setup_effect = yes
+	}
+}
+	}
+
+	{
+tgp_867_tributary_setup_effect = {
+	title:h_china.holder ?= {
+		save_scope_as = suzerain
+		title:k_champa.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_yinzhou_1.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_luoshi.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_shimen.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_luodian.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_yanchuan.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_juzhou.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_zangke.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_xiyuan.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_guile.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Srivijaya 867
+	title:e_srivijaya.holder ?= {
+		save_scope_as = suzerain
+		title:c_SUM_bangka-belitung.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_east_sumatra.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_lampung.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_pasemah.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_bengkulu.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_lingga.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_dharmasraya.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_indragiri.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_meranti.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_kampar.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_muara_takus.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_pekanbaru.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_rokan.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_panai.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_lambri.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_MAL_gelanggi.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_MAL_johor.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_MAL_pahang.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_MAL_gangganegara.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_MAL_kedah.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_THAI_takua_pa.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_THAI_tambralinga.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_MAL_langkasuka.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_riau.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_JAV_sunda.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_JAV_galuh.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_JAV_cimanuk.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Borneo
+	title:d_BOR_tanjungpura.holder ?= {
+		save_scope_as = suzerain
+		title:c_BOR_sambas.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Silla
+	title:k_silla.holder ?= {
+		save_scope_as = suzerain
+		title:d_tamna.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_ulleong.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+}
+	}
+
+	{
+tgp_1066_tributary_setup_effect = {
+	title:h_china.holder ?= {
+		save_scope_as = suzerain
+		title:k_dali.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:k_viet.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_yinzhou_1.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_shimen.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_zongzhou.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_luoshi.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_shaoqing.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_luodian.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_yanchuan.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_yanzhou_3.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_juzhou.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_guzhou.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_zangke.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_nanping.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_guile.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_tianzhou.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:d_xiyuan.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	title:k_viet.holder ?= {
+		save_scope_as = suzerain
+		title:k_champa.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Srivijaya 1066
+	title:k_malayadvipa.holder ?= {
+		save_scope_as = suzerain
+		title:c_SUM_bangka-belitung.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_jambi.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_karang_brahi.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Melayu kingdom 1066
+	title:d_SUM_jambi.holder ?= {
+		save_scope_as = suzerain
+		title:c_SUM_indragiri.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Chola tribs in Sumatra/Malaysia 1066
+	title:k_tamilakam.holder ?= {
+		save_scope_as = suzerain
+		title:k_malayadvipa.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_panai.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_rokan.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_lambri.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_lingga.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		#
+		title:c_MAL_kedah.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_MAL_pahang.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_MAL_gangganegara.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Borneo
+	title:d_BOR_tanjungpura.holder ?= {
+		save_scope_as = suzerain
+		title:c_BOR_sambas.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+}
+	}
+
+	{
+tgp_1178_tributary_setup_effect = {
+	title:h_china.holder ?= {
+		save_scope_as = suzerain
+		title:k_dali.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:k_viet.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Melayu kingdom/new Sanfoqi in Sumatra/Malaysia 1178
+	title:d_SUM_jambi.holder ?= {
+		save_scope_as = suzerain
+		title:d_SUM_palembang.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_indragiri.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_minangkabau.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SUM_lambri.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Tribs in Sumatra 1178
+	title:d_SUM_riau.holder ?= {
+		save_scope_as = suzerain
+		title:c_SUM_pekanbaru.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Tribs of Kediri 1178
+	title:d_JAV_mataram.holder ?= {
+		save_scope_as = suzerain
+		title:c_JAV_lumajang.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_JAV_madura.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_IDO_bali.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+		title:c_SuMa_ternate.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	#Borneo
+	title:d_BOR_tanjungpura.holder ?= {
+		save_scope_as = suzerain
+		title:c_BOR_sambas.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+	title:d_BOR_nan_sarunai.holder ?= {
+		save_scope_as = suzerain
+		title:c_BOR_banjar.holder ?= {
+			break_subject_contract_and_establish_tributary_effect = { SUZERAIN = scope:suzerain TRIBUTARY = this }
+		}
+	}
+}
+	}
+
+	{
+base_tributary_setup_effect = {
+	if = {
+		limit = { current_date >= 1178.1.1 }
+		base_1178_tributary_setup_effect = yes
+	}
+	else_if = {
+		limit = { current_date >= 1066.1.1 }
+		base_1066_tributary_setup_effect = yes
+	}
+	else_if = {
+		limit = { current_date >= 867.1.1 }
+		base_867_tributary_setup_effect = yes
 	}
 }
 	}
@@ -19656,7 +19724,7 @@ base_1178_tributary_setup_effect = {
 }
 
 
-"common/scripted_effects/10_dlc_tgp_japan_scripted_effects.txt" = {
+"common/scripted_effects/10_dlc_tgp_history_effects.txt" = {
 	# Removing this scripted_effect since its no longer used, and to prevent errors in log
 	{
 tgp_dynasty_house_name_setup_effect = {
@@ -19847,7 +19915,10 @@ tgp_dynasty_house_name_setup_effect = {
 	dynasty:korean_yun_papyeong.dynasty_founder.house ?= { set_house_name = "dynn_Yun_Papyeong" }
 }
 	}
+}
 
+
+"common/scripted_effects/10_dlc_tgp_japan_scripted_effects.txt" = {
 	# Removing this scripted_effect since its no longer used, and to prevent errors in log
 	{
 japan_dynasty_tracker_setup_effect = {
@@ -19896,7 +19967,7 @@ tgp_setup_historical_house_relation_effect = {
 	if = {
 		limit = { game_start_date = 867.1.1 }
 		house:house_fujiwara_ashikaga = {
-			tgp_set_historical_house_relation_effect = { # 
+			tgp_set_historical_house_relation_effect = { #
 				OTHER_HOUSE = house:house_minamoto_kozuke
 				LEVEL = rivalry
 			}
@@ -19906,7 +19977,7 @@ tgp_setup_historical_house_relation_effect = {
 	else_if = {
 		limit = { game_start_date = 1066.9.15 }
 		dynasty:japanese_minamoto_murakami.dynasty_founder.house = {
-			tgp_set_historical_house_relation_effect = { # 
+			tgp_set_historical_house_relation_effect = { #
 				OTHER_HOUSE = dynasty:japanese_fujiwara.dynasty_founder.house
 				LEVEL = friendly
 			}
@@ -19916,7 +19987,7 @@ tgp_setup_historical_house_relation_effect = {
 	else_if = {
 		limit = { game_start_date = 1178.10.1 }
 		dynasty:japanese_sugawara.dynasty_founder.house = {
-			tgp_set_historical_house_relation_effect = { # 
+			tgp_set_historical_house_relation_effect = { #
 				OTHER_HOUSE = dynasty:japanese_ki.dynasty_founder.house
 				LEVEL = friendly
 			}

@@ -155,6 +155,7 @@
 
  # The decision to Found the Varangian Guard references just e_byzantium, despite being available to any empire/hegemony title
  unlocked_varangian_guard_desc: "Unlocks the [court_position|E] $akolouthos_court_position$ and the [GetMaA('varangian_guards').GetName] [men_at_arms|E] for [varangian_title.GetName]."
+ has_5_norse_courtiers: "Has at least 5 [courtiers|E] with [GetCulturePillar('heritage_north_germanic').GetName] culture"
 
  # Generalized the "Evangelize the Pagans" decision/events to work with any of the Rome titles
  evangelize_the_slavs_decision_desc: "As the depositary of the One True Faith, it is [ROOT.Char.GetPrimaryTitle.GetNamePossessive] duty to evangelize the pagans and welcome them into the fold of our Church as our younger brothers and sisters in Christ. This is all the more relevant as they live just beyond our borders and menace the integrity and security of the empire."
