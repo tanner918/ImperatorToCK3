@@ -7,23 +7,70 @@
 ynys_mon = { #toutatis
 	county = c_anglesey
 	barony = b_yns_mon
-	character_modifier = {
-		name = holy_site_ynys_mon_effect_name
- 		men_at_arms_maintenance = -0.1
+
+	county_holder_character_modifier = {
+		men_at_arms_maintenance = -0.025
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		men_at_arms_maintenance = -0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		men_at_arms_maintenance = -0.005
+		knight_effectiveness_mult = 0.01
 	}
 }
 stonehenge = {
 	county = c_wiltshire
-	character_modifier = {
-		name = holy_site_stonehenge_effect_name
-		monthly_piety_gain_mult = 0.2
+
+	county_holder_character_modifier = {
+		monthly_piety_gain_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
+		monthly_piety_gain_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_piety_gain_mult = 0.01
+		piety_level_impact_mult = 0.01
 	}
 }
 tlachtgha = {
 	county = c_athlone
-	character_modifier = {
-		name = holy_site_tlachtgha_effect_name
+
+	county_holder_character_modifier = {
+		diplomacy = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		monthly_county_control_growth_factor = 0.01
+	}
+
+	faith_character_modifier = {
 		diplomacy_per_prestige_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 glanum = { # Glanum is located near Arles
@@ -32,18 +79,50 @@ glanum = { # Glanum is located near Arles
 		c_venaissin # vanilla
 	}
 	barony = b_arles
-	character_modifier = {
-	    name = holy_site_glanum_effect_name
- 		health = 0.1
+
+	county_holder_character_modifier = {
+		health = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
+		health = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		health = 0.01
+		stress_loss_mult = 0.01
 	}
 }
 bibracte = { # Bibracte is located near Autun
 	county = c_chalon
 	barony = b_autun
-	character_modifier = {
-		name = holy_site_bibracte_effect_name
-		development_growth_factor = 0.1
+
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		stewardship = 1
+		church_holding_build_gold_cost = -0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		character_travel_speed_mult = 0.01
 	}
 }
 
@@ -51,29 +130,72 @@ celtic_dublin = {
 	county = c_dublin
 	barony = b_dublin
 
-	character_modifier = {
-		name = holy_site_celtic_dublin_effect_name
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
 		martial = 1
-		prowess = 1
+		prowess_per_prestige_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.01
 	}
 }
 
 mann = {
 	county = c_isle_of_man
 
-	character_modifier = {
-		name = holy_site_mann_effect_name
+	county_holder_character_modifier = {
+		monthly_piety_gain_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
 		monthly_piety_gain_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_piety_gain_mult = 0.01
+		piety_level_impact_mult = 0.01
 	}
 }
 
 moray = {
 	county = c_moray
 
-	character_modifier = {
-		name = holy_site_moray_effect_name
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
 		martial = 1
-		prowess = 1
+		prowess_per_prestige_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.01
 	}
 }
 
@@ -81,10 +203,25 @@ ceredigion = {
 	county = c_cardiganshire
 	barony = b_cardigan
 
-	character_modifier = {
-		name = holy_site_ceredigion_effect_name
-		stewardship = 1
+	county_holder_character_modifier = {
 		prowess = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		prowess = 1
+		stewardship = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		mountains_advantage = 0.5
+		levy_size = 0.005
 	}
 }
 
@@ -92,10 +229,24 @@ norfolk = {
 	county = c_norfolk
 	barony = b_norwich
 
-	character_modifier = {
-		name = holy_site_norfolk_effect_name
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
 		martial = 1
-		prowess = 1
+		prowess_per_prestige_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.01
 	}
 }
 
@@ -103,20 +254,48 @@ middlesex = {
 	county = c_middlesex
 	barony = b_london
 
-	character_modifier = {
-		name = holy_site_middlesex_effect_name
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
 		diplomacy = 1
+		stewardship = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
 	}
 }
 
 auvergne = {
 	county = c_auvergne
 
-	character_modifier = {
-		name = holy_site_auvergne_effect_name
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
 		martial = 1
-		prowess = 1
+		prowess_per_prestige_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.01
 	}
 }
 
@@ -124,10 +303,25 @@ poitou = {
 	county = c_poitiers
 	barony = b_poitiers
 
-	character_modifier = {
-		name = holy_site_poitou_effect_name
+	county_holder_character_modifier = {
 		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		mountains_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
+		defender_advantage = 5
 		diplomacy = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		defender_advantage = 0.5
+		mountains_advantage = 0.5
 	}
 }
 
@@ -135,10 +329,24 @@ paris = {
 	county = c_ile_de_france
 	barony = b_saint_denis
 
-	character_modifier = {
-		name = holy_site_paris_effect_name
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
 		diplomacy = 1
+		stewardship = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
 	}
 }
 
@@ -146,10 +354,24 @@ brugge = {
 	county = c_brugge
 	barony = b_bruges
 
-	character_modifier = {
-		name = holy_site_brugge_effect_name
-		stewardship = 1
+	county_holder_character_modifier = {
 		learning = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		supply_limit_mult = 0.02
+	}
+
+	faith_character_modifier = {
+		diplomacy = 1
+		stewardship = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_lifestyle_xp_gain_mult = 0.01
 	}
 }
 
@@ -157,10 +379,25 @@ toulouse = {
 	county = c_toulouse
 	barony = b_toulouse
 
-	character_modifier = {
-		name = holy_site_toulouse_effect_name
-		stewardship = 1
+	county_holder_character_modifier = {
 		prowess = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		prowess = 1
+		stewardship = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		mountains_advantage = 0.5
+		levy_size = 0.005
 	}
 }
 
@@ -168,10 +405,24 @@ thomond = {
 	county = c_thomond
 	barony = b_limerick
 
-	character_modifier = {
-		name = holy_site_thomond_effect_name
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
 		diplomacy = 1
+		stewardship = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
 	}
 }
 
@@ -179,20 +430,48 @@ connacht = {
 	county = c_connacht
 	barony = b_galway
 
-	character_modifier = {
-		name = holy_site_connacht_effect_name
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
 		martial = 1
-		prowess = 1
+		prowess_per_prestige_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.01
 	}
 }
 
 galloway = {
 	county = c_galloway
 
-	character_modifier = {
-		name = holy_site_galloway_effect_name
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
 		martial = 1
 		monthly_piety_gain_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_piety_gain_mult = 0.01
 	}
 }
 
@@ -200,10 +479,24 @@ zaragoza = {
 	county = c_zaragoza
 	barony = b_zaragoza
 
-	character_modifier = {
-		name = holy_site_zaragoza_effect_name
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
 		martial = 1
-		prowess = 1
+		prowess_per_prestige_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.01
 	}
 }
 
@@ -211,10 +504,24 @@ coruna = {
 	county = c_coruna
 	barony = b_corunna
 
-	character_modifier = {
-		name = holy_site_coruna_effect_name
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
 		diplomacy = 1
 		stewardship = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
 	}
 }
 
@@ -222,10 +529,25 @@ valencia = {
 	county = c_valencia
 	barony = b_valencia
 
-	character_modifier = {
-		name = holy_site_valencia_effect_name
+	county_holder_character_modifier = {
 		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		mountains_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
+		defender_advantage = 5
 		diplomacy = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		defender_advantage = 0.5
+		mountains_advantage = 0.5
 	}
 }
 
@@ -233,85 +555,257 @@ algeciras = {
 	county = c_algeciras
 	barony = b_algeciras
 
-	character_modifier = {
-		name = holy_site_algeciras_effect_name
+	county_holder_character_modifier = {
+		learning = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
 		learning = 1
 		monthly_piety_gain_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_piety_gain_mult = 0.01
 	}
 }
 
 #Iberic
 chimaera = { #dercetius
 	county = c_castellon
-	character_modifier = {
-		name = holy_site_chimaera_effect_name
- 		domain_tax_mult = 0.02
+
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
 	}
 }
 salaria = { #semnocosus
 	county = c_andujar
-	character_modifier = {
-		name = holy_site_salaria_effect_name
- 		men_at_arms_maintenance = -0.1
+	
+	county_holder_character_modifier = {
+		men_at_arms_maintenance = -0.025
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
+		men_at_arms_maintenance = -0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		men_at_arms_maintenance = -0.005
+		monthly_income_mult = 0.005
 	}
 }
 aeso = { #the duillae
 	county = c_lleida
-	character_modifier = {
-		name = holy_site_aeso_effect_name
- 		fertility = 0.15
+
+	county_holder_character_modifier = {
+		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 bravum = { #eacus
 	county = c_amaya
-	character_modifier = {
-		name = holy_site_bravum_effect_name
- 		diplomacy_per_piety_level = 1
+
+	county_holder_character_modifier = {
+		clergy_opinion = 3
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		diplomacy_per_piety_level = 1
+		clergy_opinion = 5
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_piety_gain_mult = 0.01
 	}
 }
 myrtilis = { #ataecina
 	county = c_beja
-	character_modifier = {
-		name = holy_site_myrtilis_effect_name
-		stress_loss_mult = 0.2
+
+	county_holder_character_modifier = {
+		stress_loss_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
+		stress_loss_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		stress_loss_mult = 0.01
+		monthly_lifestyle_xp_gain_mult = 0.01
 	}
 }
 
 #Berber
 shaheded = {
 	county = c_taza
-	character_modifier = {
-		name = holy_site_shaheded_effect_name
- 		domain_tax_mult = 0.02
+
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
 	}
 }
 sinifere = {
 	county = c_algier
-	character_modifier = {
-		name = holy_site_sinifere_effect_name
- 		knight_effectiveness_mult = 0.2
+
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		martial_per_piety_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.015
 	}
 }
 thugga = { #tannit
 	county = c_medjerda
-	character_modifier = {
-		name = holy_site_thugga_effect_name
- 		cultural_head_fascination_mult = 0.1
+
+	county_holder_character_modifier = {
+		learning = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
+		cultural_head_fascination_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		cultural_head_fascination_mult = 0.01
 	}
 }
 tsabratan = { #nanna tala
 	county = c_tripolitana
-	character_modifier = {
-		name = holy_site_tsabratan_effect_name
- 		fertility = 0.15
+
+	county_holder_character_modifier = {
+		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 thubactis = { #gurzil
 	county = c_labda
 	barony = b_misurata
-	character_modifier = {
-		name = holy_site_thubactis_effect_name
- 		levy_reinforcement_rate_same_faith = 0.2
+
+	county_holder_character_modifier = {
+		levy_reinforcement_rate = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		levy_reinforcement_rate_same_faith = 0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		levy_size = 0.005
+		same_faith_opinion = 0.5
 	}
 }
 
@@ -320,32 +814,96 @@ thubactis = { #gurzil
 elagabal = { #Elagabalus was venerated in Homs
 	county = c_homs
 	barony = b_hims
-	character_modifier = {
-		name = holy_site_elagabal_effect_name
- 		tyranny_gain_mult = -0.2
+
+	county_holder_character_modifier = {
+		vassal_opinion = 5
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		monthly_tyranny = -0.1
+		tyranny_gain_mult = -0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		vassal_opinion = 0.5
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 ahiram = { #ba'alet
 	county = c_tripoli
-	character_modifier = {
-		name = holy_site_ahiram_effect_name
- 		cultural_head_fascination_mult = 0.1
+
+	county_holder_character_modifier = {
+		learning = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
+		cultural_head_fascination_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		cultural_head_fascination_mult = 0.01
 	}
 }
 tyre = { #melqart
 	county = c_acre
 	barony = b_tyre
-	character_modifier = {
-		name = holy_site_tyre_effect_name
- 		domain_tax_mult = 0.02
+
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
 	}
 }
 mabbog = { #atargatis - Mabbog is now called Manbij
 	county = c_aleppo
 	barony = b_manbij
-	character_modifier = {
-		name = holy_site_mabbog_effect_name
- 		fertility = 0.15
+
+	county_holder_character_modifier = {
+		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 
@@ -353,44 +911,114 @@ mabbog = { #atargatis - Mabbog is now called Manbij
 #memphis in vanilla
 taremu = { #sekhmet
 	county = c_sharkiya
-	character_modifier = {
-		name = holy_site_taremu_effect_name
- 		defender_advantage = 5
+
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		desert_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
+		defender_advantage = 5
+		diplomacy = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		defender_advantage = 0.5
+		desert_advantage = 0.5
 	}
 }
 waset = { #amun
 	county = c_qus
-	character_modifier = {
-		name = holy_site_waset_effect_name
- 		tyranny_gain_mult = -0.2
+
+	county_holder_character_modifier = {
+		vassal_opinion = 5
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		monthly_tyranny = -0.1
+		tyranny_gain_mult = -0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		vassal_opinion = 0.5
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 #aswan in vanilla
 zawty = { #anubis
 	county = c_asyut
 	barony = b_asyut
-	character_modifier = {
-		name = holy_site_zawty_effect_name
- 		domain_tax_mult = 0.02
+
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
 	}
 }
 giza = {
 	county = c_giza
 	barony = b_gizeh
 
-	character_modifier = {
-		name = holy_site_giza_effect_name
+	county_holder_character_modifier = {
+		health = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
 		life_expectancy = 3
-		health = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		health = 0.01
+		stress_loss_mult = 0.01
 	}
 }
 bahnasa = {
 	county = c_bahnasa
 	barony = b_al-bahnasa
 
-	character_modifier = {
-		name = holy_site_bahnasa_effect_name
-		monthly_lifestyle_xp_gain_mult = 0.1
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_lifestyle_xp_gain_mult = 0.01
 	}
 
 	parameters = {
@@ -402,125 +1030,385 @@ bahnasa = {
 #mecca in vanilla
 badais = { #orotalt
 	county = c_wajh
-	character_modifier = {
-		name = holy_site_badais_effect_name
- 		supply_duration = 0.25
+
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		prowess_per_piety_level = 1
+		supply_duration = 0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		supply_duration = 0.015
+		monthly_income_mult = 0.005
 	}
 }
 petra = { #al-qaum
 	county = c_negev
 	barony = b_baidha-petra
-	character_modifier = {
-		name = holy_site_petra_effect_name
- 		domain_tax_mult = 0.02
+
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
 	}
 }
 sirwa = { #ta'lab
 	county = c_sanaa
-	character_modifier = {
-		name = holy_site_sirwa_effect_name
- 		fertility = 0.15
+
+	county_holder_character_modifier = {
+		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 taif = { #ta'if, al-uzza
 	county = c_taif
 	barony = b_at-taif
-	character_modifier = {
-		name = holy_site_taif_effect_name
- 		levy_reinforcement_rate_same_faith = 0.2
+
+	county_holder_character_modifier = {
+		levy_reinforcement_rate = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_reinforcement_rate = 0.02
+	}
+
+	faith_character_modifier = {
+		levy_reinforcement_rate_same_faith = 0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		levy_size = 0.005
+		same_faith_opinion = 0.5
 	}
 }
 
 #Mesopotamian
-babylon = { #marduk
+babylon_marduk = { #marduk
 	county = c_baghdad
-	character_modifier = {
-		name = holy_site_babylon_effect_name
+
+	county_holder_character_modifier = {
+		knight_effectiveness_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
 		knight_limit = 1
+		light_cavalry_toughness_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		light_cavalry_toughness_mult = 0.01
+		knight_effectiveness_mult = 0.01
 	}
 }
 borsippa = { #nabu
 	county = c_kufa
-	character_modifier = {
-		name = holy_site_borsippa_effect_name
- 		cultural_head_fascination_mult = 0.1
+
+	county_holder_character_modifier = {
+		learning = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
+		cultural_head_fascination_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		cultural_head_fascination_mult = 0.01
 	}
 }
 uruk = { #ishtar
 	county = c_batiha
-	character_modifier = {
-		name = holy_site_uruk_effect_name
-		attacker_advantage = 5
+
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		drylands_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
+		controlled_province_advantage = 5
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		controlled_province_advantage = 0.5
+		attacker_advantage = 0.5
 	}
 }
 ashur = { #ashshur
 	county = c_mosul
-	character_modifier = {
-		name = holy_site_ashur_effect_name
+
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		drylands_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
 		defender_advantage = 5
+		diplomacy = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		defender_advantage = 0.5
+		drylands_advantage = 0.5
 	}
 }
 harranu = { #sin
 	county = c_harran
 	barony = b_harran
-	character_modifier = {
-		name = holy_site_harranu_effect_name
- 		fertility = 0.15
+
+	county_holder_character_modifier = {
+		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 
 #Cybelene
 men = { #men
 	county = c_philomelium
-	character_modifier = {
-		name = holy_site_men_effect_name
- 		tyranny_gain_mult = -0.2
+
+	county_holder_character_modifier = {
+		vassal_opinion = 5
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		monthly_tyranny = -0.1
+		tyranny_gain_mult = -0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		vassal_opinion = 0.5
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 phyrgia = { #cybele
 	county = c_phrygia
-	character_modifier = {
-		name = holy_site_phyrgia_effect_name
- 		fertility = 0.15
+
+	county_holder_character_modifier = {
+		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 komana = { #ma
 	county = c_lycandus
-	character_modifier = {
-		name = holy_site_komana_effect_name
- 		men_at_arms_maintenance = -0.1
+
+	county_holder_character_modifier = {
+		men_at_arms_maintenance = -0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		men_at_arms_maintenance = -0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		men_at_arms_maintenance = -0.005
+		monthly_income_mult = 0.005
 	}
 }
 ibora = { #nane, apparently khaldic? oops
 	county = c_zela
-	character_modifier = {
-		name = holy_site_ibora_effect_name
- 		attacker_advantage = 5
+
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		hills_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
+		controlled_province_advantage = 5
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		controlled_province_advantage = 0.5
+		attacker_advantage = 0.5
 	}
 }
 kadoi = { #attis
 	county = c_hadrianeia
-	character_modifier = {
-		name = holy_site_kadoi_effect_name
-		development_growth_factor = 0.1
+
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		stewardship = 1
+		church_holding_build_gold_cost = -0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		character_travel_speed_mult = 0.01
 	}
 }
 
 #Khaldic
 eriza = { #anahit
 	county = c_satala
-	character_modifier = {
-		name = holy_site_eriza_effect_name
- 		fertility = 0.15
+
+	county_holder_character_modifier = {
+		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 ashtishat = { #vahagn
 	county = c_apahunik
 	barony = b_musch
-	character_modifier = {
-		name = holy_site_ashtishat_effect_name
+
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		hills_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
 		defender_advantage = 5
+		diplomacy = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		defender_advantage = 0.5
+		hills_advantage = 0.5
 	}
 }
 armaouira = { #khaldi
@@ -529,141 +1417,433 @@ armaouira = { #khaldi
 		c_hayk # vanilla CK3
 		c_ayrarat # WtWSMS
 	}
-	character_modifier = {
-		name = holy_site_armaouira_effect_name
- 		tyranny_gain_mult = -0.2
+
+	county_holder_character_modifier = {
+		vassal_opinion = 5
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		monthly_tyranny = -0.1
+		tyranny_gain_mult = -0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		vassal_opinion = 0.5
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 artaxata = { #tir
 	county = c_bagrewand
-	character_modifier = {
-		name = holy_site_artaxata_effect_name
- 		cultural_head_fascination_mult = 0.1
+
+	county_holder_character_modifier = {
+		learning = 1
+		development_growth_factor = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		cultural_head_fascination_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
 	}
 }
 karchakhpyur = { #tsovinar
 	county = c_dvin
-	character_modifier = {
-		name = holy_site_karchakhpyur_effect_name
-		development_growth_factor = 0.1
+
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		stewardship = 1
+		church_holding_build_gold_cost = -0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		character_travel_speed_mult = 0.01
 	}
 }
 
 #Armazic
 gacim = { #armaz
 	county = c_kakheti
-	character_modifier = {
-		name = holy_site_gacim_effect_name
- 		supply_duration = 0.125
- 		levy_reinforcement_rate_same_faith = 0.1
+
+	county_holder_character_modifier = {
+		levy_reinforcement_rate = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_reinforcement_rate = 0.02
+	}
+
+	faith_character_modifier = {
+		levy_reinforcement_rate_same_faith = 0.2
+		supply_duration = 0.125
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		levy_size = 0.005
+		same_faith_opinion = 0.5
 	}
 }
 kamachia = { #ga
 	county = c_shaki
-	character_modifier = {
-		name = holy_site_kamachia_effect_name
- 		fertility = 0.15
+
+	county_holder_character_modifier = {
+		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 leukothea = { #ghmerti
 	county = c_guria
-	character_modifier = {
-		name = holy_site_leukothea_effect_name
- 		tyranny_gain_mult = -0.2
+
+	county_holder_character_modifier = {
+		vassal_opinion = 5
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		monthly_tyranny = -0.1
+		tyranny_gain_mult = -0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		vassal_opinion = 0.5
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 brili = { #dali
 	county = c_svaneti
-	character_modifier = {
-		name = holy_site_brili_effect_name
- 		domain_tax_mult = 0.02
+
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
 	}
 }
 kurus = { #adgilis deda
 	county = c_hereti
-	character_modifier = {
-		name = holy_site_kurus_effect_name
-		development_growth_factor = 0.1
+
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		stewardship = 1
+		church_holding_build_gold_cost = -0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		character_travel_speed_mult = 0.01
 	}
 }
 
 #Heptadic
 cimus = { #goitosyrus
 	county = c_perekop
-	character_modifier = {
-		name = holy_site_cimus_effect_name
- 		cultural_head_fascination_mult = 0.1
+
+	county_holder_character_modifier = {
+		learning = 1
+		development_growth_factor = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		cultural_head_fascination_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
 	}
 }
 tanais = { #thagimasadas
 	county = c_tana
-	character_modifier = {
-		name = holy_site_tanais_effect_name
+
+	county_holder_character_modifier = {
+		light_cavalry_damage_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		county_fertility_growth_mult = 0.01
+	}
+
+	faith_character_modifier = {
 		skirmishers_damage_mult = 0.1
+		light_cavalry_damage_mult = 0.1
+		archer_cavalry_damage_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		light_cavalry_damage_mult = 0.01
+		archer_cavalry_damage_mult = 0.01
 	}
 }
 tmakrat = { #papaios
 	county = c_zichia
-	character_modifier = {
-		name = holy_site_tmakrat_effect_name
- 		domain_tax_mult = 0.02
+
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
 	}
 }
 mykon = { #api #mykon apparently not being converted??
 	county = c_azov
-	character_modifier = {
-		name = holy_site_mykon_effect_name
-		development_growth_factor = 0.1
+
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		stewardship = 1
+		church_holding_build_gold_cost = -0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		character_travel_speed_mult = 0.01
 	}
 }
 recrassia = { #argimpasa
 	county = c_samiran
-	character_modifier = {
-		name = holy_site_recrassia_effect_name
- 		skirmishers_screen_mult = 0.1
+
+	county_holder_character_modifier = {
+		light_cavalry_screen_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		county_fertility_growth_mult = 0.01
+	}
+
+	faith_character_modifier = {
+		skirmishers_screen_mult = 0.1
+		light_cavalry_screen_mult = 0.1
+		archer_cavalry_screen_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		light_cavalry_screen_mult = 0.01
+		archer_cavalry_screen_mult = 0.01
 	}
 }
 
 #Zalmoxian
 tamasidava = { #bendis
 	county = c_stoenesti
-	character_modifier = {
-		name = holy_site_tamasidava_effect_name
-		development_growth_factor = 0.1
+
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		stewardship = 1
+		church_holding_build_gold_cost = -0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		character_travel_speed_mult = 0.01
 	}
 }
 odessos = { #derzelas
 	county = c_mesembria
 	barony = b_varna
-	character_modifier = {
-		name = holy_site_odessos_effect_name
- 		domain_tax_mult = 0.02
+
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
 	}
 }
 kardzhali = { #sabazios
 	county = c_zherkovo
 	barony = b_zherkovo
-	character_modifier = {
-		name = holy_site_kardzhali_effect_name
- 		martial_per_piety_level = 1
+
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
+		martial_per_piety_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.01
+		monthly_piety_gain_mult = 0.01
 	}
 }
 spinopara = { #zibelthiurdos
 	county = c_sredets
-	character_modifier = {
-		name = holy_site_spinopara_effect_name
- 		tyranny_gain_mult = -0.2
+
+	county_holder_character_modifier = {
+		vassal_opinion = 5
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		monthly_tyranny = -0.1
+		tyranny_gain_mult = -0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		vassal_opinion = 0.5
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 buridava = { #only has 4 in the game, so this is the most populous
 	county = c_polovragi
-	character_modifier = {
-		name = holy_site_buridava_effect_name
- 		cultural_head_fascination_mult = 0.1
+
+	county_holder_character_modifier = {
+		learning = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
+		cultural_head_fascination_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		cultural_head_fascination_mult = 0.01
 	}
 }
 
@@ -673,10 +1853,25 @@ german_dublin = { # Caill Tomair (Thor's Grove), near Dublin
 	county = c_dublin
 	barony = b_dublin
 
-	character_modifier = {
-		name = holy_site_german_dublin_effect_name
-		different_faith_opinion = 5
+	county_holder_character_modifier = {
+		county_opinion_add = 3
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		county_opinion_add = 1
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
 		different_culture_opinion = 5
+		different_faith_opinion = 5
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		different_faith_opinion = 0.5
+		different_culture_opinion = 0.5
 	}
 }
 
@@ -684,10 +1879,24 @@ vestisland = { # Helgafell (Holy Mountain), Snæfellsnes Peninsula
 	county = c_vestisland
 	barony = b_vestfirdir
 
-	character_modifier = {
-		name = holy_site_vestisland_effect_name
+	county_holder_character_modifier = {
+		diplomacy = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
 		diplomacy = 1
 		learning = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_piety_gain_mult = 0.01
 	}
 }
 
@@ -695,10 +1904,25 @@ oxfordshire = { # Wayland's Smithy, Ashbury
 	county = c_oxfordshire
 	barony = b_witney
 
-	character_modifier = {
-		name = holy_site_oxfordshire_effect_name
-		martial = 1
+	county_holder_character_modifier = {
+		levy_reinforcement_rate = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_reinforcement_rate = 0.02
+	}
+
+	faith_character_modifier = {
 		levy_reinforcement_rate_same_faith = 0.2
+		martial = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		levy_size = 0.005
+		same_faith_opinion = 0.5
 	}
 }
 
@@ -706,10 +1930,24 @@ skane = { # Uppåkra, Skåne
 	county = c_skane
 	barony = b_lund
 
-	character_modifier = {
-		name = holy_site_skane_effect_name
+	county_holder_character_modifier = {
 		prowess = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		prowess_per_piety_level = 1
 		raid_speed = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		max_loot_mult = 0.01
 	}
 }
 
@@ -717,47 +1955,121 @@ ditmarschen = { # Grove of Baduhenna / Grove of the Semnones, Dithmarschen
 	county = c_ditmarschen
 	barony = b_ditmarschen
 
-	character_modifier = {
-		name = holy_site_ditmarschen_effect_name
+	county_holder_character_modifier = {
+		levy_size = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
 		levy_size = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		levy_size = 0.005
+		levy_reinforcement_rate = 0.01
 	}
 }
 suffolk = {
 	county = c_suffolk
 
-	character_modifier = {
-		name = holy_site_suffolk_effect_name
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
 		martial = 1
 		stewardship = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		mountains_advantage = 0.5
+		levy_size = 0.005
 	}
 }
 staffordshire = {
 	county = c_staffordshire
 	barony = b_stafford
 
-	character_modifier = {
-		name = holy_site_staffordshire_effect_name
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
 		martial_per_piety_level = 1
 		raid_speed = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		max_loot_mult = 0.01
 	}
 }
 hampton = {
 	county = c_hampton
 	barony = b_winchester
-	character_modifier = {
-		name = holy_site_hampton_effect_name
-		monthly_prestige_gain_mult = 0.1
+
+	county_holder_character_modifier = {
+		men_at_arms_maintenance = -0.025
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
 		men_at_arms_maintenance = -0.05
+		monthly_prestige_gain_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		men_at_arms_maintenance = -0.005
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 
 northumberland = {
 	county = c_northumberland
 
-	character_modifier = {
-		name = holy_site_northumberland_effect_name
-		stewardship_per_piety_level = 1
+	county_holder_character_modifier = {
 		fertility = 0.1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		fertility = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		health = 0.01
 	}
 }
 
@@ -765,19 +2077,48 @@ northumberland = {
 zeeland = {
 	county = c_zeeland
 
-	character_modifier = {
-		name = holy_site_zeeland_effect_name
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
 		prowess_per_piety_level = 1
 		supply_duration = 0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		supply_duration = 0.015
+		monthly_income_mult = 0.005
 	}
 }
 lejre = {
 	county = c_sjaelland
 
-	character_modifier = {
-		name = holy_site_lejre_effect_name
-		knight_effectiveness_mult = 0.2
+	county_holder_character_modifier = {
+		knight_effectiveness_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
 		prowess_per_piety_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.015
+		max_loot_mult = 0.01
 	}
 }
 
@@ -786,10 +2127,25 @@ lejre = {
 ## sparta was removed from the base game with BGA. If we want to continue using it, we will need to update it's definitions along with the rest
 sparta = {
 	county = c_laconia
-	character_modifier = {
-		name = holy_site_sparta_effect_name
+
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		defender_holding_advantage = 0.5
+	}
+
+	faith_character_modifier = {
 		martial = 1
-		prowess = 1
+		prowess_per_prestige_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.01
 	}
 }
 
@@ -797,53 +2153,169 @@ ravenna = {
 	county = c_ravenna
 	barony = b_ravenna
 
-	character_modifier = {
-		name = holy_site_ravenna_effect_name
+	county_holder_character_modifier = {
+		fertility = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
 		stewardship_per_piety_level = 1
 		fertility = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
+		development_growth_factor = 0.01
 	}
 }
 prusa = {
 	county = c_prusa
 
-	character_modifier = {
-		name = holy_site_prusa_effect_name
-		monthly_prestige_gain_mult = 0.1
+	county_holder_character_modifier = {
+		men_at_arms_maintenance = -0.025
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
 		men_at_arms_maintenance = -0.05
+		monthly_prestige_gain_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		men_at_arms_maintenance = -0.005
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 
 # from WtWSMS mod
 dyrrachion = {
 	county = c_dyrrachion
-	character_modifier = {
-		cultural_head_fascination_mult = 0.05
+
+	county_holder_character_modifier = {
+		learning = 1
+		development_growth_factor = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		cultural_head_fascination_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
 	}
 }
 venezia = {
 	county = c_venezia
-	character_modifier = {
+
+	county_holder_character_modifier = {
+		development_growth_factor = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		supply_limit_mult = 0.02
+	}
+
+	faith_character_modifier = {
 		development_growth_factor = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		monthly_income_mult = 0.005
 	}
 }
 epeiros = {
 	county = c_epeiros
-	character_modifier = {
+
+	county_holder_character_modifier = {
 		learning = 1
-		life_expectancy = 2
+		life_expectancy = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		life_expectancy = 1
+		monthly_learning_lifestyle_xp_gain_mult = 0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		health = 0.01
+		stress_loss_mult = 0.01
 	}
 }
 senj = {
 	county = c_gacka
 	barony = b_senj
-	character_modifier = {
-		attacker_advantage = 2
+
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		hills_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
+		controlled_province_advantage = 5
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		controlled_province_advantage = 0.5
+		attacker_advantage = 0.5
 	}
 }
 apulia = {
 	county = c_apulia
-	character_modifier = {
+
+	county_holder_character_modifier = {
+		different_faith_opinion = 5
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
 		different_faith_opinion = 10
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		different_faith_opinion = 0.5
+		monthly_income_mult = 0.005
 	}
 }
 
@@ -852,20 +2324,48 @@ popa = {
 	county = c_pagan
 	barony = b_popa
 
-	character_modifier = {
-		name = holy_site_popa_effect_name
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		plains_development_growth_factor = 0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
 		defender_advantage = 5
 		monthly_piety_gain_per_knight_mult = 0.01
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		defender_advantage = 0.5
 	}
 }
 zwegabin = {
 	county = c_thaton
 	# barony = b_hpa_an # IRToCK3: disabled due to b_hpa_an not existing
 
-	character_modifier = {
-		name = holy_site_zwegabin_effect_name
-		fertility = 0.15
+	county_holder_character_modifier = {
+		fertility = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
 		monthly_piety_gain_mult = 0.1
+		fertility = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		fertility = 0.01
 	}
 }
 #myitsone = { # IRToCK3: disabled due to c_guangdang not existing
@@ -882,20 +2382,49 @@ taungbyone = {
     county = c_madaya
 	barony = b_madaya
 
-	character_modifier = {
-		name = holy_site_taungbyone_effect_name
-		supply_duration = 0.2
+	county_holder_character_modifier = {
+		prowess = 2
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
 		prowess_per_piety_level = 1
+		supply_duration = 0.2
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		supply_duration = 0.015
+		monthly_income_mult = 0.005
 	}
 }
 kyaikhtiyo = {
     county = c_thaton
 	barony = b_taikkala
 
-	character_modifier = {
-		name = holy_site_kyaikhtiyo_effect_name
-		development_growth_factor = 0.1
+	county_holder_character_modifier = {
+		clergy_opinion = 5
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		monthly_county_control_growth_factor = 0.01
+	}
+
+	faith_character_modifier = {
 		religious_vassal_opinion = 5
+		sway_scheme_phase_duration_add = minor_scheme_phase_duration_bonus_value
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_lifestyle_xp_gain_mult = 0.01
 	}
 }
 
@@ -903,18 +2432,47 @@ kyaikhtiyo = {
 kordofan = {
 	county = c_kordofan #Nuba heartland at this time
 
-	character_modifier = {
-		name = holy_site_kordofan_effect_name
-		mountains_attrition_mult = -0.3
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
 		mountains_advantage = 5
+		mountains_attrition_mult = -0.3
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		mountains_advantage = 0.5
+		supply_duration = 0.01
 	}
 }
 ayn_farrah = {
 	county = c_ayn_farah #aprox location of Ido Ha - real location is a CK3 wasteland
 
-	character_modifier = {
-		name = holy_site_ayn_farrah_effect_name
-		raid_speed = 0.2
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		martial_per_piety_level = 1
+		raid_speed = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		max_loot_mult = 0.01
 	}
 }
 
@@ -923,29 +2481,73 @@ irtock3_ajivika_sravasti = {
     county = c_sravasti
     barony = b_sravasti
 
-    character_modifier = {
-    	name = holy_site_irtock3_ajivika_sravasti_effect_name
-        development_growth_factor = 0.1
-        stewardship = 1
-    }
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
+		stewardship = 1
+		church_holding_build_gold_cost = -0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		character_travel_speed_mult = 0.01
+	}
 }
 irtock3_ajivika_candhoba = {
     county = c_gwalior
     barony = b_narwar
 
-    character_modifier = {
-    	name = holy_site_irtock3_ajivika_candhoba_effect_name
-     	domain_tax_mult = 0.02
-    }
+	county_holder_character_modifier = {
+		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		tax_mult = 0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		domain_tax_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_income_mult = 0.005
+		development_growth_factor = 0.01
+	}
 }
 irtock3_ajivika_minagana = {
     county = c_mulaka
     barony = b_bhainsa
 
-    character_modifier = {
-    	name = holy_site_irtock3_ajivika_minagana_effect_name
-     	knight_effectiveness_mult = 0.2
-    }
+	county_holder_character_modifier = {
+		knight_effectiveness_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		garrison_size = 0.02
+	}
+
+	faith_character_modifier = {
+		knight_effectiveness_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.015
+	}
 }
 irtock3_ajivika_chintamani = {
     county_choices = {
@@ -954,19 +2556,49 @@ irtock3_ajivika_chintamani = {
     }
     barony = b_nangali
 
-    character_modifier = {
-    	name = holy_site_irtock3_ajivika_chintamani_effect_name
- 		knight_effectiveness_mult = 0.2
-    }
+	county_holder_character_modifier = {
+		knight_effectiveness_mult = 0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		plains_development_growth_factor = 0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
+		knight_effectiveness_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.015
+		coastal_advantage = 0.5
+	}
 }
 irtock3_ajivika_campa = {
     county = c_mudgagiri
     barony = b_campa
 
-    character_modifier = {
-    	name = holy_site_irtock3_ajivika_campa_effect_name
-        same_culture_opinion = 5
-    }
+	county_holder_character_modifier = {
+		same_culture_opinion = 3
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		same_culture_opinion = 5
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		cultural_head_acceptance_gain_mult = 0.015
+		monthly_prestige_gain_mult = 0.01
+	}
 }
 
 # Hattian holy sites from the Bronze Age Mod for CK3
@@ -975,45 +2607,118 @@ hattusha = {
 	county = c_galatia
 	barony = b_tabia
 
-	character_modifier = {
-		name = holy_site_hattusha_effect_name
+	county_holder_character_modifier = {
+		diplomacy = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
 		diplomacy_per_piety_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_piety_gain_mult = 0.01
 	}
 }
 kussara = {
 	county = c_azysia
 	barony = b_karnalis
 
-	character_modifier = {
-		name = holy_site_kussara_effect_name
+	county_holder_character_modifier = {
+		learning = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		epidemic_resistance = 1
+	}
+
+	faith_character_modifier = {
 		learning_per_piety_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_lifestyle_xp_gain_mult = 0.01
 	}
 }
 ankuwa = {
 	county = c_charsianon
 	barony = b_therma
 
-	character_modifier = {
-		name = holy_site_ankuwa_effect_name
+	county_holder_character_modifier = {
+		build_speed = -0.05
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
 		build_speed = -0.15
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_gold_cost = -0.005
+		development_growth_factor = 0.01
 	}
 }
 shappiduwa = {
 	county = c_euchaita
 	barony = b_pimolisa
 
-	character_modifier = {
-		name = holy_site_shappiduwa_effect_name
+	county_holder_character_modifier = {
+		same_culture_opinion = 3
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
 		same_culture_opinion = 5
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		cultural_head_acceptance_gain_mult = 0.015
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 ulma = {
 	county = c_cappadocia
 	barony = b_comitanassus
 
-	character_modifier = {
-		name = holy_site_ulma_effect_name
+	county_holder_character_modifier = {
+		build_gold_cost = -0.025
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_gold_cost = -0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
 		build_gold_cost = -0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_gold_cost = -0.005
+		monthly_income_mult = 0.005
 	}
 }
 
@@ -1023,43 +2728,113 @@ liyan = {
 	county = c_mandestan
 	barony = b_bushkanat
 
-	character_modifier = {
-		name = holy_site_liyan_effect_name
+	county_holder_character_modifier = {
+		diplomacy = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		monthly_county_control_growth_factor = 0.01
+	}
+
+	faith_character_modifier = {
 		diplomacy_per_piety_level = 1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_prestige_gain_mult = 0.01
 	}
 }
 anshan = {
 	county = c_shiraz # Anshan "was located in the Zagros Mountains in southwestern Iran, approximately 46 kilometres (29 mi) north of Shiraz and 43 kilometres (27 mi) west of Persepolis in the Beyza/Ramjerd plain, in the province of Fars."
 
-	character_modifier = {
-		name = holy_site_anshan_effect_name
+	county_holder_character_modifier = {
 		stewardship = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		hostile_raid_time = 0.02
+	}
+
+	faith_character_modifier = {
+		stewardship = 1
+		supply_duration = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		supply_duration = 0.01
 	}
 }
 susan = {
 	county = c_tustar
 	barony = b_as-sus # Susa was also known as "as Sus" - https://iranontour.com/city-attractions/susa/
 
-	character_modifier = {
-		name = holy_site_susan_effect_name
+	county_holder_character_modifier = {
+		martial = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		build_speed = -0.01
+		levy_size = 0.02
+	}
+
+	faith_character_modifier = {
 		martial_per_piety_level = 1
-		knight_effectiveness_mult = 0.1
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		knight_effectiveness_mult = 0.015
 	}
 }
 huhnuri = {
 	county = c_arrajan
 
-	character_modifier = {
-		name = holy_site_huhnuri_effect_name
-		monthly_piety_gain_mult = 0.05
+	county_holder_character_modifier = {
 		learning = 1
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		travel_danger = -1
+	}
+
+	faith_character_modifier = {
+		learning = 1
+		monthly_piety_gain_mult = 0.05
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_piety_gain_mult = 0.01
 	}
 }
 qirbit = {
 	county = c_masabadhan
 
-	character_modifier = {
-		name = holy_site_qirbit_effect_name
+	county_holder_character_modifier = {
+		councillor_opinion = 3
+	}
+
+	county_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		development_growth_factor = 0.01
+		county_opinion_add = 1
+	}
+
+	faith_character_modifier = {
 		councillor_opinion = 5
+	}
+
+	faith_character_modifier_scaled = {
+		scale = holy_site_total_artifact_rarity
+		monthly_prestige_gain_mult = 0.01
 	}
 }
