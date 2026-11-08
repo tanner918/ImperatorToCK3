@@ -77,6 +77,9 @@ internal sealed class ReligionCollection(Title.LandedTitles landedTitles) : IdOb
 
 		// Validation: every faith should have a theism doctrine.
 		ValidateTheismDoctrine(loadedConverterFaiths);
+
+		// Validation: every faith should have a preservation doctrine.
+		ValidatePreservationDoctrine(loadedConverterFaiths);
 	}
 
 	private void ValidateTheismDoctrine(OrderedSet<Faith> loadedConverterFaiths)
@@ -92,6 +95,24 @@ internal sealed class ReligionCollection(Title.LandedTitles landedTitles) : IdOb
 					converterFaith.DoctrineIds.Add(theismFallback);
 				} else {
 					Logger.Warn($"Faith {converterFaith.Id} has no theism doctrine!");
+				}
+			}
+		}
+	}
+
+	private void ValidatePreservationDoctrine(OrderedSet<Faith> loadedConverterFaiths)
+	{
+		string? preservationFallback = DoctrineGroups.TryGetValue("preservation", out var preservationCategory)
+			? preservationCategory.DoctrineIds.FirstOrDefault(d => d == "doctrine_oral_storytelling")
+			: null;
+		foreach (var converterFaith in loadedConverterFaiths) {
+			var preservationDoctrine = converterFaith.GetDoctrineIdsForDoctrineGroupId("preservation");
+			if (preservationDoctrine.Count == 0) {
+				if (preservationFallback is not null) {
+					Logger.Warn($"Faith {converterFaith.Id} has no preservation doctrine! Setting {preservationFallback}");
+					converterFaith.DoctrineIds.Add(preservationFallback);
+				} else {
+					Logger.Warn($"Faith {converterFaith.Id} has no preservation doctrine!");
 				}
 			}
 		}
