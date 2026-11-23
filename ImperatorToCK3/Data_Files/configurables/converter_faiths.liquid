@@ -32,6 +32,9 @@
 # The faiths' religions are defined in converter_religions.liquid. A religion that
 # already exists in the game or in a loaded mod is left untouched.
 
+
+# Pagan Religious Family
+## North-African Religion
 berber_pagan = {
 	INVALIDATED_BY = { berber_pagan amazigh_pagan }
 
@@ -42,10 +45,13 @@ berber_pagan = {
 		reformed_icon = amazigh_eye_01_reformed
 	}
 
-	holy_sites = {
-		shaheded
-		sinifere
+	eminent_holy_sites = {
 		thugga
+		shaheded
+	}
+
+	holy_sites = {
+		sinifere
 		tsabratan
 		thubactis
 	}
@@ -59,32 +65,20 @@ berber_pagan = {
 
 	doctrines = {
 		#Main Group
-		doctrine_no_head
 		doctrine_gender_male_dominated
-		doctrine_pluralism_pluralistic
-		doctrine_theocracy_temporal
 
 		#Marriage
 		doctrine_concubines
-		doctrine_divorce_allowed
-		doctrine_bastardry_legitimization
-		doctrine_consanguinity_cousins
 
 		#Crimes
-		doctrine_homosexuality_shunned
 		doctrine_adultery_men_crime
 		doctrine_adultery_women_crime
 		doctrine_kinslaying_close_kin_crime
-		doctrine_deviancy_crime
-		doctrine_witchcraft_accepted
 
 		#Clerical Functions
 		doctrine_clerical_function_recruitment
-		doctrine_clerical_gender_either
-		doctrine_clerical_marriage_allowed
-		doctrine_clerical_succession_temporal_appointment
 
-		unreformed_faith_doctrine
+		west_african_unreformed_faith_doctrine
 	}
 
 	localization = {
@@ -173,7 +167,6 @@ berber_pagan = {
 		WaterGodHerHis = CHARACTER_HERHIS_HER
 		WaterGodHerHim = CHARACTER_HERHIM_HER
 
-
 		PantheonTerm = paganism_mother_earth_father_sky
 		PantheonTermHasHave = pantheon_term_have
 		GoodGodNames = { ir_gurzil ir_sinifere ir_shaheded ir_nanna_tala ir_tannit }
@@ -190,6 +183,7 @@ berber_pagan = {
 		ReligiousSymbol3 = paganism_religious_symbol_3
 		ReligiousText = paganism_religious_text
 		ReligiousHeadName = paganism_religious_head_title
+		ReligiousHeadNameFemale = paganism_religious_head_title
 		ReligiousHeadTitleName = paganism_religious_head_title_name
 		DevoteeMale = paganism_devotee
 		DevoteeMalePlural = paganism_devoteeplural
@@ -229,6 +223,9 @@ berber_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Scythian Paganism Religion
 scythian_pagan = {
 	INVALIDATED_BY = { scythian_pagan }
 
@@ -239,11 +236,14 @@ scythian_pagan = {
 		reformed_icon = scythian_pagan_reformed
 	}
 
+	eminent_holy_sites = {
+		tmakrat
+		mykon
+	}
+
 	holy_sites = {
 		cimus
 		tanais
-		tmakrat
-		mykon
 		recrassia
 	}
 
@@ -259,6 +259,9 @@ scythian_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Arabian Paganism Religion
 arabic_pagan = {
 	INVALIDATED_BY = { arabic_pagan }
 
@@ -269,12 +272,15 @@ arabic_pagan = {
 		reformed_icon = arabic_pagan_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		mecca
+		taif
+	}
+
+	holy_sites = {
 		badais
 		petra
 		sirwa
-		taif
 	}
 
 	tenets = {
@@ -289,7 +295,10 @@ arabic_pagan = {
 	}
 }
 
-burmic = {
+
+# Pagan Religious Family
+## Burmic Religion
+burmic = { # Folk religions of Burmese peoples; natkokwe (integrated from More Bookmarks+)
 	INVALIDATED_BY = { burmic }
 
 	faith_details = {
@@ -299,13 +308,16 @@ burmic = {
 		reformed_icon = burmic_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		popa
-		zwegabin
-		# holy_site = myitsone # IRToCK3: disabled due to c_guangdang not existing
 		taungbyone
+	}
+
+	holy_sites = {
+		zwegabin
+		# myitsone # IRToCK3: disabled due to c_guangdang not existing
 		kyaikhtiyo
-		#holy_site = barra_basti
+		# barra_basti
 		dagon
 	}
 
@@ -320,26 +332,31 @@ burmic = {
 	}
 }
 
+
+# Pagan Religious Family
+## Kordofan Religion
 egyptian_pagan = {
 	INVALIDATED_BY = { egyptian_pagan }
 
 	faith_details = {
 		religion = kushitism_religion
-		color = rgb { 156 139 7 }
+		color = { 156 139 7 }
 		icon = egyptian_pagan
 		reformed_icon = egyptian_pagan_reformed
 	}
 
-	holy_sites = {
-		memphis
-		taremu
+	eminent_holy_sites = {
 		waset
+		memphis
+	}
+
+	holy_sites = {
+		taremu
 		aswan
 		zawty
 	}
 
 	tenets = {
-		#Generic pagan tenets
 		tenet_astrology
 		tenet_sun_worship
 		tenet_divine_marriage
@@ -353,103 +370,96 @@ egyptian_pagan = {
 	}
 
 	localization = {
-	             GoodGodNames = { ir_anhur ir_resheph ir_sekhmet ir_horus ir_osiris ir_amun ir_ptah ir_anubis ir_hathor ir_isis ir_ra }
-	             EvilGodNames = { ir_anhur ir_resheph ir_sekhmet ir_horus ir_osiris ir_amun ir_ptah ir_anubis ir_hathor ir_isis ir_ra }
+		GoodGodNames = { ir_anhur ir_resheph ir_sekhmet ir_horus ir_osiris ir_amun ir_ptah ir_anubis ir_hathor ir_isis ir_ra }
+		EvilGodNames = { ir_anhur ir_resheph ir_sekhmet ir_horus ir_osiris ir_amun ir_ptah ir_anubis ir_hathor ir_isis ir_ra }
 
-	             PriestMale = kmt_priest
-	             PriestMalePlural = kmt_priests
-	             PriestFemale = kmt_priestess
-	             PriestFemalePlural = kmt_priestesses
-	             PriestNeuter = kmt_priest
-	             PriestNeuterPlural = kmt_priests
-	             AltPriestTermPlural = kmt_priests
-	             BishopMale = kmt_prophet
-	             BishopMalePlural = kmt_prophets
-	             BishopFemale = kmt_prophetess
-	             BishopFemalePlural = kmt_prophetesses
-	             BishopNeuter = kmt_prophet
-	             BishopNeuterPlural = kmt_prophets
-	             DivineRealm = kmt_kingdom_of_osiris
-	             PositiveAfterLife = kmt_kingdom_of_osiris
-	             NegativeAfterLife = kmt_stomach_of_ammit
+		PriestMale = kmt_priest
+		PriestMalePlural = kmt_priests
+		PriestFemale = kmt_priestess
+		PriestFemalePlural = kmt_priestesses
+		PriestNeuter = kmt_priest
+		PriestNeuterPlural = kmt_priests
+		AltPriestTermPlural = kmt_priests
+		BishopMale = kmt_prophet
+		BishopMalePlural = kmt_prophets
+		BishopFemale = kmt_prophetess
+		BishopFemalePlural = kmt_prophetesses
+		BishopNeuter = kmt_prophet
+		BishopNeuterPlural = kmt_prophets
+		DivineRealm = kmt_kingdom_of_osiris
+		PositiveAfterLife = kmt_kingdom_of_osiris
+		NegativeAfterLife = kmt_stomach_of_ammit
 
-	             HighGodName = ir_horus
-	             HighGodNamePossessive = ir_horus_possessive
-	             HighGodNameSheHe = CHARACTER_SHEHE_HE
-	             HighGodHerselfHimself = CHARACTER_HIMSELF
-	             HighGodHerHis = CHARACTER_HERHIS_HIS
-	             HighGodNameAlternate = paganism_high_god_name_alternate
-	             HighGodNameAlternatePossessive = paganism_high_god_name_alternate_possessive
+		HighGodName = ir_horus
+		HighGodNamePossessive = ir_horus_possessive
+		HighGodNameSheHe = CHARACTER_SHEHE_HE
+		HighGodHerselfHimself = CHARACTER_HIMSELF
+		HighGodHerHis = CHARACTER_HERHIS_HIS
+		HighGodNameAlternate = paganism_high_god_name_alternate
+		HighGodNameAlternatePossessive = paganism_high_god_name_alternate_possessive
 
-	             #Creator
-	             CreatorName = ir_amun
-	             CreatorNamePossessive = ir_amun_possessive
-	             CreatorSheHe = CHARACTER_SHEHE_HE
-	             CreatorHerHis = CHARACTER_HERHIS_HIS
-	             CreatorHerHim = CHARACTER_HERHIM_HIM
+		#Creator
+		CreatorName = ir_amun
+		CreatorNamePossessive = ir_amun_possessive
+		CreatorSheHe = CHARACTER_SHEHE_HE
+		CreatorHerHis = CHARACTER_HERHIS_HIS
+		CreatorHerHim = CHARACTER_HERHIM_HIM
 
-	             #HealthGod
-	             HealthGodName = ir_sekhmet
-	             HealthGodNamePossessive = ir_sekhmet_possessive
-	             HealthGodSheHe = CHARACTER_SHEHE_SHE
-	             HealthGodHerHis = CHARACTER_HERHIS_HER
-	             HealthGodHerHim = CHARACTER_HERHIM_HER
+		#HealthGod
+		HealthGodName = ir_sekhmet
+		HealthGodNamePossessive = ir_sekhmet_possessive
+		HealthGodSheHe = CHARACTER_SHEHE_SHE
+		HealthGodHerHis = CHARACTER_HERHIS_HER
+		HealthGodHerHim = CHARACTER_HERHIM_HER
 
-	             #FertilityGod
-	             FertilityGodName = ir_osiris
-	             FertilityGodNamePossessive = ir_osiris_possessive
-	             FertilityGodSheHe = CHARACTER_SHEHE_HE
-	             FertilityGodHerHis = CHARACTER_HERHIS_HIS
-	             FertilityGodHerHim = CHARACTER_HERHIM_HIM
+		#FertilityGod
+		FertilityGodName = ir_osiris
+		FertilityGodNamePossessive = ir_osiris_possessive
+		FertilityGodSheHe = CHARACTER_SHEHE_HE
+		FertilityGodHerHis = CHARACTER_HERHIS_HIS
+		FertilityGodHerHim = CHARACTER_HERHIM_HIM
 
-	             #WealthGod
-	             WealthGodName = ir_ra
-	             WealthGodNamePossessive = ir_ra_possessive
-	             WealthGodSheHe = CHARACTER_SHEHE_HE
-	             WealthGodHerHis = CHARACTER_HERHIS_HIS
-	             WealthGodHerHim = CHARACTER_HERHIM_HIM
+		#WealthGod
+		WealthGodName = ir_ra
+		WealthGodNamePossessive = ir_ra_possessive
+		WealthGodSheHe = CHARACTER_SHEHE_HE
+		WealthGodHerHis = CHARACTER_HERHIS_HIS
+		WealthGodHerHim = CHARACTER_HERHIM_HIM
 
-	             #HouseholdGod
-	             HouseholdGodName = ir_ptah
-	             HouseholdGodNamePossessive = ir_ptah_possessive
-	             HouseholdGodSheHe = CHARACTER_SHEHE_HE
-	             HouseholdGodHerHis = CHARACTER_HERHIS_HIS
-	             HouseholdGodHerHim = CHARACTER_HERHIM_HIM
+		#HouseholdGod
+		HouseholdGodName = ir_ptah
+		HouseholdGodNamePossessive = ir_ptah_possessive
+		HouseholdGodSheHe = CHARACTER_SHEHE_HE
+		HouseholdGodHerHis = CHARACTER_HERHIS_HIS
+		HouseholdGodHerHim = CHARACTER_HERHIM_HIM
 
-	             #FateGod
-	             FateGodName = ir_resheph
-	             FateGodNamePossessive = ir_resheph_possessive
-	             FateGodSheHe = CHARACTER_SHEHE_HE
-	             FateGodHerHis = CHARACTER_HERHIS_HIS
-	             FateGodHerHim = CHARACTER_HERHIM_HIM
+		#FateGod
+		FateGodName = ir_resheph
+		FateGodNamePossessive = ir_resheph_possessive
+		FateGodSheHe = CHARACTER_SHEHE_HE
+		FateGodHerHis = CHARACTER_HERHIS_HIS
+		FateGodHerHim = CHARACTER_HERHIM_HIM
 
-	             #WarGod
-	             WarGodName = ir_anhur
-	             WarGodNamePossessive = ir_anhur_possessive
-	             WarGodSheHe = CHARACTER_SHEHE_HE
-	             WarGodHerHis = CHARACTER_HERHIS_HIS
-	             WarGodHerHim = CHARACTER_HERHIM_HIM
+		#WarGod
+		WarGodName = ir_anhur
+		WarGodNamePossessive = ir_anhur_possessive
+		WarGodSheHe = CHARACTER_SHEHE_HE
+		WarGodHerHis = CHARACTER_HERHIS_HIS
+		WarGodHerHim = CHARACTER_HERHIM_HIM
 
-	             DeathDeityName = ir_anubis
-	             DeathDeityNamePossessive = ir_anubis_possessive
-	             DeathDeitySheHe = CHARACTER_SHEHE_HE
-	             DeathDeityHerHis = CHARACTER_HERHIS_HIS
+		DeathDeityName = ir_anubis
+		DeathDeityNamePossessive = ir_anubis_possessive
+		DeathDeitySheHe = CHARACTER_SHEHE_HE
+		DeathDeityHerHis = CHARACTER_HERHIS_HIS
 
-	             WitchGodName = ir_isis
-	             WitchGodSheHe = CHARACTER_SHEHE_SHE
-	             WitchGodHerHis = CHARACTER_HERHIS_HER
-	             WitchGodHerHim = CHARACTER_HERHIM_HER
+		WitchGodName = ir_isis
+		WitchGodSheHe = CHARACTER_SHEHE_SHE
+		WitchGodHerHis = CHARACTER_HERHIS_HER
+		WitchGodHerHim = CHARACTER_HERHIM_HER
 	}
 }
-
 atenist_pagan = {
 	INVALIDATED_BY = { atenist_pagan }
-
-	holy_order_names = {
-		{ name = "holy_order_children_of_akhenaten" }
-		{ name = "holy_order_protectors_of_amarna" }
-		{ name = "holy_order_swords_of_aten" }
-	}
 
 	faith_details = {
 		religion = kushitism_religion
@@ -458,10 +468,13 @@ atenist_pagan = {
 		reformed_icon = atenist_reformed
 	}
 
-	holy_sites = {
-		bahnasa
-		giza
+	eminent_holy_sites = {
+		bahnasa # Closest to Aten's temple
 		waset
+	}
+
+	holy_sites = {
+		giza
 		aksum
 		sufed
 	}
@@ -475,8 +488,16 @@ atenist_pagan = {
 	doctrines = {
 		unreformed_faith_doctrine
 
+		doctrine_monotheist # Attempt at making Monotheistic religion focused on Aten
+
 		doctrine_pluralism_fundamentalist
 		doctrine_witchcraft_crime
+	}
+
+	holy_order_names = {
+		{ name = "holy_order_children_of_akhenaten" }
+		{ name = "holy_order_protectors_of_amarna" }
+		{ name = "holy_order_swords_of_aten" }
 	}
 
 	localization = {
@@ -564,123 +585,128 @@ atenist_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Hellenism Religion
 eleusinian_mysteries = {
 	INVALIDATED_BY = { eleusinian_mysteries }
 
 	faith_details = {
 		religion = hellenism_religion
-		color = rgb { 209 0 0 }
+		color = { 209 0 0 }
 		icon = eleusinian_mysteries
+	}
+
+	eminent_holy_sites = {
+		athens
+		sparta
 	}
 
 	holy_sites = {
 		rome
 		ravenna
-		athens
-		sparta
 		prusa
 	}
 
 	tenets = {
-		#doctrine = unreformed_faith_doctrine
-
 		tenet_ancestor_worship
 		tenet_communal_identity
 		tenet_esotericism
 	}
 
 	doctrines = {
+		#unreformed_faith_doctrine # Seems this is likely supposed to be an organized faith
+
 		#Main Group
 		doctrine_spiritual_head
 		doctrine_gender_female_dominated
-		doctrine_pluralism_pluralistic
 		doctrine_theocracy_lay_clergy
+
 		#Marriage
 		doctrine_monogamy
-		doctrine_divorce_allowed
-		doctrine_bastardry_legitimization
 		doctrine_consanguinity_cousins
 
 		#Crimes
-		doctrine_homosexuality_accepted
 		doctrine_adultery_men_crime
 		doctrine_adultery_women_crime
-		doctrine_kinslaying_close_kin_crime
 		doctrine_deviancy_accepted
 		doctrine_witchcraft_shunned
 
 		#Clerical Functions
 		doctrine_clerical_function_taxation
 		doctrine_clerical_gender_female_only
-		doctrine_clerical_marriage_allowed
 		doctrine_clerical_succession_temporal_fixed_appointment
+
+		#Preservation
+		doctrine_oral_storytelling # The Mystery Religions were secret, and weren't revealed to outsiders
 	}
 }
-
-mithraic_mysteries = {
+mithraic_mysteries = { # Roman Mithraic Mysteries
 	INVALIDATED_BY = { mithraic_mysteries }
 
 	faith_details = {
 		religion = hellenism_religion
-		color = rgb { 210 0 0 }
+		color = { 210 0 0 }
 		icon = mithraic_mysteries
+	}
+
+	eminent_holy_sites = {
+		takht-e_soleyman
+		takht-i-sangin
 	}
 
 	holy_sites = {
 		# Zoroastrian holy sites
 		yazd
 		nok_kundi
-		takht-i-sangin
-		takht-e_soleyman
 		ushi-darena
 	}
 
 	tenets = {
-		#doctrine = unreformed_faith_doctrine
-
 		tenet_unrelenting_faith
 		tenet_communal_identity
 		tenet_ritual_celebrations
 	}
 
 	doctrines = {
+		#unreformed_faith_doctrine # Seems this is likely supposed to be an organized faith
+
 		#Main Group
-		doctrine_no_head
-		doctrine_gender_male_dominated
-		doctrine_pluralism_pluralistic
 		doctrine_theocracy_lay_clergy
+
 		#Marriage
 		doctrine_monogamy
-		doctrine_divorce_allowed
-		doctrine_bastardry_legitimization
 		doctrine_consanguinity_cousins
 
 		#Crimes
-		doctrine_homosexuality_accepted
 		doctrine_adultery_men_crime
 		doctrine_adultery_women_crime
-		doctrine_kinslaying_close_kin_crime
 		doctrine_deviancy_accepted
 		doctrine_witchcraft_shunned
 
 		#Clerical Functions
 		doctrine_clerical_function_taxation
 		doctrine_clerical_gender_male_only
-		doctrine_clerical_marriage_allowed
 		doctrine_clerical_succession_temporal_fixed_appointment
+
+		#Preservation
+		doctrine_oral_storytelling # The Mystery Religions were secret, and weren't revealed to outsiders
 	}
 
 	localization = {
-	    #High God Name
-	    HighGodName = mithra_name
-	    HighGodNamePossessive = mithra_possessive
-	    HighGodNameSheHe = CHARACTER_SHEHE_HE
-	    HighGodHerselfHimself = CHARACTER_HIMSELF
-	    HighGodHerHis = CHARACTER_HERHIS_HIS
+		#High God Name
+		HighGodName = mithra_name
+		HighGodNamePossessive = mithra_possessive
+		HighGodNameSheHe = CHARACTER_SHEHE_HE
+		HighGodHerselfHimself = CHARACTER_HIMSELF
+		HighGodHerHis = CHARACTER_HERHIS_HIS
 	}
 }
 
-mithra_religion = {
+
+# Eastern Religious Family
+## Zoroastrianism Religion
+mithra_religion = { # Iranian cult of Mithra
 	{% if tfe %}
 	# Exists in TFE as kitebacilweism (they reused the vanilla ID to represent "Mehrism/West Iranic paganism from RICE").
 	INVALIDATED_BY = { kitebacilweism }
@@ -691,67 +717,59 @@ mithra_religion = {
 
 	faith_details = {
 		religion = zoroastrianism_religion
-		color = rgb { 210 0 0 }
-		icon = mithraic_mysteries
-		religious_head = d_mazdayasna
+		color = { 210 0 0 }
+		icon = mithraic_mysteries # Should get its own icon
+		religious_head = d_mazdayasna #actually The Magi
+	}
+
+	eminent_holy_sites = {
+		takht-e_soleyman
+		takht-i-sangin
 	}
 
 	holy_sites = {
 		# Zoroastrian holy sites
+		yazd
 		adur_burzen_mihr
 		adur_farnbag
-		takht-e_soleyman
-		takht-i-sangin
-		yazd
 	}
 
 	tenets = {
-		#Doctrine
 		tenet_communal_identity
 		tenet_sun_worship
 		tenet_adaptive
 	}
 
 	doctrines = {
+		#unreformed_faith_doctrine # Not sure if this is supposed to be unreformed or not
+
 		#Main Group
 		doctrine_spiritual_head
-		doctrine_gender_male_dominated
 		doctrine_pluralism_pluralistic
-		doctrine_theocracy_temporal
 		doctrine_major_branch_behdin
+
 		#Marriage
-		doctrine_concubines
-		doctrine_divorce_approval
-		doctrine_bastardry_none
 		doctrine_consanguinity_unrestricted
 
 		#Crimes
-		doctrine_homosexuality_crime
-		doctrine_adultery_men_shunned
-		doctrine_adultery_women_shunned
 		doctrine_kinslaying_close_kin_crime
-		doctrine_deviancy_shunned
-		doctrine_witchcraft_shunned
-
-		#Clerical Functions
-		doctrine_clerical_function_taxation
-		doctrine_clerical_gender_male_only
-		doctrine_clerical_marriage_allowed
-		doctrine_clerical_succession_temporal_fixed_appointment
 	}
 
 	localization = {
-	    #High God Name
-	    HighGodName = mithra_name
-	    HighGodNamePossessive = mithra_possessive
-	    HighGodNameSheHe = CHARACTER_SHEHE_HE
-	    HighGodHerselfHimself = CHARACTER_HIMSELF
-	    HighGodHerHis = CHARACTER_HERHIS_HIS
+		#High God Name
+		HighGodName = mithra_name
+		HighGodNamePossessive = mithra_possessive
+		HighGodNameSheHe = CHARACTER_SHEHE_HE
+		HighGodHerselfHimself = CHARACTER_HIMSELF
+		HighGodHerHis = CHARACTER_HERHIS_HIS
 	}
 }
 
-norse_pagan = {
-	INVALIDATED_BY = { norse_pagan }
+
+# Pagan Religious Family
+## Norse (~Germanic) Religion
+norse_pagan = { # ImperatorToCK3 updated (~tanner918: Not sure exactly what game version this originated from, in case any other changes need to be made)
+	INVALIDATED_BY = { norse_pagan } # If this is meant to replace the base game's definition, this should be removed
 
 	reserved_male_names = {
 		Anund Asbjörn Aslak Audun Bagge Balder Brage Egil Emund Frej Gnupa Gorm Gudmund Gudröd Hardeknud Helge Odd Orm
@@ -770,6 +788,7 @@ norse_pagan = {
 		{ name = "holy_order_chosen_of_freyja" }
 	}
 
+	main_rite = norse_pagan
 	faith_details = {
 		religion = germanic_religion
 		color = rgb { 102 102 102 }
@@ -777,18 +796,21 @@ norse_pagan = {
 		reformed_icon = germanic_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		uppsala
-		skane
-		jorvik
 		ranaheim
+	}
+
+	holy_sites = {
+		jorvik
+		skane
 		vestisland
 	}
 
 	tenets = {
 		tenet_warmonger
 		tenet_ritual_hospitality
-		tenet_ancestor_worship
+		tenet_ancestor_worship # Should this be changed to tenet_bhakti?
 	}
 
 	doctrines = {
@@ -807,23 +829,45 @@ norse_pagan = {
 		unreformed_faith_doctrine
 	}
 }
-
 germanic_pagan = {
 	INVALIDATED_BY = { germanic_pagan }
-	# Gruesome Festivals, else Human Sacrifice.
 
+	faith_details = {
+		religion = germanic_religion
+		color = rgb { 153 153 153 }
+		icon = saxon
+		reformed_icon = saxon_reformed
+	}
+
+	eminent_holy_sites = {
+		paderborn
+		ditmarschen
+	}
+
+	holy_sites = {
+		oxfordshire
+		lejre
+		zeeland
+	}
+
+	tenets = {
+		tenet_sanctity_of_nature
+	}
+	# Gruesome Festivals, else Human Sacrifice.
 	tenet_selection_pair = {
 		requires_dlc_flag = the_northern_lords
 		tenet = tenet_gruesome_festivals
 		fallback_tenet = tenet_human_sacrifice
 	}
-
 	# Bhakti, else Ancestor Worship.
-
 	tenet_selection_pair = {
 		requires_dlc_flag = the_northern_lords
 		tenet = tenet_bhakti
 		fallback_tenet = tenet_ancestor_worship
+	}
+
+	doctrines = {
+		unreformed_faith_doctrine
 	}
 
 	reserved_male_names = {
@@ -831,7 +875,6 @@ germanic_pagan = {
 		Hengest Hoger Immed Odo Ordulf Sigbert Sigfrid Sigward Thankmar Theoderic Theodoric
 		Thimo Tymmeke Udo Volkwin Volrad Wichbert Wichmann Wicho Widukind Wigebert Wilbrand
 	}
-
 	reserved_female_names = {
 		Alof Bertha Bithild Diedke Enda Frederuna Gertrud Glismod Hrothwina Ida Imma Irmgard
 		Irminburg Oda Othelindis Suanhilde Theodrada Thiedburga Wienke Wiltrud Wulfhild
@@ -842,29 +885,6 @@ germanic_pagan = {
 		{ name = "holy_order_servants_of_seaxneat" }
 		{ name = "holy_order_donars_bannermen" }
 		{ name = "holy_order_army_of_widukind" }
-	}
-
-	faith_details = {
-		religion = germanic_religion
-		color = rgb { 153 153 153 }
-		icon = saxon
-		reformed_icon = saxon_reformed
-	}
-
-	holy_sites = {
-		oxfordshire
-		lejre
-		paderborn
-		zeeland
-		ditmarschen
-	}
-
-	tenets = {
-		tenet_sanctity_of_nature
-	}
-
-	doctrines = {
-		unreformed_faith_doctrine
 	}
 
 	localization = {
@@ -944,20 +964,8 @@ germanic_pagan = {
 		EvilGodNames = { saxon_evil_god_tuisto saxon_evil_god_seaxneat saxon_evil_god_sinthgunt saxon_evil_god_sandraudiga saxon_evil_god_alcis saxon_evil_god_tamfana saxon_evil_god_inguin }
 	}
 }
-
 anglo_pagan = {
 	INVALIDATED_BY = { anglo_pagan }
-
-	reserved_male_names = {
-		Arncytel Balthere Beorhtfrith Beorhthelm BeorhtmE_r Beowulf Cenwulf Ceolwulf Thunrolf
-		E_lfgar E_lfmE_r E_lfnoth E_lfric E_lfrE_d E_lfsige E_lfstan E_lfwald E_lfweard E_lfwig E_lfwine E_lle
-		E_thelbald E_thelberht E_thelfrith E_thelhere E_thelmE_r E_thelric E_thelrE_d E_thelsige E_thelstan
-		E_thelweald E_thelweard E_thelwine E_thelwold E_thelwulf
-	}
-
-	reserved_female_names = {
-		Balthild Frige Grimma Gunhilda Gytha Margaret Sigrid SE_thryth Thunra Wulfhild E_lfflE_d E_lfgifu E_lfgyth E_lflE_da E_lfrida E_lfswith E_lfthryth E_lfwynn
-	}
 
 	faith_details = {
 		religion = germanic_religion
@@ -966,11 +974,14 @@ anglo_pagan = {
 		reformed_icon = anglosaxon_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
+		jorvik
 		suffolk
+	}
+
+	holy_sites = {
 		staffordshire
 		hampton
-		jorvik
 		middlesex
 	}
 
@@ -981,33 +992,21 @@ anglo_pagan = {
 	}
 
 	doctrines = {
-		#Main Group
-		doctrine_no_head
-		doctrine_gender_male_dominated
-		doctrine_pluralism_pluralistic
-		doctrine_theocracy_temporal
-
-		#Marriage
-		doctrine_concubines
-		doctrine_divorce_allowed
-		doctrine_bastardry_legitimization
-		doctrine_consanguinity_cousins
+		unreformed_faith_doctrine
 
 		#Crimes
-		doctrine_homosexuality_crime
 		doctrine_adultery_men_shunned
-		doctrine_adultery_women_crime
-		doctrine_kinslaying_close_kin_crime
-		doctrine_deviancy_crime
 		doctrine_witchcraft_accepted
+	}
 
-		#Clerical Functions
-		doctrine_clerical_function_recruitment
-		doctrine_clerical_gender_either
-		doctrine_clerical_marriage_allowed
-		doctrine_clerical_succession_temporal_appointment
-
-		unreformed_faith_doctrine
+	reserved_male_names = {
+		Arncytel Balthere Beorhtfrith Beorhthelm BeorhtmE_r Beowulf Cenwulf Ceolwulf Thunrolf
+		E_lfgar E_lfmE_r E_lfnoth E_lfric E_lfrE_d E_lfsige E_lfstan E_lfwald E_lfweard E_lfwig E_lfwine E_lle
+		E_thelbald E_thelberht E_thelfrith E_thelhere E_thelmE_r E_thelric E_thelrE_d E_thelsige E_thelstan
+		E_thelweald E_thelweard E_thelwine E_thelwold E_thelwulf
+	}
+	reserved_female_names = {
+		Balthild Frige Grimma Gunhilda Gytha Margaret Sigrid SE_thryth Thunra Wulfhild E_lfflE_d E_lfgifu E_lfgyth E_lflE_da E_lfrida E_lfswith E_lfthryth E_lfwynn
 	}
 
 	localization = {
@@ -1135,6 +1134,9 @@ anglo_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Nilotic Religion
 dinka_pagan = {
 	INVALIDATED_BY = { dinka_pagan }
 
@@ -1145,9 +1147,12 @@ dinka_pagan = {
 		reformed_icon = dinka_reformed
 	}
 
+	eminent_holy_sites = {
+		kordofan #Nuba medieval heartland
+		sennar #Dinka medeival heartland
+	}
+
 	holy_sites = {
-		kordofan
-		sennar
 		garumele
 		ayn_farrah
 		wandala
@@ -1164,6 +1169,9 @@ dinka_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Anatolian Paganism Religion
 anatolian_pagan = {
 	INVALIDATED_BY = { anatolian_pagan }
 
@@ -1174,16 +1182,18 @@ anatolian_pagan = {
 		reformed_icon = anatolian_pagan_reformed
 	}
 
+	eminent_holy_sites = {
+		phyrgia
+		ibora
+	}
+
 	holy_sites = {
 		men
-		phyrgia
 		komana
-		ibora
 		kadoi
 	}
 
 	tenets = {
-		#Generic pagan tenets
 		tenet_mystical_birthright
 		tenet_ancestor_worship
 		tenet_sacred_childbirth
@@ -1194,6 +1204,9 @@ anatolian_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Armenian Paganism Religion
 armenian_pagan = {
 	INVALIDATED_BY = { armenian_pagan }
 
@@ -1204,9 +1217,12 @@ armenian_pagan = {
 		reformed_icon = armenian_pagan_reformed
 	}
 
-	holy_sites = {
-		eriza
+	eminent_holy_sites = {
 		ashtishat
+		eriza
+	}
+
+	holy_sites = {
 		armaouira
 		artaxata
 		karchakhpyur
@@ -1224,6 +1240,9 @@ armenian_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Phoenician Paganism Religion
 canaanite_pagan = {
 	INVALIDATED_BY = { canaanite_pagan carthage_pagan }
 
@@ -1234,16 +1253,18 @@ canaanite_pagan = {
 		reformed_icon = canaanite_pagan_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
+		tyre
 		carthage
+	}
+
+	holy_sites = {
 		elagabal
 		ahiram
-		tyre
 		mabbog
 	}
 
 	tenets = {
-		#Generic pagan tenets
 		tenet_astrology
 		tenet_ancestor_worship
 		tenet_human_sacrifice
@@ -1254,6 +1275,9 @@ canaanite_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Caucasian Paganism Religion
 caucasian_pagan = {
 	INVALIDATED_BY = { caucasian_pagan }
 
@@ -1264,10 +1288,13 @@ caucasian_pagan = {
 		reformed_icon = caucasian_pagan_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		gacim
-		kamachia
 		leukothea
+	}
+
+	holy_sites = {
+		kamachia
 		brili
 		kurus
 	}
@@ -1284,7 +1311,10 @@ caucasian_pagan = {
 	}
 }
 
-celtic_pagan = {
+
+# Pagan Religious Family
+## Celtic Paganism Religion
+celtic_pagan = { # Generic Celtic Fallback
 	INVALIDATED_BY = { celtic_pagan }
 
 	faith_details = {
@@ -1294,16 +1324,18 @@ celtic_pagan = {
 		reformed_icon = celtic_pagan_reformed
 	}
 
-	holy_sites = {
-		ynys_mon
+	eminent_holy_sites = {
 		stonehenge
-		tlachtgha
-		glanum
 		bibracte
 	}
 
+	holy_sites = {
+		ynys_mon
+		tlachtgha
+		glanum
+	}
+
 	tenets = {
-		#Generic pagan tenets
 		tenet_esotericism
 		tenet_human_sacrifice
 		tenet_sanctity_of_nature
@@ -1313,7 +1345,6 @@ celtic_pagan = {
 		unreformed_faith_doctrine
 	}
 }
-
 briton_paganism = {
 	INVALIDATED_BY = { briton_paganism }
 
@@ -1324,10 +1355,13 @@ briton_paganism = {
 		reformed_icon = briton_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		stonehenge
-		ceredigion
 		norfolk
+	}
+
+	holy_sites = {
+		ceredigion
 		moray
 		middlesex
 	}
@@ -1496,7 +1530,6 @@ briton_paganism = {
 		GHWNamePlural = ghw_great_holy_wars
 	}
 }
-
 gallic_celtic = {
 	INVALIDATED_BY = { gallic_celtic }
 
@@ -1507,9 +1540,12 @@ gallic_celtic = {
 		reformed_icon = gaulish_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		auvergne
 		paris
+	}
+
+	holy_sites = {
 		brugge
 		poitou
 		toulouse
@@ -1679,7 +1715,6 @@ gallic_celtic = {
 		GHWNamePlural = ghw_great_holy_wars
 	}
 }
-
 gaelic_paganism = {
 	INVALIDATED_BY = { gaelic_paganism }
 
@@ -1690,10 +1725,13 @@ gaelic_paganism = {
 		reformed_icon = gaelic_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		celtic_dublin
-		thomond
 		connacht
+	}
+
+	holy_sites = {
+		thomond
 		galloway
 		mann
 	}
@@ -1862,7 +1900,6 @@ gaelic_paganism = {
 		GHWNamePlural = ghw_great_holy_wars
 	}
 }
-
 celtiberian_paganism = {
 	INVALIDATED_BY = { celtiberian_paganism }
 
@@ -1873,11 +1910,14 @@ celtiberian_paganism = {
 		reformed_icon = celtiberian_reformed
 	}
 
+	eminent_holy_sites = {
+		valencia
+		toledo
+	}
+
 	holy_sites = {
 		zaragoza
 		coruna
-		valencia
-		toledo
 		algeciras
 	}
 
@@ -2046,6 +2086,9 @@ celtiberian_paganism = {
 	}
 }
 
+
+# Pagan Religious Family
+## Animism (Iberic) Religion
 iberian_pagan = {
 	INVALIDATED_BY = { iberian_pagan }
 
@@ -2056,11 +2099,14 @@ iberian_pagan = {
 		reformed_icon = iberian_pagan_reformed
 	}
 
+	eminent_holy_sites = {
+		bravum
+		salaria
+	}
+
 	holy_sites = {
 		chimaera
-		salaria
 		aeso
-		bravum
 		myrtilis
 	}
 
@@ -2076,53 +2122,33 @@ iberian_pagan = {
 	}
 }
 
-makkhalist = {
+
+# Eastern Religious Family
+## Ajivika Religion (Should these be made Rites of a single Faith?)
+makkhalist = { # Makkhalism (North East India / Pracyan Group)
 	INVALIDATED_BY = { makkhalist }
 
 	faith_details = {
 		religion = ajivika_religion
-		color = rgb { 131 180 65 }
+		color = { 131 180 65 }
+		icon = makkhalist
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		irtock3_ajivika_sravasti
-		irtock3_ajivika_candhoba
-		irtock3_ajivika_minagana
-		irtock3_ajivika_chintamani
 		irtock3_ajivika_campa
 	}
 
+	holy_sites = {
+		irtock3_ajivika_candhoba
+		irtock3_ajivika_minagana
+		irtock3_ajivika_chintamani
+	}
+
 	tenets = {
-		# Tenets: Asceticism, Dharmic Pacifism, Inner Journey
 		tenet_asceticism
 		tenet_dharmic_pacifism
 		tenet_inner_journey
-	}
-
-	doctrines = {
-		# Gender Views: Male dominated
-		doctrine_gender_male_dominated
-
-		# Religious Attitude: Fundamentalist or Righteous
-		doctrine_pluralism_fundamentalist
-
-		# Clerical tradition: Lay Clergy
-		doctrine_theocracy_lay_clergy
-
-		# Head of Faith: None
-		doctrine_no_head
-
-		# Naked Priests: Yes
-		special_doctrine_naked_priests
-
-		# Marriage: Poly
-		doctrine_polygamy
-		# Divorce: Always
-		doctrine_divorce_allowed
-		# Bastardy: Legit
-		doctrine_bastardry_legitimization
-		# Incest: Avunculate
-		doctrine_consanguinity_aunt_nephew_and_uncle_niece
 	}
 
 	localization = {
@@ -2130,54 +2156,30 @@ makkhalist = {
 		KnowledgeGodNamePossessive = makhallist_knowledge_god_name_possessive
 	}
 }
-
-nandanist = {
+nandanist = {  # Nandanism (North West India / Indo-Aryan Group)
 	INVALIDATED_BY = { nandanist }
 
 	faith_details = {
 		religion = ajivika_religion
-		color = rgb { 227 138 70 }
+		color = { 227 138 70 }
+		icon = nandanist
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		irtock3_ajivika_sravasti
-		irtock3_ajivika_candhoba
-		irtock3_ajivika_minagana
-		irtock3_ajivika_chintamani
 		irtock3_ajivika_campa
 	}
 
+	holy_sites = {
+		irtock3_ajivika_candhoba
+		irtock3_ajivika_minagana
+		irtock3_ajivika_chintamani
+	}
+
 	tenets = {
-		# Tenets: Asceticism, Esotericism, Monasticism
 		tenet_asceticism
 		tenet_esotericism
 		tenet_monasticism
-	}
-
-	doctrines = {
-		# Gender Views: Male dominated
-		doctrine_gender_male_dominated
-
-		# Religious Attitude: Fundamentalist or Righteous
-		doctrine_pluralism_fundamentalist
-
-		# Clerical tradition: Lay Clergy
-		doctrine_theocracy_lay_clergy
-
-		# Head of Faith: None
-		doctrine_no_head
-
-		# Naked Priests: Yes
-		special_doctrine_naked_priests
-
-		# Marriage: Poly
-		doctrine_polygamy
-		# Divorce: Always
-		doctrine_divorce_allowed
-		# Bastardy: Legit
-		doctrine_bastardry_legitimization
-		# Incest: Avunculate
-		doctrine_consanguinity_aunt_nephew_and_uncle_niece
 	}
 
 	localization = {
@@ -2185,54 +2187,36 @@ nandanist = {
 		KnowledgeGodNamePossessive = nandanist_knowledge_god_name_possessive
 	}
 }
-
-puranist = {
+puranist = {  # Puranism (South India / Dravidian Group)
 	INVALIDATED_BY = { puranist }
 
 	faith_details = {
 		religion = ajivika_religion
-		color = rgb { 193 133 162 }
+		color = { 193 133 162 }
+		icon = puranist
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
 		irtock3_ajivika_sravasti
-		irtock3_ajivika_candhoba
-		irtock3_ajivika_minagana
-		irtock3_ajivika_chintamani
 		irtock3_ajivika_campa
 	}
 
+	holy_sites = {
+		irtock3_ajivika_candhoba
+		irtock3_ajivika_minagana
+		irtock3_ajivika_chintamani
+	}
+
 	tenets = {
-		# Tenets: Asceticism, Native Primitivism, Ritual Hospitality/Puja
 		tenet_asceticism
 		tenet_natural_primitivism
 		tenet_ritual_hospitality
 	}
 
 	doctrines = {
-		# Gender Views: Equal
 		doctrine_gender_equal
-
-		# Religious Attitude: Righteous
 		doctrine_pluralism_righteous
-
-		# Clerical Tradition: Theocratic
 		doctrine_theocracy_temporal
-
-		# Head of Faith: None
-		doctrine_no_head
-
-		# Naked Priests: Yes
-		special_doctrine_naked_priests
-
-		# Marriage: Poly
-		doctrine_polygamy
-		# Divorce: Always
-		doctrine_divorce_allowed
-		# Bastardy: Legit
-		doctrine_bastardry_legitimization
-		# Incest: Avunculate
-		doctrine_consanguinity_aunt_nephew_and_uncle_niece
 	}
 
 	localization = {
@@ -2241,26 +2225,31 @@ puranist = {
 	}
 }
 
+
+# Pagan Religious Family
+## Mesopotamian Paganism Religion
 mesopotamian_pagan = {
 	INVALIDATED_BY = { mesopotamian_pagan }
 
 	faith_details = {
 		religion = mesopotamian_religion
-		color = rgb { 39 38 109 }
+		color = { 39 38 109 }
 		icon = mesopotamian_pagan
 		reformed_icon = mesopotamian_pagan_reformed
 	}
 
-	holy_sites = {
-		babylon
-		borsippa
+	eminent_holy_sites = {
 		uruk
+		babylon
+	}
+
+	holy_sites = {
+		borsippa
 		ashur
 		harranu
 	}
 
 	tenets = {
-		#Generic pagan tenets
 		tenet_astrology
 		tenet_ritual_celebrations
 		tenet_sun_worship
@@ -2271,6 +2260,9 @@ mesopotamian_pagan = {
 	}
 }
 
+
+# Pagan Religious Family
+## Paleo-Balkan Religion
 dacian_pagan = {
 	INVALIDATED_BY = { dacian_pagan }
 
@@ -2281,12 +2273,15 @@ dacian_pagan = {
 		reformed_icon = balkanic_pagan_reformed
 	}
 
-	holy_sites = {
+	eminent_holy_sites = {
+		buridava
 		tamasidava
+	}
+
+	holy_sites = {
 		odessos
 		kardzhali
 		spinopara
-		buridava
 	}
 
 	tenets = {
@@ -2300,8 +2295,7 @@ dacian_pagan = {
 		unreformed_faith_doctrine
 	}
 }
-
-illyrian_pagan = {
+illyrian_pagan = { # from WtWSMS mod
 	INVALIDATED_BY = { illyrian_pagan }
 
 	faith_details = {
@@ -2311,17 +2305,19 @@ illyrian_pagan = {
 		reformed_icon = illyrian_pagan_reformed
 	}
 
+	eminent_holy_sites = {
+		senj
+		dyrrachion
+	}
+
 	holy_sites = {
 		#WtWSMS Sites: epeiros, dyrrachion, venezia, senj, apulia
 		epeiros
-		dyrrachion
 		venezia
-		senj
 		apulia
 	}
 
 	tenets = {
-		#Tenets
 		tenet_sanctity_of_nature
 		tenet_ritual_celebrations
 		tenet_ancestor_worship
@@ -2433,7 +2429,10 @@ illyrian_pagan = {
 	}
 }
 
-hurrian = {
+
+# Pagan Religious Family
+## Hurrian Religion
+hurrian = {  # cult_of_teshub in Bronze Age mod
 	INVALIDATED_BY = { hurrian }
 
 	faith_details = {
@@ -2443,17 +2442,19 @@ hurrian = {
 		reformed_icon = hurrian_reformed
 	}
 
+	eminent_holy_sites = {
+		uruk
+		babylon
+	}
+
 	holy_sites = {
 		# IRToCK3: Holy sites copied from mesopotamian_pagan, this "Hurrian" is revivalist anyway.
-		babylon
 		borsippa
-		uruk
 		ashur
 		harranu
 	}
 
 	tenets = {
-		# IRToCK3: Generic pagan tenets, copied from mesopotamian_pagan
 		tenet_astrology
 		tenet_ritual_celebrations
 		tenet_sun_worship
@@ -2464,21 +2465,28 @@ hurrian = {
 	}
 }
 
-hattian_faith = {
-	# religious_head = d_cult_of_teteshapi # IRToCK3: commented out because we don't need a HoF landed title
+
+# Pagan Religious Family
+## Hattian Religion
+hattian_faith = { # From Bronze Age Reborn mod
+	INVALIDATED_BY = { hattian_faith }
 
 	faith_details = {
 		religion = hattian_religion
 		color = hsv { 0.02 0.35 0.5 }
-		icon = kitebacilweism
+		# religious_head = d_cult_of_teteshapi # IRToCK3: commented out because we don't need a HoF landed title
+		icon = kitebacilweism # Should get its own icon
+	}
+
+	eminent_holy_sites = {
+		hattusha
+		ulma
 	}
 
 	holy_sites = {
-		ulma
 		shappiduwa
 		ankuwa
 		kussara
-		hattusha
 	}
 
 	tenets = {
@@ -2488,18 +2496,26 @@ hattian_faith = {
 	}
 }
 
-elamite_faith = {
+
+# Pagan Religious Family
+## Elamite Religion
+elamite_faith = { # from Bronze Age Reborn mod
+	INVALIDATED_BY = { elamite_faith }
+
 	faith_details = {
 		religion = elamite_religion
 		color = hsv { 0.17 0.40 0.81 }
-		icon = zunist
+		icon = zunist # Should get its own icon
 		religious_head = d_cult_of_humban
+	}
+
+	eminent_holy_sites = {
+		anshan
+		susan
 	}
 
 	holy_sites = {
 		liyan
-		anshan
-		susan
 		huhnuri
 		qirbit
 	}
@@ -2511,25 +2527,25 @@ elamite_faith = {
 	}
 }
 
+
+# Sinitic Religious Family
+## Shenic Religion
 shenic = {
 	INVALIDATED_BY = { shendao shenic }
 
-	tenet_selection_pair = {
-		requires_dlc_flag = all_under_heaven
-		tenet = tenet_harmonious_society
-		fallback_tenet = tenet_adaptive
-	}
-
 	faith_details = {
 		religion = chinese_religion
-		color = rgb { 255 163 26 }
+		color = { 255 163 26 }
 		icon = custom_faith_benzhuism
 		reformed_icon = shenic_reformed
 	}
 
-	holy_sites = {
-		chang_an
+	eminent_holy_sites = {
 		mount_tai
+		luoyang
+	}
+
+	holy_sites = {
 		mount_wudang
 		qufu
 		bianliang
@@ -2539,30 +2555,39 @@ shenic = {
 		tenet_ancestor_worship
 		tenet_inner_journey
 	}
+	tenet_selection_pair = {
+		requires_dlc_flag = all_under_heaven
+		tenet = tenet_harmonious_society
+		fallback_tenet = tenet_adaptive
+	}
 
 	doctrines = {
 		unreformed_faith_doctrine
-
-		#Clerical Functions
 		doctrine_clerical_function_taxation
 	}
 }
 
+
+# Sinitic Religious Family
+## Confucian Religion
 mohism = {
 	INVALIDATED_BY = { mohism }
 
 	faith_details = {
 		religion = confucianism_religion
-		color = rgb { 207 141 171 }
+		color = { 207 141 171 }
 		icon = mohism
+	}
+
+	eminent_holy_sites = {
+		qufu
+		chang_an
 	}
 
 	holy_sites = {
 		bianliang
-		qufu
 		luoyang
 		mount_longhu
-		chang_an
 	}
 
 	tenets = {
@@ -2572,22 +2597,28 @@ mohism = {
 	}
 }
 
+
+# Pagan Religious Family
+## Baiyue Religion
 baiyue_faith = {
 	INVALIDATED_BY = { baiyue_faith }
 
 	faith_details = {
 		religion = baiyue_religion
-		color = rgb { 13 59 127 }
+		color = { 13 59 127 }
 		icon = baiyue
 		reformed_icon = baiyue_reformed
+	}
+
+	eminent_holy_sites = {
+		daozhou
+		nanning
 	}
 
 	holy_sites = {
 		# Hard to tell what would actually be good sites, so just chose an assortment of existing Holy Sites around south China
 		quanzhou
 		yangtze
-		daozhou
-		nanning
 		hangzhou
 	}
 
@@ -2601,8 +2632,13 @@ baiyue_faith = {
 		unreformed_faith_doctrine
 	}
 }
-{% if tfe %}
 
+
+
+
+{% if tfe %}
+# The below faiths are mainly being defined here because TFE copied the base game faith changes after AUH, but didn't remove the out-of-scope holy sites, causing some errors while converting. These are mainly to get rid of those errors by replacing those out-of-scope holy sites with their older in-scope sites.
+## These should be updated as TFE is updated. (They were originally the 1.19 definitions so haven't been fully updated for BGA. But, because TFE hasn't been updated for BGA, we don't know if thir making more in-scope, which would change some of the listed holy sites.)
 mahayana = {
 	faith_details = {
 		religion = buddhism_religion
@@ -2611,9 +2647,9 @@ mahayana = {
 	}
 
 	holy_sites = {
-		kusinagara
+		kusinagara # Changed from borobudur in TFE
 		bodh_gaya
-		sarnath
+		sarnath # Changed from bayon in TFE
 		sanchi
 		amaravati
 	}
@@ -2633,10 +2669,10 @@ vajrayana = {
 	}
 
 	holy_sites = {
-		kusinagara
+		kusinagara # Changed from muara_takus in TFE
 		bodh_gaya
 		sarnath
-		sanchi
+		sanchi # Changed from kalasan in TFE
 		ajanta
 	}
 
@@ -2725,135 +2761,6 @@ vajrayana = {
 	}
 }
 
-manichean = {
-	faith_details = {
-		religion = dualism_religion
-		color = rgb { 128 178 102 }
-		religious_head = d_manichean
-		icon = manichean
-	}
-
-	holy_sites = {
-		ahvaz
-		yijinai_irtock3_tfe
-		khotan
-		jerusalem
-		samarkand
-		udabhanda
-		lyon
-	}
-
-	tenets = {
-		tenet_mendicant_preachers
-		tenet_adaptive
-		tenet_esotericism
-	}
-
-	localization = { # Manichean/Priscillianism Gods
-		#HighGodName
-		HighGodName = manicheanism_high_god_name
-		HighGodName2 = manicheanism_high_god_name_2
-		HighGodNamePossessive = manicheanism_high_god_name_possessive
-		HighGodNameSheHe = CHARACTER_SHEHE_HE
-		HighGodHerselfHimself = CHARACTER_HIMSELF
-		HighGodHerHis = CHARACTER_HERHIS_HIS
-		HighGodNameAlternate = manicheanism_high_god_name
-		HighGodNameAlternatePossessive = manicheanism_high_god_name_possessive
-
-		#Creator
-		CreatorName = manicheanism_creator_god_name
-		CreatorNamePossessive = manicheanism_creator_god_name_possessive
-		CreatorSheHe = CHARACTER_SHEHE_SHE
-		CreatorHerHis = CHARACTER_HERHIS_HER
-		CreatorHerHim = CHARACTER_HERHIM_HER
-
-		#HealthGod
-		HealthGodName = manicheanism_health_god_name
-		HealthGodNamePossessive = manicheanism_health_god_name_possessive
-		HealthGodSheHe = CHARACTER_SHEHE_IT
-		HealthGodHerHis = CHARACTER_HERHIS_ITS
-		HealthGodHerHim = CHARACTER_HERHIM_IT
-
-		#FertilityGod
-		FertilityGodName = manicheanism_fertility_god_name
-		FertilityGodNamePossessive = manicheanism_fertility_god_name_possessive
-		FertilityGodSheHe = CHARACTER_SHEHE_SHE
-		FertilityGodHerHis = CHARACTER_HERHIS_HER
-		FertilityGodHerHim = CHARACTER_HERHIM_HER
-
-		#WealthGod
-		WealthGodName = manicheanism_wealth_god_name
-		WealthGodNamePossessive = manicheanism_wealth_god_name_possessive
-		WealthGodSheHe = CHARACTER_SHEHE_HE
-		WealthGodHerHis = CHARACTER_HERHIS_HIS
-		WealthGodHerHim = CHARACTER_HERHIM_HIM
-
-		#HouseholdGod
-		HouseholdGodName = manicheanism_household_god_name
-		HouseholdGodNamePossessive = manicheanism_household_god_name_possessive
-		HouseholdGodSheHe = CHARACTER_SHEHE_HE
-		HouseholdGodHerHis = CHARACTER_HERHIS_HIS
-		HouseholdGodHerHim = CHARACTER_HERHIM_HIM
-
-		#KnowledgeGod
-		KnowledgeGodName = manicheanism_knowledge_god_name
-		KnowledgeGodNamePossessive = manicheanism_knowledge_god_name_possessive
-		KnowledgeGodSheHe = CHARACTER_SHEHE_HE
-		KnowledgeGodHerHis = CHARACTER_HERHIS_HIS
-		KnowledgeGodHerHim = CHARACTER_HERHIM_HIM
-
-		#WarGod
-		WarGodName = manicheanism_war_god_name
-		WarGodNamePossessive = manicheanism_war_god_name_possessive
-		WarGodSheHe = CHARACTER_SHEHE_HE
-		WarGodHerHis = CHARACTER_HERHIS_HIS
-		WarGodHerHim = CHARACTER_HERHIM_HIM
-
-		#NightGod
-		NightGodName = manicheanism_night_god_name
-		NightGodNamePossessive = manicheanism_night_god_name_possessive
-		NightGodSheHe = CHARACTER_SHEHE_HE
-		NightGodHerHis = CHARACTER_HERHIS_HIS
-		NightGodHerHim = CHARACTER_HERHIM_HIM
-
-		#WaterGod
-		WaterGodName = manicheanism_water_god_name
-		WaterGodNamePossessive = manicheanism_water_god_name_possessive
-		WaterGodSheHe = CHARACTER_SHEHE_HE
-		WaterGodHerHis = CHARACTER_HERHIS_HIS
-		WaterGodHerHim = CHARACTER_HERHIM_HIM
-
-		#Yamags, not High Priests
-		ReligiousHeadName = manichean_religious_head_title
-		ReligiousHeadTitleName = manichean_religious_head_title_name
-
-		GoodGodNames = {
-			manicheanism_good_god_father_of_greatness
-			manicheanism_good_god_mother_of_life
-			manicheanism_good_god_first_man
-		}
-		DevilName = manicheanism_devil_name
-		DevilNamePossessive = manicheanism_devil_name_possessive
-		DevilSheHe = CHARACTER_SHEHE_HE
-		DevilHerHis = CHARACTER_HERHIS_HIS
-		DevilHerselfHimself = CHARACTER_HIMSELF
-		EvilGodNames = {
-			manicheanism_devil_name
-			dualism_devil_name
-			dualism_evil_god_archons
-			dualism_evil_god_matter
-			dualism_evil_god_ignorance
-		}
-		WitchGodName = manicheanism_devil_name
-		WitchGodNamePossessive = manicheanism_devil_name_possessive
-		WitchGodHerHis = CHARACTER_HERHIS_HIS
-		WitchGodSheHe = CHARACTER_SHEHE_HE
-		WitchGodHerHim = CHARACTER_HERHIM_HIM
-		WitchGodMistressMaster = master
-		WitchGodMotherFather = father
-	}
-}
-
 vaishnavism = {
 	faith_details = {
 		religion = hinduism_religion
@@ -2865,10 +2772,10 @@ vaishnavism = {
 		varanasi
 		ayodhya
 		mathura
-		haridwar
+		haridwar # Changed from bantey_srei in TFE
 		kanchipuram
 		ujjayini
-		dwarka
+		dwarka # Changed from khao_khlang_nai in TFE
 	}
 
 	tenets = {
@@ -2938,12 +2845,12 @@ shaivism = {
 
 	holy_sites = {
 		varanasi
-		ayodhya
+		ayodhya # Changed from angkor in TFE
 		mathura
 		haridwar
 		kanchipuram
 		ujjayini
-		dwarka
+		dwarka # Changed from my_son in TFE
 	}
 
 	tenets = {
@@ -3030,7 +2937,7 @@ krishnaism = {
 		varanasi
 		ayodhya
 		mathura
-		haridwar
+		haridwar # Changed from prambanan in TFE
 		kanchipuram
 		ujjayini
 		dwarka
@@ -3091,166 +2998,6 @@ krishnaism = {
 			hinduism_good_god_shakti
 			hinduism_good_god_narayana
 		}
-	}
-}
-
-melieism = {
-	faith_details = {
-		religion = qiangic_religion
-		color = rgb { 156 153 178 }
-		icon = melieism
-		reformed_icon = melieism_reformed
-	}
-
-	holy_sites = {
-		xingqing_irtock3_tfe
-		yijinai_irtock3_tfe
-		alxa
-		ngawa
-		rebgong
-	}
-
-	tenets = {
-		tenet_ritual_celebrations
-		tenet_astrology
-		tenet_ancestor_worship
-	}
-
-	doctrines = {
-		unreformed_faith_doctrine
-
-		doctrine_gender_male_dominated
-		doctrine_clerical_gender_male_only
-	}
-
-	localization = {
-		#HighGod
-		HighGodName = tangut_high_god_name
-		HighGodName2 = tangut_high_god_name_2
-		HighGodNamePossessive = tangut_high_god_name_possessive
-		HighGodNameSheHe = CHARACTER_SHEHE_HE
-		HighGodHerselfHimself = CHARACTER_HIMSELF
-		HighGodHerHis = CHARACTER_HERHIS_HIS
-		HighGodNameAlternate = tangut_high_god_name_alternate
-		HighGodNameAlternatePossessive = tangut_high_god_name_alternate_possessive
-
-		#Creator
-		CreatorName = tangut_creator_god_name
-		CreatorNamePossessive = tangut_creator_god_name_possessive
-		CreatorSheHe = CHARACTER_SHEHE_HE
-		CreatorHerHis = CHARACTER_HERHIS_HIS
-		CreatorHerHim = CHARACTER_HERHIM_HIM
-
-		#HealthGod
-		HealthGodName = tangut_health_god_name
-		HealthGodNamePossessive = tangut_health_god_name_possessive
-		HealthGodSheHe = CHARACTER_SHEHE_HE
-		HealthGodHerHis = CHARACTER_HERHIS_HIS
-		HealthGodHerHim = CHARACTER_HERHIM_HIM
-
-		#FertilityGod
-		FertilityGodName = tangut_fertility_god_name
-		FertilityGodNamePossessive = tangut_fertility_god_name_possessive
-		FertilityGodSheHe = CHARACTER_SHEHE_SHE
-		FertilityGodHerHis = CHARACTER_HERHIS_HER
-		FertilityGodHerHim = CHARACTER_HERHIM_HER
-
-		#WealthGod
-		WealthGodName = tangut_wealth_god_name
-		WealthGodNamePossessive = tangut_wealth_god_name_possessive
-		WealthGodSheHe = CHARACTER_SHEHE_HE
-		WealthGodHerHis = CHARACTER_HERHIS_HIS
-		WealthGodHerHim = CHARACTER_HERHIM_HIM
-
-		#HouseholdGod
-		HouseholdGodName = tangut_household_god_name
-		HouseholdGodNamePossessive = tangut_household_god_name_possessive
-		HouseholdGodSheHe = CHARACTER_SHEHE_HE
-		HouseholdGodHerHis = CHARACTER_HERHIS_HIS
-		HouseholdGodHerHim = CHARACTER_HERHIM_HIM
-
-		#FateGod
-		FateGodName = tangut_fate_god_name
-		FateGodNamePossessive = tangut_fate_god_name_possessive
-		FateGodSheHe = CHARACTER_SHEHE_HE
-		FateGodHerHis = CHARACTER_HERHIS_HIS
-		FateGodHerHim = CHARACTER_HERHIM_HIM
-
-		#KnowledgeGod
-		KnowledgeGodName = tangut_knowledge_god_name
-		KnowledgeGodNamePossessive = tangut_knowledge_god_name_possessive
-		KnowledgeGodSheHe = CHARACTER_SHEHE_HE
-		KnowledgeGodHerHis = CHARACTER_HERHIS_HIS
-		KnowledgeGodHerHim = CHARACTER_HERHIM_HIM
-
-		#WarGod
-		WarGodName = tangut_war_god_name
-		WarGodNamePossessive = tangut_war_god_name_possessive
-		WarGodSheHe = CHARACTER_SHEHE_HE
-		WarGodHerHis = CHARACTER_HERHIS_HIS
-		WarGodHerHim = CHARACTER_HERHIM_HIM
-
-		#TricksterGod
-		TricksterGodName = tangut_trickster_god_name
-		TricksterGodNamePossessive = tangut_trickster_god_name_possessive
-		TricksterGodSheHe = CHARACTER_SHEHE_SHE
-		TricksterGodHerHis = CHARACTER_HERHIS_HER
-		TricksterGodHerHim = CHARACTER_HERHIM_HER
-
-		#NightGod
-		NightGodName = tangut_night_god_name
-		NightGodNamePossessive = tangut_night_god_name_possessive
-		NightGodSheHe = CHARACTER_SHEHE_HE
-		NightGodHerHis = CHARACTER_HERHIS_HIS
-		NightGodHerHim = CHARACTER_HERHIM_HIM
-
-		#WaterGod
-		WaterGodName = tangut_water_god_name
-		WaterGodNamePossessive = tangut_water_god_name_possessive
-		WaterGodSheHe = CHARACTER_SHEHE_SHE
-		WaterGodHerHis = CHARACTER_HERHIS_HER
-		WaterGodHerHim = CHARACTER_HERHIM_HER
-
-		GoodGodNames = {
-			tangut_high_god_name
-			tangut_high_god_name_alternate
-			tangut_good_god_mewn
-			tangut_good_god_viei
-		}
-
-		ReligiousSymbol = tangut_religious_symbol
-		ReligiousSymbol2 = tangut_religious_symbol_2
-		ReligiousSymbol3 = tangut_religious_symbol_3
-		ReligiousText = tangut_religious_text
-		ReligiousText2 = tangut_religious_text_2
-		ReligiousText3 = tangut_religious_text_3
-		ReligiousHeadName = tangut_religious_head_title
-		ReligiousHeadTitleName = tangut_religious_head_title_name
-		DevoteeMale = tangut_devotee_male
-		DevoteeMalePlural = tangut_devotee_male_plural
-		DevoteeFemale = tangut_devotee_female
-		DevoteeFemalePlural = tangut_devotee_female_plural
-		DevoteeNeuter = tangut_devotee_neuter
-		DevoteeNeuterPlural = tangut_devotee_neuter_plural
-		PriestMale = tangut_priest
-		PriestMalePlural = tangut_priest_plural
-		PriestFemale = tangut_priest
-		PriestFemalePlural = tangut_priest_plural
-		PriestNeuter = tangut_priest
-		PriestNeuterPlural = tangut_priest_plural
-		AltPriestTermPlural = tangut_priest_term_plural
-		BishopMale = tangut_bishop
-		BishopMalePlural = tangut_bishop_plural
-		BishopFemale = tangut_bishop
-		BishopFemalePlural = tangut_bishop_plural
-		BishopNeuter = tangut_bishop
-		BishopNeuterPlural = tangut_bishop_plural
-		DivineRealm = tangut_divine_realm
-		DivineRealm2 = tangut_divine_realm_2
-		DivineRealm3 = tangut_divine_realm_3
-		PositiveAfterLife = tangut_positive_afterlife
-		PositiveAfterLife2 = tangut_positive_afterlife_2
-		PositiveAfterLife3 = tangut_positive_afterlife_3
 	}
 }
 {% endif %}

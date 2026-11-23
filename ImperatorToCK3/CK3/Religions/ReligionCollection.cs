@@ -363,6 +363,15 @@ internal sealed class ReligionCollection(Title.LandedTitles landedTitles) : IdOb
 
 		// Validation: every faith should have a theism doctrine.
 		ValidateTheismDoctrine(loadedConverterFaiths);
+
+		// Validation: every faith should have a preservation doctrine.
+		ValidatePreservationDoctrine(loadedConverterFaiths);
+
+		// Validation: every faith should have a monasticism doctrine.
+		ValidateMonasticismDoctrine(loadedConverterFaiths);
+
+		// Validation: every faith should have a sacraments doctrine.
+		ValidateSacramentsDoctrine(loadedConverterFaiths);
 	}
 
 	public void LoadConverterRites(string converterRitesPath, ColorFactory colorFactory, Hash liquidVariables) {
@@ -408,6 +417,60 @@ internal sealed class ReligionCollection(Title.LandedTitles landedTitles) : IdOb
 					converterFaith.DoctrineIds.Add(theismFallback);
 				} else {
 					Logger.Warn($"Faith {converterFaith.Id} has no theism doctrine!");
+				}
+			}
+		}
+	}
+
+	private void ValidatePreservationDoctrine(OrderedSet<Faith> loadedConverterFaiths)
+	{
+		string? preservationFallback = DoctrineGroups.TryGetValue("preservation", out var preservationCategory)
+			? preservationCategory.DoctrineIds.FirstOrDefault(d => d == "doctrine_oral_storytelling")
+			: null;
+		foreach (var converterFaith in loadedConverterFaiths) {
+			var preservationDoctrine = converterFaith.GetDoctrineIdsForDoctrineGroupId("preservation");
+			if (preservationDoctrine.Count == 0) {
+				if (preservationFallback is not null) {
+					Logger.Warn($"Faith {converterFaith.Id} has no preservation doctrine! Setting {preservationFallback}");
+					converterFaith.DoctrineIds.Add(preservationFallback);
+				} else {
+					Logger.Warn($"Faith {converterFaith.Id} has no preservation doctrine!");
+				}
+			}
+		}
+	}
+
+	private void ValidateMonasticismDoctrine(OrderedSet<Faith> loadedConverterFaiths)
+	{
+		string? monasticismFallback = DoctrineGroups.TryGetValue("monasticism_group", out var monasticismCategory)
+			? monasticismCategory.DoctrineIds.FirstOrDefault(d => d == "doctrine_monasticism_absent")
+			: null;
+		foreach (var converterFaith in loadedConverterFaiths) {
+			var monasticismDoctrine = converterFaith.GetDoctrineIdsForDoctrineGroupId("monasticism_group");
+			if (monasticismDoctrine.Count == 0) {
+				if (monasticismFallback is not null) {
+					Logger.Warn($"Faith {converterFaith.Id} has no monasticism doctrine! Setting {monasticismFallback}");
+					converterFaith.DoctrineIds.Add(monasticismFallback);
+				} else {
+					Logger.Warn($"Faith {converterFaith.Id} has no monasticism doctrine!");
+				}
+			}
+		}
+	}
+
+	private void ValidateSacramentsDoctrine(OrderedSet<Faith> loadedConverterFaiths)
+	{
+		string? sacramentsFallback = DoctrineGroups.TryGetValue("sacraments_group", out var sacramentsCategory)
+			? sacramentsCategory.DoctrineIds.FirstOrDefault(d => d == "doctrine_sacraments_absent")
+			: null;
+		foreach (var converterFaith in loadedConverterFaiths) {
+			var sacramentsDoctrine = converterFaith.GetDoctrineIdsForDoctrineGroupId("sacraments_group");
+			if (sacramentsDoctrine.Count == 0) {
+				if (sacramentsFallback is not null) {
+					Logger.Warn($"Faith {converterFaith.Id} has no sacraments doctrine! Setting {sacramentsFallback}");
+					converterFaith.DoctrineIds.Add(sacramentsFallback);
+				} else {
+					Logger.Warn($"Faith {converterFaith.Id} has no sacraments doctrine!");
 				}
 			}
 		}

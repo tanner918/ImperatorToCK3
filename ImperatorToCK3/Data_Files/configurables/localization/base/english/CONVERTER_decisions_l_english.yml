@@ -45,6 +45,8 @@
  irtock3_change_roman_kingdom_duchies_tt: "All [de_jure|E] [duchies|E] of [GetTitleByKey('k_rome').GetName] will be put under a new [kingdom|E] [title|E]"
  irtock3_rome_kingdom_elevated_to_empire_tt: "[GetTitleByKey('k_rome').GetName] is destroyed and replaced by [GetTitleByKey('e_roman_empire').GetName]"
  irtock3_elevate_roman_empire_decision: "Declare Roman Hegemony"
+ any_landed_kingdom_title_tt: "At least one [kingdom|E] you hold is a [landed|E] [title|E] #weak #EMP (Not a [clerical_region|E] or a [noble_family|E])#!#!"
+ any_landed_empire_title_tt: "At least one [empire|E] you hold is a [landed|E] [title|E] #weak #EMP (Not a [clerical_region|E] or a [noble_family|E])#!#!"
  irtock3_key_roman_locations: "Key Roman Provinces"
  irtock3_restore_roman_locations: "Restore Rome Provinces"
  irtock3_elevate_roman_empire_de_jure_changes: "All [de_jure|E] [kingdoms|E] you [completely_control|E] and [empires|E] you [hold|E] will be divided into [irtock3_praetorian_prefectures|E] under [GetTitleByKey('h_roman_empire').GetName]. Your held empires will be destroyed."

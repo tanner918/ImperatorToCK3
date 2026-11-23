@@ -10,7 +10,7 @@ GitHub project: https://github.com/ParadoxGameConverters/ImperatorToCK3
 REQUIREMENTS
 ----
 Imperator: Rome - version 2.0
-Crusader Kings III - version 1.19
+Crusader Kings III - version 1.20
 
 -----
 INSTRUCTIONS
