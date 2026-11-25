@@ -1044,6 +1044,30 @@ irtock3_setup_governments = {
 				}
 			}
 		}
+		else_if = { # Converter just sets up regular Theocracies. If that happens to not be the theocratic government of their faith, need to change to it.
+			limit = { has_government = theocracy_government }
+
+			if = {
+				limit = {
+					NOT = { faith.faith_theocratic_goverment_type ?= government_type }
+				}
+				change_government = faith.faith_theocratic_goverment_type
+
+				# Try setting up best fitting succession law
+				if = {
+					limit = { should_use_theocratic_elective_succession_law_trigger = yes }
+					add_realm_law_skip_effects = theocratic_elective_succession_law
+				}
+				else_if = {
+					limit = { should_use_clerical_appointment_law_trigger = yes }
+					add_realm_law_skip_effects = clerical_appointment_law
+				}
+				else_if = {
+					limit = { can_have_bishop_theocratic_succession_law_trigger = yes }
+					add_realm_law_skip_effects = bishop_theocratic_succession_law
+				}
+			}
+		}
 
 		# Some duchy vassals created from Imperator governorships might be titular, so they don't work properly when inside Admin realms. This is meant to fix that by replacing the titular duchy with a relevant duchy with de jure counties beneath it, so it will work properly.
 		if = {
